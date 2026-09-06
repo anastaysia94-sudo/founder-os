@@ -1,0 +1,24 @@
+# Local/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Dependencies/build output
+vendor/
+node_modules/
+dist/
+package/
+*.zip
+*.log
+
+# Secrets/local config
+.env
+.env.*
+!.env.example
+wp-config.php
+wp-config.local.php
+
+# Test/runtime artifacts
+.phpunit.result.cache
+coverage/
