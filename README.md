@@ -1,10 +1,32 @@
-# Founder Dynasty OS 10.0 — FDOS Value Leak Scanner
+# Founder Dynasty OS 10.0 — SMARTPICKSHOP HOLDINGS
 
-Founder Dynasty OS (FDOS) is a Business Outcome Operating System project under SmartPickShop Holdings. The v1.0.1 launch candidate packages a WordPress-based Value Leak Scanner, evidence governance, opportunity ranking, Value Sprints, experiment tracking, conversion intelligence, Shopify webhook evidence, launch diagnostics, and production verification.
+Founder Dynasty OS (FDOS) is a Business Outcome Operating System under SmartPickShop Holdings. The repository now contains multiple coordinated product tracks: a standalone web Founder Command Center, the Same-Day Customer Growth Pack Android/Web Sales OS, and the preserved WordPress FDOS Value Leak Scanner compatibility/legacy track.
 
 ## Core operating loop
 
 Founder input → evidence collection → Value Leak detection → opportunity ranking → recommended experiment → Value Sprint → KPI measurement → evidence classification → KEEP / REVISE / REVERT → next-best action.
+
+## Active components
+
+### Standalone Founder OS Web (`web/`)
+
+Non-WordPress Next.js/React/TypeScript product track for the Founder Command Center, intake, Evidence Vault, opportunity ranking, and Value Sprint workflow. This is the primary direction for new Founder OS web feature development.
+
+### Same-Day Customer Growth Pack Android/Web Sales OS (`sales-engine-app/` + `sales-engine/`)
+
+Mobile-first installable PWA and sales operating system. It includes a live prospect feed, sales scripts, local pipeline tracking, offline support, PWA manifest, canonical XLSX CRM, auditable dated lead snapshots, and a GitHub Pages deployment workflow.
+
+Canonical sales data:
+
+- `sales-engine-app/data/leads.json` — app prospect feed
+- `sales-engine/Same-Day-Customer-Growth-Pack-Live-CRM.xlsx` — canonical CRM workbook
+- `sales-engine/README.md` — integrity and refresh contract
+
+Research refreshes must synchronize the feed and CRM without overwriting genuine contact/pipeline history. A Contact Ready prospect is not evidence that outreach, a reply, payment, customer, or revenue exists.
+
+### WordPress FDOS Value Leak Scanner
+
+The v1.0.1 launch-candidate plugin remains preserved with evidence governance, website evidence, experiments, Shopify HMAC webhook handling, launch diagnostics, and production-verification tooling. WordPress is no longer a prerequisite for continued feature development of the standalone web and Sales OS components.
 
 ## Research & Evidence Integrity Layer
 
@@ -19,20 +41,18 @@ FDOS preserves explicit evidence classes:
 - E7 Forecast
 - E8 Illustrative Example
 
-Externally derived claims require source attribution, uncertainty must be explicit where evidence is insufficient, and the project must not fabricate market size, pricing, results, testimonials, adoption statistics, regulations, partnerships, or product capabilities.
+Externally derived claims require source attribution, uncertainty must be explicit where evidence is insufficient, and the project must not fabricate market size, pricing, results, testimonials, adoption statistics, regulations, partnerships, product capabilities, contacts, outreach, replies, payments, customers, revenue, ROI, or product-market fit.
 
 ## AI continuation / project handoff
 
-This repository is designed so the project can be continued without relying on hidden chat history:
-
-- **`AGENTS.md`** — canonical project state, operating rules, evidence boundaries, implemented capabilities, production blocker, development rules, and definition of truthful completion.
+- **`AGENTS.md`** — canonical project/component state, operating rules, evidence boundaries, and continuation priorities.
 - **`.github/copilot-instructions.md`** — repository instructions for GitHub Copilot.
-- **`AI-HANDOFF.md`** — ready-to-use continuation prompts and working instructions for ChatGPT/Codex, GitHub Copilot, Grok, and Perplexity, plus a shared GitHub contribution protocol.
+- **`AI-HANDOFF.md`** — continuation prompts for ChatGPT/Codex, Copilot, Grok, and Perplexity.
 
-Any AI assistant continuing FDOS should read `AGENTS.md` first, inspect the actual repository, preserve completed work, and prioritize the highest-value unfinished milestone rather than generating duplicate modules.
+Any AI assistant continuing FDOS should read `AGENTS.md` first, inspect the repository, preserve completed work and pipeline history, and prioritize the highest-value unfinished milestone rather than generating duplicate modules.
 
-## Launch status
+## Current launch direction
 
-This repository contains the FDOS v1.0.1 launch candidate source. Build validation does not equal production verification. A real production deployment still requires installation on a public HTTPS WordPress host, passing P1/P2 runtime gates, configuring the Shopify app client secret server-side, receiving an HMAC-verified Shopify webhook, and passing P3 production verification.
+The immediate standalone priorities are: keep Sales OS CRM/feed synchronized, get the PWA publicly deployed and verified, add durable authenticated persistence, connect permissioned evidence adapters to the standalone Founder OS web track, and obtain genuine external workflow evidence.
 
-See `LAUNCH-TODAY.md`, `LAUNCH-RUNBOOK.md`, and GitHub Issue #1 for the deployment sequence.
+Build/test success and researched pipeline value are not commercial proof.
