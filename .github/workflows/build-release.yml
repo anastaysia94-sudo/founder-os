@@ -1,0 +1,44 @@
+name: Build WordPress Plugin ZIP
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate PHP
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do php -l "$file"; done < <(find . -type f -name '*.php' -not -path './vendor/*' -print0)
+      - name: Build installable plugin ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf dist package
+          mkdir -p dist package/fdos-value-leak-scanner
+          rsync -a ./ package/fdos-value-leak-scanner/ \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'dist/' \
+            --exclude 'package/' \
+            --exclude '*.zip'
+          cd package
+          zip -r ../dist/fdos-value-leak-scanner.zip fdos-value-leak-scanner
+          cd ..
+          sha256sum dist/fdos-value-leak-scanner.zip > dist/fdos-value-leak-scanner.zip.sha256
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fdos-value-leak-scanner
+          path: dist/
+          if-no-files-found: error
