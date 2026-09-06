@@ -21,8 +21,18 @@ FDOS preserves explicit evidence classes:
 
 Externally derived claims require source attribution, uncertainty must be explicit where evidence is insufficient, and the project must not fabricate market size, pricing, results, testimonials, adoption statistics, regulations, partnerships, or product capabilities.
 
+## AI continuation / project handoff
+
+This repository is designed so the project can be continued without relying on hidden chat history:
+
+- **`AGENTS.md`** — canonical project state, operating rules, evidence boundaries, implemented capabilities, production blocker, development rules, and definition of truthful completion.
+- **`.github/copilot-instructions.md`** — repository instructions for GitHub Copilot.
+- **`AI-HANDOFF.md`** — ready-to-use continuation prompts and working instructions for ChatGPT/Codex, GitHub Copilot, Grok, and Perplexity, plus a shared GitHub contribution protocol.
+
+Any AI assistant continuing FDOS should read `AGENTS.md` first, inspect the actual repository, preserve completed work, and prioritize the highest-value unfinished milestone rather than generating duplicate modules.
+
 ## Launch status
 
 This repository contains the FDOS v1.0.1 launch candidate source. Build validation does not equal production verification. A real production deployment still requires installation on a public HTTPS WordPress host, passing P1/P2 runtime gates, configuring the Shopify app client secret server-side, receiving an HMAC-verified Shopify webhook, and passing P3 production verification.
 
-See `LAUNCH-TODAY.md` and `LAUNCH-RUNBOOK.md` for the deployment sequence.
+See `LAUNCH-TODAY.md`, `LAUNCH-RUNBOOK.md`, and GitHub Issue #1 for the deployment sequence.
