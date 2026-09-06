@@ -1,0 +1,16 @@
+{
+  "product": "Founder Dynasty OS — Value Leak Scanner",
+  "release": "1.0.1",
+  "status": "launch_candidate_final",
+  "php_files": 16,
+  "required_external_proof": [
+    "Install on real public HTTPS WordPress host",
+    "Run P1 QA PASS on that host",
+    "Run P2 launch gate with zero blocking gates",
+    "Configure canonical Shopify store and webhook secret",
+    "Receive at least one HMAC-verified Shopify webhook",
+    "Run P3 until production_verified=true"
+  ],
+  "truth_boundary": "Build validation cannot substitute for a real production host or external webhook delivery.",
+  "shopify_hmac_key": "client secret of the Shopify app that owns the HTTPS webhook subscription"
+}
