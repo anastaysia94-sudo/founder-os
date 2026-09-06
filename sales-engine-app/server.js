@@ -1,5 +1,4 @@
 const path = require('path');
-const crypto = require('crypto');
 const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
@@ -89,7 +88,7 @@ app.get('/api/health', async (_req, res) => {
   try {
     const db = await health();
     res.json({ ok: true, app: 'same-day-customer-growth-pack', persistence: 'postgres', authenticated: true, databaseTime: db.now });
-  } catch (error) {
+  } catch {
     res.status(503).json({ ok: false, error: 'Database unavailable.' });
   }
 });
@@ -108,7 +107,6 @@ app.post('/api/auth/setup', async (req, res) => {
   const email = cleanEmail(req.body?.email);
   const password = String(req.body?.password || '');
   if (!email || password.length < 12) return res.status(400).json({ error: 'Use a valid email and a password of at least 12 characters.' });
-
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -199,7 +197,7 @@ app.use(express.static(__dirname, {
   },
 }));
 
-app.get('*', (_req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get(/.*/, (_req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 async function start() {
   await migrate();
