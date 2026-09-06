@@ -25,5 +25,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Run portable core tests
+      - name: Run portable evidence/experiment core tests
         run: node core/fdos-core.test.js
+      - name: Run next-best-action decision engine tests
+        run: node core/decision-engine.test.js
