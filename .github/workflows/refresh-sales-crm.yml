@@ -1,0 +1,36 @@
+name: Refresh Sales CRM Workbook
+
+on:
+  push:
+    paths:
+      - 'sales-engine-app/data/leads.json'
+      - 'sales-engine-app/data/scripts.json'
+      - 'sales-engine/pipeline-history.json'
+      - 'scripts/generate_sales_crm.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-crm:
+    if: ${{ !contains(github.event.head_commit.message, '[skip crm]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install xlsxwriter
+      - run: python scripts/generate_sales_crm.py
+      - name: Commit canonical workbook
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sales-engine/Same-Day-Customer-Growth-Pack-Live-CRM.xlsx
+          if git diff --cached --quiet; then
+            echo "Workbook already current"
+          else
+            git commit -m "Regenerate sales CRM workbook [skip crm]"
+            git push
+          fi
