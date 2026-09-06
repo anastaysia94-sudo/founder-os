@@ -1,0 +1,115 @@
+name: Sales OS Integration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'sales-engine-app/**'
+      - '.github/workflows/sales-os-integration.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'sales-engine-app/**'
+      - '.github/workflows/sales-os-integration.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  postgres-auth-persistence:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: growth
+          POSTGRES_PASSWORD: growthpass
+          POSTGRES_DB: growth_os
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U growth -d growth_os"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    defaults:
+      run:
+        working-directory: sales-engine-app
+    env:
+      NODE_ENV: test
+      PORT: 3000
+      DATABASE_URL: postgresql://growth:growthpass@127.0.0.1:5432/growth_os
+      AUTH_SECRET: integration-test-secret-please-replace-1234567890
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Syntax validation
+        run: npm run check
+      - name: Start Sales OS
+        run: |
+          npm start > /tmp/sales-os.log 2>&1 &
+          echo $! > /tmp/sales-os.pid
+      - name: Wait for health
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:3000/api/health > /tmp/health.json; then
+              cat /tmp/health.json
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/sales-os.log
+          exit 1
+      - name: Verify first-run owner setup and session
+        run: |
+          set -euo pipefail
+          curl -fsS http://127.0.0.1:3000/api/auth/status | tee /tmp/status.json | grep '"setupRequired":true'
+          curl -fsS -c /tmp/cookies.txt -H 'Content-Type: application/json' \
+            -d '{"email":"owner@example.test","password":"correct-horse-battery-staple"}' \
+            http://127.0.0.1:3000/api/auth/setup | tee /tmp/setup.json | grep 'owner@example.test'
+          curl -fsS -b /tmp/cookies.txt http://127.0.0.1:3000/api/auth/me | tee /tmp/me.json | grep 'owner@example.test'
+          curl -fsS http://127.0.0.1:3000/api/auth/status | tee /tmp/status2.json | grep '"setupRequired":false'
+      - name: Verify durable pipeline write and audit history
+        run: |
+          set -euo pipefail
+          curl -fsS -b /tmp/cookies.txt -H 'Content-Type: application/json' -X PUT \
+            -d '{"business":"Integration Test Co","stage":"Contacted","notes":"integration contact marker"}' \
+            http://127.0.0.1:3000/api/pipeline/integration-test-co | tee /tmp/contacted.json | grep 'Contacted'
+          curl -fsS -b /tmp/cookies.txt -H 'Content-Type: application/json' -X PUT \
+            -d '{"business":"Integration Test Co","stage":"Replied","notes":"integration reply marker"}' \
+            http://127.0.0.1:3000/api/pipeline/integration-test-co | tee /tmp/replied.json | grep 'Replied'
+          curl -fsS -b /tmp/cookies.txt http://127.0.0.1:3000/api/pipeline | tee /tmp/pipeline.json | grep 'Integration Test Co'
+          curl -fsS -b /tmp/cookies.txt http://127.0.0.1:3000/api/pipeline/integration-test-co/audit | tee /tmp/audit.json | grep 'integration reply marker'
+      - name: Verify authentication boundary
+        run: |
+          if curl -fsS http://127.0.0.1:3000/api/pipeline; then
+            echo 'Pipeline unexpectedly accessible without auth.'
+            exit 1
+          else
+            echo 'Unauthenticated pipeline access correctly rejected.'
+          fi
+      - name: Verify persistence across server restart
+        run: |
+          kill "$(cat /tmp/sales-os.pid)"
+          sleep 1
+          npm start > /tmp/sales-os-restart.log 2>&1 &
+          echo $! > /tmp/sales-os.pid
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:3000/api/health >/dev/null && break
+            sleep 1
+          done
+          curl -fsS -c /tmp/cookies2.txt -H 'Content-Type: application/json' \
+            -d '{"email":"owner@example.test","password":"correct-horse-battery-staple"}' \
+            http://127.0.0.1:3000/api/auth/login | grep 'owner@example.test'
+          curl -fsS -b /tmp/cookies2.txt http://127.0.0.1:3000/api/pipeline | tee /tmp/pipeline-after-restart.json | grep 'Integration Test Co'
+          grep '"replied_at"' /tmp/pipeline-after-restart.json
+      - name: Server logs on failure
+        if: failure()
+        run: |
+          cat /tmp/sales-os.log || true
+          cat /tmp/sales-os-restart.log || true
