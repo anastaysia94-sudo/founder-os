@@ -1,40 +1,100 @@
 # Founder Dynasty OS — AI Continuation Instructions
 
-This file is the canonical handoff for AI coding/research assistants working on **Founder Dynasty OS 10.0 (FDOS)** under **SmartPickShop Holdings**.
+This file is the canonical handoff for AI coding/research assistants working on **Founder Dynasty OS 10.0 (FDOS)** under **SMARTPICKSHOP HOLDINGS**.
 
-Supported assistants include ChatGPT/Codex, GitHub Copilot, Grok, Perplexity, and other capable coding/research agents.
+Before major product-direction changes, read **`PRODUCT-VISION.md`**. That file defines the restored broad product vision.
 
 ## Mission
 
-FDOS is a **Business Outcome Operating System**, not a template bundle. Its operating loop is:
+Founder Dynasty OS is a **full-lifecycle Business Operating System**, not a CRM, sales app, dashboard template, or generic startup tool.
 
-**Founder input → evidence collection → Value Leak detection → opportunity ranking → recommended experiment → Value Sprint → KPI measurement → evidence classification → KEEP / REVISE / REVERT → next-best action.**
+It must work for a user who has only an idea as well as for an operating company, growing company, portfolio, or holding company.
 
-Optimize for measurable customer outcomes, implementation, retention, recurring revenue potential, licensing potential, referrals, and durable product value. Never invent commercial results.
+Its high-level loop is:
 
-## Tracked Founder OS components
+**Understand → identify the highest-value problem or opportunity → separate evidence from assumptions → choose the next action → help execute it → measure what happened → learn → KEEP / REVISE / REVERT → update the business model → choose the next action.**
 
-Founder OS now tracks these active components as one portfolio under SmartPickShop Holdings:
+The original internal FDOS language remains valid:
 
-1. **Standalone Founder OS Web Track (`web/`)** — non-WordPress Next.js/React/TypeScript Founder Command Center and future primary web-product track.
-2. **Same-Day Customer Growth Pack Android/Web Sales OS (`sales-engine-app/` + `sales-engine/`)** — installable mobile-first PWA sales operating system with a live prospect feed, scripts, pipeline tracking, offline support, and canonical CRM workbook.
-3. **Legacy/compatibility WordPress FDOS Value Leak Scanner** — preserved source, evidence governance, experiments, Shopify verification, deployment QA, and production-verification tooling. WordPress is no longer required for feature development on the standalone web/Sales OS tracks.
+**Evidence → Value Leak / Value Opportunity → ranked action → Value Sprint → measurement → KEEP / REVISE / REVERT.**
+
+## Product-direction guardrail — DO NOT NARROW FDOS TO SALES
+
+The Same-Day Customer Growth Pack / Sales OS is a major component, but it is not the product identity.
+
+The product hierarchy is:
+
+**SMARTPICKSHOP HOLDINGS → Founder Dynasty OS → business operating-system domains → Customers & Growth → Same-Day Customer Growth Pack / Sales OS.**
+
+Do not restructure the broader product around a CRM or sales funnel simply because the Sales OS currently has more production validation than other modules.
+
+Founder Dynasty OS should evolve around shared business intelligence, including:
+
+- Business DNA
+- Value Map
+- Value Leak Engine
+- Opportunity Engine
+- Decision Engine
+- Value Sprints
+- Business Memory
+- Business X-Ray
+- What Am I Missing?
+- Argue Against Me
+- Scenario Lab
+- Asset Map
+- Founder Attention
+- Dynasty / enterprise-value mode
+- Portfolio / SMARTPICKSHOP HOLDINGS view
+
+Functional domains should eventually include Idea Lab, Strategy, Research, Business Model Lab, Product / Offer Lab, Customer Intelligence, Sales, Marketing & Distribution, Finance, Operations, Projects, Risk, Assets, Decisions, Evidence, Growth, Portfolio, and Dynasty.
+
+## Business-stage awareness
+
+FDOS must adapt to the user's actual stage:
+
+1. Idea
+2. Exploring
+3. Validating
+4. Building
+5. Pre-launch
+6. Launched
+7. Finding traction
+8. Growing
+9. Systemizing
+10. Scaling
+11. Portfolio / holding company
+12. Dynasty
+
+Never assume the user already has customers, revenue, a website, employees, metrics, or even a formed company.
+
+## Plain-English requirement
+
+The user-facing product must use ordinary language first.
+
+Every major screen should answer:
+
+1. What is this?
+2. Why does it matter?
+3. What should I do?
+4. What happens next?
+
+Specialized business/technical words should be explainable in place and included in the product glossary. Preserve advanced detail through progressive disclosure rather than forcing beginners to understand jargon.
+
+## Tracked implementation components
+
+1. **Standalone Founder OS Web (`web/`)** — Next.js/React/TypeScript primary product direction. It should become the broad operating-system experience described in `PRODUCT-VISION.md`.
+2. **Same-Day Customer Growth Pack Android/Web Sales OS (`sales-engine-app/` + `sales-engine/`)** — installable mobile-first Sales OS with verified prospect research, scripts, pipeline state, persistence, offline behavior, and CRM artifacts.
+3. **Legacy/compatibility WordPress FDOS Value Leak Scanner** — preserved source and launch/proof tooling; not the main future architecture.
 
 ### Same-Day Customer Growth Pack source-of-truth rules
 
 - App feed: `sales-engine-app/data/leads.json`
 - Canonical CRM workbook: `sales-engine/Same-Day-Customer-Growth-Pack-Live-CRM.xlsx`
-- Human-readable audit artifacts: `sales-engine/README.md`, dated CSV snapshots, and outreach scripts.
-- Refresh both the JSON feed and canonical workbook together when genuinely new verified prospect research is added.
-- Never overwrite genuine pipeline/contact history (contact timestamps, replies, opt-outs, quotes, payment, fulfillment, notes, or real status changes) during a research refresh.
-- Never invent contacts, outreach, replies, payments, customers, revenue, or performance results.
-- Keep dated source URLs and verification dates for every research-derived opportunity.
-
-## Current release state
-
-The repository contains the FDOS Value Leak Scanner **v1.0.1 launch candidate**, a new standalone Founder OS web track, and the Same-Day Customer Growth Pack Sales OS. The WordPress software includes the public scanner, evidence governance, live website evidence adapter, opportunity ranking, Value Sprints, experiments, conversion intelligence, Shopify HMAC webhook evidence, Founder Command Center, P1 integration QA, P2 Launch Gate, P3 Production Verification, health/retention/export controls, rollback guidance, safe uninstall behavior, CI, and an installable WordPress ZIP build workflow.
-
-The standalone web/Sales OS tracks should continue independently of WordPress unless a feature explicitly requires the legacy plugin.
+- Genuine pipeline/contact history: `sales-engine/pipeline-history.json`
+- Human-readable audit artifacts: `sales-engine/README.md`, dated snapshots, and scripts.
+- Refresh JSON feed and CRM together only when genuinely new verified prospect research exists.
+- Never overwrite genuine contact timestamps, replies, opt-outs, quotes, payment, fulfillment, notes, or real status changes during research refreshes.
+- Never invent contacts, outreach, replies, payments, customers, revenue, or results.
 
 ## Research & Evidence Integrity Layer — NEVER REMOVE OR WEAKEN
 
@@ -53,90 +113,113 @@ Rules:
 
 1. Attribute externally derived claims to sources.
 2. State uncertainty when evidence is insufficient.
-3. Never fabricate market size, competitor pricing, customers, revenue, conversions, adoption, testimonials, regulations, partnerships, product capabilities, ROI, profit, or product-market fit.
-4. Shopify-reported order value is not automatically profit or attributable FDOS revenue.
-5. Before/after KPI movement is not automatically causation.
-6. Build/test success is not production verification.
-7. Preserve evidence confidence and limitations wherever the product already records them.
-8. Prospect discovery is E2/current external evidence only when the supporting source is current and verifiable; a prospect becoming `Contact Ready` is not evidence that outreach occurred.
+3. Never fabricate market size, pricing, customers, revenue, conversions, adoption, testimonials, regulations, partnerships, product capabilities, ROI, profit, or product-market fit.
+4. Before/after movement is not automatically causation.
+5. Build/test success is not production verification.
+6. Preserve evidence confidence and limitations wherever the product records them.
+7. Prospect discovery is E2 only when supported by current verifiable sources. `Contact Ready` is not evidence that outreach occurred.
+8. A sent message is not a reply; a reply is not a sale; a quote is not payment; payment is not profit.
 
-## What is already implemented
+## Preserve completed work
 
-Before proposing new work, inspect the repository. Preserve completed behavior, especially:
+Before implementing anything substantial, inspect the repository. Preserve working behavior and genuine evidence, including:
 
-- Standalone Founder OS web shell in `web/`
-- Same-Day Customer Growth Pack Sales OS PWA in `sales-engine-app/`
+- standalone web shell in `web/`
+- Sales OS PWA in `sales-engine-app/`
 - live JSON prospect feed and canonical CRM workbook
-- sales scripts, pipeline-state model, offline service worker, PWA manifest, and GitHub Pages deployment workflow
-- WordPress public Value Leak Scanner shortcode `[fdos_value_leak_scanner]`
-- founder inputs: website URL, Facebook/business URL, business idea
-- safe live website retrieval and E2 evidence findings
-- Facebook permission boundary (do not scrape/infer page content merely from a submitted Facebook URL)
-- opportunity scoring and ranked findings
-- Value Sprint generation
+- genuine pipeline/contact history
+- Supabase authentication/persistence work where present
+- offline service worker and PWA manifest
+- Value Leak and Value Sprint concepts
 - evidence event ledger and E1–E8 taxonomy
-- allowlisted first-party conversion events
-- Shopify HMAC verification and webhook deduplication
-- `orders/create` and `orders/paid` normalization
-- experiment creation/update/start/report and event correlation
-- Founder Command Center
-- P1 internal Integration QA
-- P2 production Launch Gate
-- P3 real production verification
-- retention controls, owner export, health reporting, deployment logs
-- safe uninstall: destructive deletion is opt-in, not default
-- public rendering that avoids injecting API data through `innerHTML`
-- CI PHP lint matrix
-- automated WordPress ZIP + SHA-256 build workflow.
+- WordPress evidence adapters and experiments
+- Shopify HMAC verification/deduplication
+- P1/P2/P3 legacy production-verification tooling
+- security and safe-uninstall behavior
+- CI/build workflows
 
-## Current production priorities
+Do not delete functioning systems merely to make the architecture prettier.
 
-For the standalone tracks, prioritize functional deployment and persistence over additional speculative modules:
+## Current product priorities
 
-1. Keep the Sales OS feed and CRM synchronized without damaging pipeline history.
-2. Get the Sales OS PWA publicly deployed and verify the live GitHub Pages URL.
-3. Add persistent/authenticated storage where local-only state would otherwise be lost.
-4. Connect the standalone Founder OS web track to permissioned evidence adapters and persistent workspaces.
-5. Capture genuine external usage evidence and one complete Value Sprint / customer-growth workflow before claiming commercial validation.
+Prioritize these in order unless current repository/runtime evidence justifies a change:
 
-The legacy WordPress production path remains available but is not a blocker for ongoing web/Sales OS feature development.
+1. **Restore the broad FDOS product architecture** around shared Business DNA, Value Map, decisions, opportunities, evidence, and Business Memory.
+2. **Continue the plain-English rebuild**, including reusable explainable terms and a searchable glossary.
+3. **Turn the standalone web track into the actual broad Founder Dynasty OS**, rather than a thin Value Leak/Sales shell.
+4. **Integrate existing modules into that architecture**, including the Sales OS, without making any one module the identity of FDOS.
+5. **Harden existing production behavior**: authentication, sign-out, session restoration, persistence, account isolation, offline/reconnect behavior, and audit integrity.
+6. **Capture genuine external usage evidence** for complete workflows before making commercial claims.
+
+## Architecture principle
+
+New modules must share core records rather than becoming disconnected mini-apps.
+
+Prefer reusable entities such as:
+
+- Business
+- Business Stage
+- Business DNA
+- Evidence Item
+- Opportunity
+- Value Leak
+- Risk
+- Decision
+- Experiment / Value Sprint
+- Result
+- Project / Initiative
+- Asset
+- Customer Insight
+- Financial Assumption
+- Forecast
+- Lesson / Business Memory event
+
+A project should trace back to a business outcome, opportunity, risk, decision, or Value Sprint.
+
+A recommendation should be able to explain **why the user is seeing it** and what evidence or assumptions produced it.
 
 ## Development rules
 
-- Read `README.md`, `AGENTS.md`, component READMEs, security notes, and relevant GitHub issues/workflows before major changes.
-- Inspect existing code before implementing anything; do not duplicate existing functionality.
-- Preserve backward compatibility unless a migration is explicitly justified.
-- Run relevant tests/CI after changes and never claim runtime success unless it actually ran.
-- Never commit credentials, `.env`, `wp-config.php`, Shopify client secrets, access tokens, passwords, private keys, or production customer data.
-- Use a branch + pull request for substantial or risky changes when practical; explain evidence and rollback impact.
-- Update documentation and release metadata when behavior changes.
-- Do not mark a production checkbox complete without evidence from the real runtime.
-- Do not silently delete or rewrite historical evidence or sales-pipeline history.
+- Read `PRODUCT-VISION.md`, `README.md`, `AGENTS.md`, component READMEs, security notes, and task-relevant source files before major changes.
+- Inspect existing code before implementing; do not duplicate working functionality.
+- Preserve backward compatibility unless a migration is justified.
+- Run relevant tests and never claim runtime success unless it actually ran.
+- Never commit credentials, `.env`, private keys, access tokens, passwords, or production customer secrets.
+- Update documentation when behavior or architecture changes.
+- Do not mark production work complete without evidence from the real runtime.
+- Do not silently rewrite historical evidence or sales-pipeline history.
+- Avoid building generic SaaS dashboard widgets with no clear connection to FDOS intelligence.
 
-## Commercial priorities
+## Product uniqueness test
 
-The first market objective is one complete, real evidence loop:
+Before adding a major feature ask:
 
-**verified prospect/visitor → specific offer → useful deliverable/Value Sprint → baseline → action → measured result → evidence classification → KEEP / REVISE / REVERT → next action**
+- Does this help FDOS understand the business better?
+- Does it connect evidence to a decision or action?
+- Does it work for more than one business type?
+- Does it work at the relevant business stage?
+- Does it preserve what happened and what was learned?
+- Does it create a capability beyond a generic CRM/task manager/dashboard?
+- Can a beginner understand it?
+- Can an advanced user inspect the underlying detail?
+- Does it contribute to long-term business value, not just short-term sales?
 
-Potential monetization ladders are hypotheses to test, not proven funnels. The Same-Day Customer Growth Pack currently uses a **$150 flat starter offer** in its canonical CRM/scripts; that is an offer configuration, not revenue evidence.
-
-Track qualified scans/prospects, actual contacts, replies, CTA progression, paid conversions, fulfillment, repeat use, retention, and referrals. Do not manufacture targets/results.
+If the answer is mostly no, reconsider the feature.
 
 ## Definition of truthful completion
 
-A component is deployable only when its real public runtime works and required data flows are verified. Product-market fit, profitability, recurring revenue, scalable acquisition, and durable retention can never be checked off merely because code, prospect research, or pipeline estimates exist.
+A component is complete only when its relevant behavior has been tested successfully. Product-market fit, profitability, recurring revenue, scalable acquisition, durable retention, and enterprise-value improvement can never be checked off because code or research exists.
 
-## When asked to “continue” or refresh status
+## When asked to “continue”
 
-Choose the **highest-value unfinished milestone**, execute as much as tools/access allow, preserve completed work, and clearly distinguish:
+Choose the **highest-value unfinished milestone**, execute as much as available tools allow, preserve completed work, and clearly distinguish:
 
 - what was actually changed,
 - what was actually tested,
-- what is current but unproven commercially,
-- what remains blocked by external access/infrastructure,
-- what evidence would close the blocker.
+- what remains incomplete,
+- what is current but commercially unproven,
+- what evidence would close the next gap.
 
-For Sales OS refreshes, compare the JSON feed and CRM before writing. If no new verified research exists, do not churn the files simply to change a date. If new research exists, merge it while preserving genuine pipeline/contact history.
+For Sales OS research refreshes, compare the JSON feed and CRM before writing. If no genuinely new verified research exists, do not churn files simply to change dates.
 
-Do not end with invented progress. Keep the receipts.
+Keep the receipts.
