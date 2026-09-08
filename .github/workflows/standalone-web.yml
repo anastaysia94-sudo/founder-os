@@ -1,0 +1,51 @@
+name: Founder OS Standalone Web
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - '.github/workflows/standalone-web.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Type check
+        run: npx tsc --noEmit
+      - name: Build standalone web product
+        env:
+          NEXT_PUBLIC_SITE_URL: https://example.invalid
+        run: npm run build
+      - name: Verify broad product and discovery contract
+        working-directory: .
+        run: |
+          grep -q 'Business Operating System' web/app/layout.tsx
+          grep -q 'WebApplication' web/app/layout.tsx
+          grep -q 'Idea' web/app/page.tsx
+          grep -q 'Strategy' web/app/page.tsx
+          grep -q 'Product' web/app/page.tsx
+          grep -q 'Operations' web/app/page.tsx
+          grep -q 'Sales' web/app/page.tsx
+          grep -q 'Finance' web/app/page.tsx
+          grep -q 'Team' web/app/page.tsx
+          grep -q 'Risk' web/app/page.tsx
+          test -f web/app/robots.ts
+          test -f web/app/sitemap.ts
+          test -f web/app/manifest.ts
+          test -f web/app/answers/page.tsx
+          echo 'Founder Dynasty OS standalone web contract verified.'
