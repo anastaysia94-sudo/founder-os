@@ -30,6 +30,11 @@ jobs:
       - name: Build standalone web product
         env:
           NEXT_PUBLIC_SITE_URL: https://example.invalid
+          # CI intentionally uses non-secret placeholders. Browser auth/network calls do
+          # not execute during prerender; production deployments must provide the real
+          # public Supabase URL and publishable key.
+          NEXT_PUBLIC_SUPABASE_URL: https://ci-placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-public-placeholder-key
         run: npm run build
       - name: Verify broad product and discovery contract
         working-directory: .
