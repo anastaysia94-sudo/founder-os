@@ -25,11 +25,9 @@ Current major areas:
 - plain-English explainable terms
 - Customers & Growth → Sales OS neighborhood
 
-## Authenticated shared Business Record — implemented 2026-09-08 PDT
+## Authenticated shared Business Record
 
-The broad web track now uses Supabase Auth plus a per-user, per-business data model.
-
-Production database tables:
+The broad web track uses Supabase Auth plus a per-user, per-business data model. Production tables now include:
 
 - `public.fdos_business_records`
 - `public.fdos_value_items`
@@ -38,102 +36,134 @@ Production database tables:
 - `public.fdos_opportunities`
 - `public.fdos_memory`
 - `public.fdos_evidence`
+- `public.fdos_evidence_proposals`
 
-All Founder OS tables have Row Level Security enabled. The application scopes reads and writes to the authenticated user and the selected Business Record.
+All FDOS tables have Row Level Security enabled with account-scoped policies. The shared record persists Business DNA and Business Stage, Value Map items, Decisions, Risks, Opportunities, Business Memory, captured evidence, and evidence-derived proposal review state.
 
-The shared record now persists:
+## Evidence-linked operating intelligence
 
-- Business DNA and Business Stage
+The website evidence connector at `POST /api/evidence/website` now does more than store a page. It separates source evidence from interpretation and creates reviewable proposed actions.
+
+When a signed-in founder captures a public webpage:
+
+1. the page itself is saved as **E2 — Current External Evidence**,
+2. the source URL stays attached to the evidence record,
+3. Founder Dynasty OS can propose a Value Map item,
+4. it can propose a Risk,
+5. it can propose a Decision,
+6. it can propose an Opportunity,
+7. where appropriate, it can propose a Business DNA change,
+8. none of those proposals are applied automatically,
+9. the founder must explicitly Approve and apply or Reject each proposal,
+10. approved changes retain their evidence/source link and write a Business Memory event.
+
+Direct observations from a captured page stay E2. Interpretive opportunities, risks, and strategic questions are labeled E5 hypotheses rather than being promoted into facts. This is a core integrity rule.
+
+Approval is handled by the `fdos_apply_evidence_proposal(uuid)` database function using `SECURITY INVOKER`, explicit `search_path`, account ownership checks, and one transaction so proposal status and the resulting business-record change cannot drift apart.
+
+## Plain-English record creation interfaces
+
+Primitive browser `prompt()` quick-add interactions have been replaced in the standalone web track by proper Founder Dynasty OS forms/cards for:
+
 - Value Map items
-- Decisions
-- Risks
 - Opportunities
-- Business Memory
-- captured evidence
+- Risks
+- Decisions
+- Founder/Business Memory notes
 
-This architecture allows the same signed-in user to load the same business state from another browser/device once that live workflow is exercised.
+Manual founder entries are stored as **E4 — Internal Observation**, which records that the founder/business entered the information without pretending it is external market proof.
 
-## First real evidence source
+The evidence inbox now includes proposal cards showing:
 
-The first evidence connector is now an authenticated server-side public website capture at:
+- the proposed target area,
+- why the proposal exists,
+- what data would change,
+- its supporting source link,
+- Approve and apply,
+- Reject.
 
-`POST /api/evidence/website`
+## Dependency security remediation — 2026-09-08 PDT
 
-Behavior:
+The previous production build used Next.js 15.5.25 and npm reported two dependency findings: one moderate and one high.
 
-1. requires a valid signed-in session,
-2. verifies the Business Record belongs to that user,
-3. accepts public HTTP/HTTPS pages only,
-4. rejects localhost/private-network destinations and re-checks redirects,
-5. fetches HTML with timeout and response-size limits,
-6. records the page title and description/text summary,
-7. stores the capture in `fdos_evidence` as **E2 — Current External Evidence**,
-8. adds a linked Business Memory event.
+Targeted dependency review identified the vulnerable direct framework dependency and the runtime dependency set was upgraded and pinned rather than running an indiscriminate breaking `npm audit fix --force`.
 
-The connector deliberately does not turn a website statement into customer evidence, revenue evidence, a result, or a proven recommendation.
+Current exact runtime versions:
 
-## Railway production verification — authenticated persistence release
+- `next` 16.3.4
+- `react` 19.2.8
+- `react-dom` 19.2.8
+- `@supabase/supabase-js` 2.116.0
 
-Production service:
+Current exact development versions:
 
-- service: `founder-dynasty-os-web`
-- service ID: `a975d751-c824-447a-9437-915ac7148531`
-- environment: production
-- source root: `/web`
-- public domain: `https://founder-dynasty-os-web-production.up.railway.app`
-- deployment: `2ecb02b9-e07a-4592-bfb9-e2b44a5a834a`
-- deployed commit: `29ccc4f2e0e4956048fb96534748d6f3fce9e966`
+- `@types/node` 22.18.6
+- `@types/react` 19.1.16
+- `@types/react-dom` 19.1.9
+- `typescript` 5.9.2
+
+Railway production build installation is hardened to:
+
+`npm install --ignore-scripts && npm run build`
+
+Latest correct-source production deployment:
+
+- deployment: `8ac92b65-717d-4dac-bd97-839781742219`
+- deployed Git commit: `6804c96f0efaf1d98b9184e7996da9f69b4a088e`
 - Railway status: `SUCCESS`
+- application version: `founder-os-web@0.3.0`
+- Next.js runtime: `16.3.4`
+- npm audit result during build: **0 vulnerabilities**
+- TypeScript: passed
+- production build: passed
+- `/api/evidence/website`: present as a dynamic route
+- `/` Railway health check: succeeded
+- container runtime: ready successfully
 
-Verified from build/deployment evidence:
+This supersedes the earlier dependency-audit finding. No moderate/high npm findings remain in the production dependency install at this checkpoint.
 
-- `founder-os-web` version 0.2.0 built successfully.
-- Next.js 15.5.25 compiled successfully.
-- Type validity checks completed.
-- 9 routes were generated.
-- `/api/evidence/website` is present as a dynamic server route.
-- Docker image export completed.
-- Railway marked the deployment `SUCCESS`.
-- Supabase environment configuration is attached to the production service.
+## Supabase security verification
 
-## Database verification
+A fresh Supabase security-advisor pass after the FDOS evidence-proposal migrations reports no FDOS-specific missing-RLS-policy finding, no FDOS mutable-search-path warning, and no FDOS `SECURITY DEFINER` exposure. Remaining advisor notices currently belong to other schemas/products in the shared project, plus the project-level leaked-password-protection setting; they are not generated by the new Founder Dynasty OS proposal tables/RPC.
 
-Supabase currently reports all seven `fdos_*` tables present with RLS enabled. At this checkpoint the tables contain zero broad-workspace rows because no authenticated production browser session has yet created the first Business Record after this release.
+## CI verification
 
-The FDOS updated-at trigger was also hardened with an explicit `search_path` after the Supabase security advisor flagged the initial function definition.
+The latest main commit aligns the standalone-web CI contract with the actual implemented surfaces: Business DNA, Value Map, Decisions, Business Memory, Opportunities, Risks, Evidence, and Sales. The corresponding `Founder OS Standalone Web` GitHub Actions run completed successfully.
 
 ## Verification boundary
 
 ### Production/source verified
 
-- database schema exists
-- RLS enabled on all new Founder OS tables
-- authenticated client integration compiled
-- shared Business Record storage layer compiled
-- Business DNA + Stage save path compiled
-- Value Map / Decision / Risk / Opportunity / Memory save paths compiled
-- website E2 evidence capture route compiled
-- production deployment succeeded
+- dependency audit now reports zero vulnerabilities in production build
+- Next.js 16.3.4 production build and TypeScript pass
+- hardened `--ignore-scripts` install works in production
+- new evidence proposal schema exists with RLS
+- atomic approval RPC exists with `SECURITY INVOKER`
+- evidence/source links can persist on Value Map / Decision / Risk / Opportunity / Memory rows
+- browser quick-add prompts are removed from the standalone web source
+- plain-English record composer forms compile
+- evidence approval/rejection UI compiles
+- website E2 capture route compiles
+- latest GitHub standalone web workflow passes
+- latest correct-source Railway deployment succeeds and health check passes
 
-### Still requires real user-flow proof
+### Still requires real signed-in user-flow proof
 
-- first production sign-in to the broad web workspace
-- first Business Record creation through the live UI
+- first production Business Record creation through the current live UI
 - edit/save/reload Business DNA through production
-- create and restore a Value item, Decision, Risk, Opportunity, and Memory item
+- create and restore each manual record type through the new forms
+- first successful production website capture through the current UI
+- approve and reject live evidence proposals and verify resulting rows
 - sign out/sign back in restoration
 - cross-browser or cross-device restoration
 - second-user isolation validation through the live app
-- first successful production website evidence capture and resulting `fdos_evidence` + `fdos_memory` rows
 - real Android/mobile visual and interaction pass
 
-Do not describe these live user-flow items as verified until they are actually exercised.
+Do not describe those live user-flow items as verified until they are actually exercised.
 
-## Known engineering follow-up
+## Dependency hardening follow-up
 
-The production npm install currently reports two dependency audit findings (one moderate and one high). They require investigation before applying any breaking `npm audit fix --force` change.
-
-The current quick-add UI for Value Map, Decisions, Risks, Opportunities, and Memory uses browser prompts. Persistence is functional at source level, but these should be replaced by proper plain-English forms/cards for the intended premium Founder Dynasty OS experience.
+The direct dependencies are now exact-pinned and production audit is clean. A repository `package-lock.json` is still desirable for fully reproducible transitive dependency resolution. Automated lockfile generation from the working container timed out, so no lockfile was fabricated or falsely claimed. Exact pins plus the hardened production install substantially reduce drift until the lockfile is generated successfully.
 
 ## Existing major module
 
@@ -141,7 +171,9 @@ The Same-Day Customer Growth Pack / Sales OS remains under `sales-engine-app/` a
 
 ## Next highest-value milestone
 
-Exercise the new persistent architecture in production and replace primitive quick-add prompts with first-class Founder Dynasty OS interfaces. Then allow captured evidence to inform Business DNA, Value Map, Risks, Decisions, and Opportunities through explicit evidence-linked actions rather than silent automatic claims.
+Exercise the evidence intelligence loop end-to-end in a real authenticated production session: capture a real E2 source, inspect the generated proposals, approve one, reject one, confirm linked changes in the shared Business Record and Business Memory, then verify the same state restores in a second browser/device.
+
+After that, deepen the proposal engine from basic source-to-action mappings into evidence-aware comparison: show conflicts between new evidence and existing Business DNA, identify corroborating or contradictory sources, and make the Command Center rank changes by evidence strength, business stage, reversibility, likely value, and risk.
 
 ## Product guardrail
 
