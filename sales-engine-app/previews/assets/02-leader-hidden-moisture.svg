@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<rect width="1200" height="675" fill="#FFFFFF"/><rect x="0" width="470" height="675" fill="#174EA6"/><g fill="#72A7FF" opacity=".48"><circle cx="120" cy="150" r="18"/><circle cx="260" cy="250" r="32"/><circle cx="360" cy="120" r="24"/><circle cx="185" cy="370" r="42"/></g>
+<path d="M430 0 C560 140 510 260 650 335 S790 510 720 675" fill="none" stroke="#4AAE5B" stroke-width="40" opacity=".85"/>
+<path d="M810 175 l90 -45 90 45 v110c0 90-60 145-90 160-30-15-90-70-90-160Z" fill="#E9F6EC" stroke="#4AAE5B" stroke-width="12"/>
+<path d="M855 278l30 30 65-75" fill="none" stroke="#4AAE5B" stroke-width="18" stroke-linecap="round"/>
+<text x="540" y="100" font-size="46" font-weight="900" font-family="Arial" fill="#174EA6">NO VISIBLE MOLD?</text><text x="540" y="155" font-size="46" font-weight="900" font-family="Arial" fill="#4AAE5B">CHECK THE MOISTURE.</text>
+<rect x="540" y="485" width="510" height="82" rx="40" fill="#174EA6"/><text x="592" y="538" font-size="29" font-weight="700" font-family="Arial" fill="#fff">FREE inspection • through Sep 30</text></svg>
