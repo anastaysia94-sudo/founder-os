@@ -1,4 +1,5 @@
 import './globals.css';
+import './review.css';
 import type {Metadata} from 'next';
 
 const siteUrl=process.env.NEXT_PUBLIC_SITE_URL?.trim();
@@ -15,18 +16,6 @@ export const metadata:Metadata={
 };
 
 const structuredData={
-  '@context':'https://schema.org',
-  '@type':'WebApplication',
-  name:'Founder Dynasty OS',
-  applicationCategory:'BusinessApplication',
-  applicationSubCategory:'Business operating system and decision support',
-  operatingSystem:'Web',
-  description:'An evidence-first business operating system that helps people turn an idea, problem, or operating business into prioritized actions, measured experiments, and explicit KEEP / REVISE / REVERT decisions.',
-  featureList:['idea validation','evidence classification','opportunity ranking','measured business experiments','operations planning','product decisions','sales execution','financial assumptions','team and hiring decisions','risk tracking','plain-English glossary'],
-  publisher:{'@type':'Organization',name:'SmartPickShop Holdings'},
-  ...(siteUrl?{url:siteUrl}:{}),
-};
+  '@context':'https://schema.org','@type':'WebApplication',name:'Founder Dynasty OS',applicationCategory:'BusinessApplication',applicationSubCategory:'Business operating system and decision support',operatingSystem:'Web',description:'An evidence-first business operating system that helps people turn an idea, problem, or operating business into prioritized actions, measured experiments, and explicit KEEP / REVISE / REVERT decisions.',featureList:['idea validation','evidence classification','opportunity ranking','measured business experiments','operations planning','product decisions','sales execution','financial assumptions','team and hiring decisions','risk tracking','plain-English glossary'],publisher:{'@type':'Organization',name:'SmartPickShop Holdings'},...(siteUrl?{url:siteUrl}:{})};
 
-export default function RootLayout({children}:Readonly<{children:React.ReactNode}>){
-  return <html lang="en"><body><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData)}}/>{children}</body></html>
-}
+export default function RootLayout({children}:Readonly<{children:React.ReactNode}>){return <html lang="en"><body><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData)}}/>{children}</body></html>}
