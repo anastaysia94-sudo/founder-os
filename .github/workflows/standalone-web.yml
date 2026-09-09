@@ -36,21 +36,22 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: https://ci-placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-public-placeholder-key
         run: npm run build
-      - name: Verify broad product and discovery contract
+      - name: Verify implemented standalone and discovery contract
         working-directory: .
         run: |
           grep -q 'Business Operating System' web/app/layout.tsx
           grep -q 'WebApplication' web/app/layout.tsx
           grep -q 'Idea' web/app/page.tsx
-          grep -q 'Strategy' web/app/page.tsx
-          grep -q 'Product' web/app/page.tsx
-          grep -q 'Operations' web/app/page.tsx
-          grep -q 'Sales' web/app/page.tsx
-          grep -q 'Finance' web/app/page.tsx
-          grep -q 'Team' web/app/page.tsx
+          grep -q 'Business DNA' web/app/page.tsx
+          grep -q 'Value Map' web/app/page.tsx
+          grep -q 'Decision' web/app/page.tsx
+          grep -q 'Business Memory' web/app/page.tsx
+          grep -q 'Opportunity' web/app/page.tsx
           grep -q 'Risk' web/app/page.tsx
+          grep -q 'Evidence' web/app/page.tsx
+          grep -q 'Sales' web/app/page.tsx
           test -f web/app/robots.ts
           test -f web/app/sitemap.ts
           test -f web/app/manifest.ts
           test -f web/app/answers/page.tsx
-          echo 'Founder Dynasty OS standalone web contract verified.'
+          echo 'Founder Dynasty OS implemented standalone web contract verified.'
