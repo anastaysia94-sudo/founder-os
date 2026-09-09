@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<rect width="1200" height="675" fill="#F4F6F8"/><path d="M600 520 A240 240 0 0 1 360 280" fill="none" stroke="#C8292C" stroke-width="60"/><path d="M600 520 A240 240 0 0 0 840 280" fill="none" stroke="#1F6FA8" stroke-width="60"/>
+<circle cx="600" cy="520" r="44" fill="#333"/><line x1="600" y1="520" x2="720" y2="370" stroke="#333" stroke-width="18" stroke-linecap="round"/>
+<text x="170" y="330" font-size="34" font-weight="900" font-family="Arial" fill="#C8292C">COMFORT</text><text x="875" y="330" font-size="34" font-weight="900" font-family="Arial" fill="#1F6FA8">COST</text>
+<text x="90" y="90" font-size="45" font-weight="900" font-family="Arial" fill="#333">FIX THE COMFORT PROBLEM NOW.</text><text x="90" y="145" font-size="45" font-weight="900" font-family="Arial" fill="#1F6FA8">CHOOSE HOW TO HANDLE THE COST.</text>
+<rect x="350" y="595" width="500" height="56" rx="28" fill="#D9DEE3"/><text x="430" y="632" font-size="23" font-family="Arial" font-weight="700" fill="#333">Financing subject to approval</text></svg>
