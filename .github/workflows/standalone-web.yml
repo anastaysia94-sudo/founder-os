@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'web/**'
+      - 'db/migrations/**'
       - '.github/workflows/standalone-web.yml'
 
 permissions:
@@ -50,6 +51,9 @@ jobs:
           grep -q 'Risk' web/app/page.tsx
           grep -q 'Evidence' web/app/page.tsx
           grep -q 'Sales' web/app/page.tsx
+          grep -q 'fdos_store_website_evidence' web/app/api/evidence/website/route.ts
+          grep -q 'security invoker' db/migrations/20260913_add_atomic_fdos_website_evidence_capture.sql
+          grep -q 'fdos_store_website_evidence' db/migrations/20260913_restrict_fdos_rpc_execute_to_authenticated.sql
           grep -q 'sourceRevision' web/app/api/health/route.ts
           grep -q 'cache-control' web/app/api/health/route.ts
           test -f web/app/robots.ts
@@ -57,4 +61,4 @@ jobs:
           test -f web/app/manifest.ts
           test -f web/app/answers/page.tsx
           test -f web/app/api/health/route.ts
-          echo 'Founder Dynasty OS standalone source and production-testability contract verified.'
+          echo 'Founder Dynasty OS standalone source, evidence persistence, and production-testability contract verified.'
