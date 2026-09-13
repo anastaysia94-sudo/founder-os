@@ -51,6 +51,15 @@ jobs:
           grep -q 'Risk' web/app/page.tsx
           grep -q 'Evidence' web/app/page.tsx
           grep -q 'Sales' web/app/page.tsx
+          grep -q 'BUSINESS X-RAY' web/app/intelligence/page.tsx
+          grep -q 'IDEA LAB' web/app/intelligence/page.tsx
+          grep -q 'WHAT AM I MISSING' web/app/intelligence/page.tsx
+          grep -q 'VALUE SPRINTS' web/app/intelligence/page.tsx
+          grep -q 'getBusinessXRay' web/lib/fdos.ts
+          grep -q 'getMissingIntelligence' web/lib/fdos.ts
+          grep -q 'addValueSprint' web/lib/business-store.ts
+          grep -q 'fdos_value_sprints' db/migrations/20260913_add_fdos_value_sprints.sql
+          grep -q 'fdos value sprints own rows' db/migrations/20260913_add_fdos_value_sprints.sql
           grep -q 'fdos_store_website_evidence' web/app/api/evidence/website/route.ts
           grep -q 'Production acceptance diagnostics' web/app/acceptance/page.tsx
           grep -q 'Copy diagnostic snapshot' web/app/acceptance/page.tsx
@@ -66,7 +75,9 @@ jobs:
           test -f web/app/sitemap.ts
           test -f web/app/manifest.ts
           test -f web/app/answers/page.tsx
+          test -f web/app/intelligence/page.tsx
+          test -f web/app/intelligence/intelligence.module.css
           test -f web/app/acceptance/page.tsx
           test -f web/app/acceptance/layout.tsx
           test -f web/app/api/health/route.ts
-          echo 'Founder Dynasty OS standalone source, relational RLS, noindex acceptance diagnostics, evidence persistence, and production-testability contract verified.'
+          echo 'Founder Dynasty OS standalone shell, intelligence layer, value sprint persistence, relational RLS, evidence integrity, and production-testability contract verified.'
