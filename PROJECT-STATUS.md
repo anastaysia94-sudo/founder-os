@@ -15,11 +15,11 @@ Canonical product statement: **Founder Dynasty OS is the operating intelligence 
 
 The primary web application is the standalone `web/` track, organized around one authenticated, account-owned Business Record rather than separate feature silos.
 
-Current major areas include Business Stage, editable Business DNA, Founder Command Center, Value Map, Opportunities, Risks, Decisions, Business Memory, E1–E8 evidence labels, website evidence capture/review, plain-English explainable terms, and Customers & Growth → Sales OS.
+Current major areas include Business Stage, editable Business DNA, Founder Command Center, Value Map, Opportunities, Risks, Decisions, Business Memory, E1–E8 evidence labels, website evidence capture/review, production acceptance diagnostics, plain-English explainable terms, and Customers & Growth → Sales OS.
 
 ## Authenticated shared Business Record
 
-Production persistence uses Supabase Auth, Postgres, and Row Level Security across:
+Production persistence uses Supabase Auth, Postgres, and Row Level Security across eight FDOS tables:
 
 - `public.fdos_business_records`
 - `public.fdos_value_items`
@@ -30,7 +30,7 @@ Production persistence uses Supabase Auth, Postgres, and Row Level Security acro
 - `public.fdos_evidence`
 - `public.fdos_evidence_proposals`
 
-All eight tables have RLS enabled.
+All eight have RLS enabled.
 
 ### Atomic first-business bootstrap
 
@@ -40,42 +40,19 @@ Migration mirror:
 
 `db/migrations/20260913_add_atomic_fdos_business_bootstrap.sql`
 
-### Relationship-aware tenant isolation
-
-FDOS child-row RLS now validates both the row owner and the ownership of the referenced Business Record. Evidence Proposal policies additionally validate that the linked Evidence belongs to the same authenticated user and the same Business Record.
-
-This closes a referential-isolation gap where matching `user_id` alone was insufficient to prove that a supplied `business_id` belonged to the caller.
-
-Migration mirror:
-
-`db/migrations/20260913_enforce_fdos_business_relationships_in_rls.sql`
-
 ## Auth/session privacy hardening
 
-The current web source:
-
-- version-tags hydration requests and ignores superseded results;
-- rejects hydration for users who are no longer active;
-- clears private Business Record state on sign-out;
-- clears the previous account's private state before hydrating a newly active account;
-- clears proposals, evidence receipt, composer/edit state, and website input with the private workspace;
-- clears password state after successful authentication/sign-out;
-- verifies that evidence capture still belongs to the initiating authenticated session;
-- prevents overlapping Business Stage writes while a save is busy.
+The current web source version-tags hydration requests, rejects stale-user hydration, clears private state on sign-out and direct account switch, clears sensitive temporary UI state, verifies the Evidence-capture session still belongs to the initiating user, and prevents overlapping Business Stage writes.
 
 These protections are source-complete and deployed, but genuine two-account browser verification remains a separate gate.
 
 ## Evidence-linked operating intelligence
 
-`POST /api/evidence/website` captures a public webpage as E2 Current External Evidence and produces reviewable proposals rather than silently changing the business.
+`POST /api/evidence/website` captures a public webpage as E2 Current External Evidence and produces reviewable Proposals rather than silently changing the business. Direct source observations remain E2; interpretations remain E5 hypotheses; founder approval is required before canonical change.
 
-Direct source observations remain E2. Interpretations remain E5 hypotheses. Founder approval is required before a proposal becomes canonical.
+### Atomic Evidence persistence
 
-### Atomic evidence persistence
-
-Evidence capture now persists its Evidence row, all generated Proposals, and its Business Memory event through `fdos_store_website_evidence(...)` in one database transaction. A persistence failure no longer leaves a half-written evidence loop.
-
-The route also rejects an HTML body larger than its capture limit rather than silently recording a truncated document as complete evidence.
+`fdos_store_website_evidence(...)` stores the Evidence row, generated Proposals, and capture Business Memory event in one database transaction. The route rejects over-limit HTML rather than silently treating truncated source material as complete evidence.
 
 Migration mirror:
 
@@ -83,43 +60,70 @@ Migration mirror:
 
 ## Protected mutation verification
 
-The client now requires a positive returned row/result for Business DNA saves and Evidence Proposal review mutations. A zero-row RLS-filtered mutation is therefore treated as failure instead of being presented as a successful save simply because the request itself did not throw.
+Business DNA saves and Evidence Proposal review mutations now require a positive returned row/result. A zero-row RLS-filtered mutation is treated as failure instead of being reported as success.
 
 ## RPC exposure hardening
 
-Production ACL inspection found explicit `anon` EXECUTE grants on FDOS RPCs even after execution had been revoked from `PUBLIC`.
-
-Those explicit anonymous grants were removed from:
+Production ACL inspection found explicit `anon` EXECUTE grants that survived a revoke from `PUBLIC`. Anonymous execution was explicitly removed from:
 
 - `fdos_ensure_business()`
 - `fdos_apply_evidence_proposal(uuid)`
 - `fdos_store_website_evidence(...)`
 
-All three application RPCs were verified as `SECURITY INVOKER`. Authenticated execution remains available; anonymous execution does not.
+All three application RPCs are `SECURITY INVOKER`; authenticated execution remains available.
 
 Migration mirror:
 
 `db/migrations/20260913_restrict_fdos_rpc_execute_to_authenticated.sql`
 
-## Sales OS integration
+## Relationship-aware tenant isolation
 
-Sales OS remains in Customers & Growth. `/sales-engine-app` bridges to the separate production Sales OS service rather than redefining Founder Dynasty OS around sales.
-
-Bridge source commit: `adccb5a148da64bafb081303352dd582f854062d`.
-
-## Dependency and database hardening
-
-The accepted runtime uses Next.js 16.3.4. The CI high/critical dependency vulnerability gate passes.
-
-Earlier FDOS hardening added covering foreign-key indexes and optimized owner RLS expressions using `(select auth.uid())`.
+Business relationship hardening now requires FDOS child rows to belong to the current user and reference a Business Record owned by that same user. Evidence Proposal policies also validate the linked Evidence belongs to the same user and Business.
 
 Migration mirror:
 
-`db/migrations/20260913_optimize_fdos_rls_and_foreign_key_indexes.sql`
+`db/migrations/20260913_enforce_fdos_business_relationships_in_rls.sql`
 
-Fresh post-hardening Supabase advisor scans report no FDOS missing-RLS-policy warning, no FDOS authenticated `SECURITY DEFINER` warning, no FDOS unindexed-FK finding, and no FDOS `auth_rls_initplan` warning. Remaining FDOS performance notices are unused-index INFO findings while the production tables still have no real workload data.
+A second hardening pass covers optional Evidence links. Every non-null `evidence_id` on Value, Decision, Risk, Opportunity, and Memory rows must reference Evidence owned by the same authenticated user and attached to the same Business Record.
 
-Shared-project warnings belonging to FSA, EGM, Instant Decision, or other products are not silently modified as part of FDOS work.
+Migration mirror:
+
+`db/migrations/20260913_enforce_fdos_evidence_relationships_in_rls.sql`
+
+Direct policy inspection confirmed the Business and Evidence relationship checks are present after migration.
+
+## Production acceptance diagnostics
+
+The standalone product now includes `/acceptance`, a read-only browser proof helper.
+
+It reports:
+
+- `/api/health` runtime health and deployed revision;
+- whether a genuine Supabase browser session is active;
+- the authenticated user's first persistent Business Record, if one exists;
+- RLS-scoped counts for Value, Decision, Risk, Opportunity, Memory, Evidence, and Evidence Proposal rows;
+- actual browser viewport and user agent;
+- explicit PASS / FAIL / WAITING checks;
+- a copyable JSON diagnostic snapshot.
+
+It intentionally performs no acceptance-test writes and refuses to auto-pass sign-out/restore, second-user isolation, or visual acceptance. Those still require actual browser behavior, because apparently software is most creative precisely when a human finally clicks it.
+
+## Sales OS integration
+
+Sales OS remains inside Customers & Growth. `/sales-engine-app` bridges to the separate production Sales OS service rather than redefining Founder Dynasty OS around sales.
+
+## Dependency and database hardening
+
+The accepted runtime uses Next.js 16.3.4. CI's high/critical dependency vulnerability gate passes, and the Railway production install for the accepted revision reported zero vulnerabilities.
+
+Fresh Supabase advisor scans after the current FDOS relationship migrations report:
+
+- no FDOS missing-RLS-policy warning;
+- no FDOS authenticated `SECURITY DEFINER` warning;
+- no FDOS unindexed-FK finding;
+- no FDOS `auth_rls_initplan` warning.
+
+FDOS still has unused-index INFO notices while its production tables have no persistent workload. Shared-project warnings belonging to FSA, EGM, Instant Decision, or other products are not silently modified as part of FDOS work.
 
 ## Current accepted production runtime
 
@@ -128,43 +132,35 @@ Public domain: `https://founder-dynasty-os-web-production.up.railway.app`
 
 Accepted web/runtime revision:
 
-`77e14bd8ca8b04f42f50b7c19ef7673f7fec3f62`
+`7b0cc70772e3fa71d6bee87b3e0e4127584d339c`
 
 Railway deployment:
 
-`ed02e62d-de35-4fe4-b537-54e825cc1459`
+`f4b7ec54-ea2a-4e3c-8c9b-bf92f77327b7`
 
 Verified:
 
 - deployment status: `SUCCESS`;
-- Railway identifies the accepted web commit;
+- Railway identifies the exact accepted web commit;
 - Next.js 16.3.4 production compilation passed;
 - TypeScript passed;
 - static generation passed;
 - production container started successfully;
 - Railway `/api/health` succeeded on the first observed attempt;
-- production routes include `/`, `/answers`, `/api/evidence/website`, `/api/health`, `/sales-engine-app`, manifest, robots, and sitemap;
+- production build emits `/acceptance` in addition to the existing main, answers, Evidence, health, Sales bridge, manifest, robots, and sitemap routes;
 - `FDOS_DEPLOY_REV` was aligned to the accepted web revision before deployment.
 
-CI for accepted web revision:
+CI for accepted revision:
 
-- Founder OS Standalone Web run `34762781642`: **SUCCESS**;
-- PHP Lint run `34762781636`: **SUCCESS**.
+- Founder OS Standalone Web run `34763277139`: **SUCCESS**;
+- PHP Lint run `34763277146`: **SUCCESS**;
+- high/critical dependency gate, TypeScript, production build, and relational-RLS / acceptance-diagnostics production-testability contract all passed.
 
-Latest database-policy source mirror revision:
-
-`fd7d30061ed0c9605f519bf46681c3d7e5a382d5`
-
-Because the standalone workflow now watches `db/migrations/**`, that database-only commit also completed the full web/contract CI gate successfully:
-
-- Founder OS Standalone Web run `34762915913`: **SUCCESS**;
-- PHP Lint run `34762915861`: **SUCCESS**.
-
-The web runtime revision and database migration revision are tracked separately when a database-only commit does not change the deployed web bundle. This avoids ceremonial redeployments whose only achievement would be changing a SHA for the sake of changing a SHA.
+Database-only hardening revisions are separately source-controlled and CI-verified, including `fd7d30061ed0c9605f519bf46681c3d7e5a382d5` and `8ba2072e0f7aee73cc8d6d4a9f067007e30691ea`.
 
 ## Production data state
 
-The latest production count remains zero persistent rows across all eight FDOS tables. No hardening migration or validation step seeded fake users, businesses, evidence, opportunities, or successful outcomes.
+The latest production count remains zero persistent rows across all eight FDOS tables. No hardening migration or validation step seeded fake users, businesses, Evidence, opportunities, or successful outcomes.
 
 ## Verification boundary
 
@@ -173,17 +169,19 @@ The latest production count remains zero persistent rows across all eight FDOS t
 Verified at the current checkpoint:
 
 - broad standalone shell builds and type-checks;
-- accepted web revision is deployed and healthy;
+- exact accepted web revision is deployed and healthy;
+- `/acceptance` is built and deployed;
 - shared FDOS persistence tables exist with RLS;
 - atomic first-Business bootstrap is in production;
 - atomic Evidence + Proposals + Memory persistence is in production;
-- protected write/review helpers confirm an actual returned mutation;
-- FDOS application RPCs are no longer executable by `anon`;
+- protected write/review helpers confirm actual returned mutations;
+- FDOS application RPCs are not executable by `anon`;
 - child-row RLS validates referenced Business ownership;
+- non-null Evidence links validate same-user/same-Business ownership;
 - Evidence Proposal RLS validates Business + Evidence relationships;
 - stale-session/account-switch privacy protections are deployed;
-- FDOS-specific security/performance advisor checks remain clear of the previously remediated classes;
-- website E2 capture route and Sales OS bridge route are present in production.
+- FDOS-specific security/performance advisor checks remain clear of the remediated classes;
+- website E2 capture and Sales OS bridge routes are present in production.
 
 ### NOT YET PROVEN THROUGH A GENUINE PRODUCTION USER SESSION
 
@@ -191,22 +189,21 @@ Verified at the current checkpoint:
 - Business DNA save → sign out → fresh sign in → restore;
 - confirmation that private record content disappears after sign-out in a real browser;
 - production UI create/read for Value, Decision, Risk, Opportunity, and Memory;
-- real authenticated website evidence capture through the deployed UI;
+- real authenticated website Evidence capture through the deployed UI;
 - approve/reject Evidence Proposals through the deployed UI and verify linked records;
 - two genuine-user read/write isolation test;
 - direct account switch showing immediate old-state clearing in a real browser;
+- actual `/acceptance` diagnostic snapshots from those genuine sessions;
 - Android/mobile and desktop visual/interaction acceptance.
-
-Do not describe those user-flow items as complete until they are actually exercised. A database can be exceptionally well-behaved while a browser invents some new nonsense at the finish line.
 
 ## Next highest-value milestone
 
-Run the genuine authenticated production acceptance loop:
+Run the genuine authenticated production acceptance loop using the deployed `/acceptance` helper as the read-only witness:
 
-`sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → sign out → confirm private state clears → sign back in → verify restore → capture website evidence → approve/reject proposals → verify evidence links + memory → switch to second user → verify immediate old-state clearing + read/write isolation → mobile/desktop visual pass → KEEP / REVISE / REVERT`
+`sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → /acceptance snapshot → sign out → confirm private state clears → sign back in → verify restore → /acceptance snapshot → capture website Evidence → approve/reject Proposals → verify Evidence links + Memory → switch to second user → verify immediate old-state clearing + read/write isolation → /acceptance snapshot → mobile/desktop visual pass → KEEP / REVISE / REVERT`
 
 Until that is complete, do not bury the project under another avalanche of modules. The core operating record must prove it survives actual human use first.
 
 ## Product guardrail
 
-Every major new module should connect back to the shared Business Record, measurable business outcomes, evidence, a decision, a risk, or a learning loop. If it cannot, reconsider whether it belongs in Founder Dynasty OS.
+Every major new module should connect back to the shared Business Record, measurable business outcomes, Evidence, a decision, a risk, or a learning loop. If it cannot, reconsider whether it belongs in Founder Dynasty OS.
