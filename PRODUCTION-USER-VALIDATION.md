@@ -66,7 +66,10 @@ For accepted web revision `77e14bd8ca8b04f42f50b7c19ef7673f7fec3f62`:
 - production build: success;
 - standalone/evidence-persistence production-testability contract: success.
 
-The later database-only RLS source mirror revision `fd7d30061ed0c9605f519bf46681c3d7e5a382d5` also triggered the standalone workflow because `db/migrations/**` is now part of that CI contract. `Founder OS Standalone Web` run `34762915913` completed **SUCCESS**, including dependency audit, TypeScript, production build, and contract verification. `PHP Lint` run `34762915861` also completed **SUCCESS**.
+Database-only hardening commits now trigger the same standalone workflow because `db/migrations/**` is part of the CI contract. Confirmed successful database-source validation includes:
+
+- `fd7d30061ed0c9605f519bf46681c3d7e5a382d5` — business relationship-aware RLS; standalone run `34762915913`: **SUCCESS**; PHP Lint run `34762915861`: **SUCCESS**;
+- `8ba2072e0f7aee73cc8d6d4a9f067007e30691ea` — evidence relationship-aware RLS; standalone run `34763093654`: **SUCCESS**; PHP Lint run `34763093699`: **SUCCESS**.
 
 A database-only source mirror does not require pretending the unchanged web bundle has a different runtime revision. Web runtime provenance and database migration provenance are tracked separately.
 
@@ -111,9 +114,7 @@ Migration mirror:
 
 Source review found that website capture previously performed three independent persistence steps: Evidence, Proposals, then Business Memory. A later failure could therefore leave a partially persisted capture.
 
-Production migration `add_atomic_fdos_website_evidence_capture` added:
-
-`public.fdos_store_website_evidence(...)`
+Production migration `add_atomic_fdos_website_evidence_capture` added `public.fdos_store_website_evidence(...)`.
 
 Verified properties:
 
@@ -164,20 +165,23 @@ Owner-column RLS alone is not enough for a relational multi-tenant model. A user
 
 Production migration `enforce_fdos_business_relationships_in_rls` hardened the child-table policies.
 
-For Value, Decision, Risk, Opportunity, Memory, and Evidence rows, policies now require both:
-
-1. row `user_id = auth.uid()`; and
-2. the referenced Business Record is owned by that same authenticated user.
-
-Evidence Proposal SELECT/INSERT/UPDATE/DELETE policies additionally require the linked evidence to belong to the same authenticated user and the same Business Record. These proposal policies are now scoped to `authenticated` rather than `public`.
+For Value, Decision, Risk, Opportunity, Memory, and Evidence rows, policies require both the current row owner and ownership of the referenced Business Record. Evidence Proposal SELECT/INSERT/UPDATE/DELETE policies additionally require the linked Evidence to belong to the same authenticated user and the same Business Record. Proposal policies are scoped to `authenticated` rather than `public`.
 
 Source mirror:
 
 `db/migrations/20260913_enforce_fdos_business_relationships_in_rls.sql`
 
+A second relationship audit found that Value, Decision, Risk, Opportunity, and Memory rows can optionally carry `evidence_id`. Correct Business ownership alone therefore was still insufficient if a malicious caller supplied another tenant's known Evidence UUID.
+
+Production migration `enforce_fdos_evidence_relationships_in_rls` now requires every non-null `evidence_id` on those child records to reference Evidence owned by the same authenticated user and attached to the same Business Record. Direct post-migration policy inspection confirmed Business relationship checks on the child tables and Business + Evidence relationship checks on all evidence-linked child policies and Evidence Proposal policies.
+
+Source mirror:
+
+`db/migrations/20260913_enforce_fdos_evidence_relationships_in_rls.sql`
+
 ### Database advisor verification
 
-Fresh Supabase security and performance advisor scans were run after the latest FDOS migrations.
+Fresh Supabase security and performance advisor scans were rerun after the evidence-relationship migration.
 
 FDOS-specific results:
 
@@ -234,6 +238,7 @@ At this checkpoint:
 - protected mutations verify that a row/result was actually changed;
 - FDOS application RPCs no longer grant execution to `anon`;
 - child-table RLS validates ownership of the referenced Business Record;
+- every non-null child `evidence_id` validates ownership and same-Business attachment;
 - proposal RLS validates owner, Business Record, and linked Evidence relationships;
 - stale-session/account-switch privacy protections are deployed;
 - FDOS-specific index/RLS advisor findings remain clear after the latest migrations;
@@ -257,11 +262,11 @@ Still requires genuine deployed-browser evidence that:
 - direct account switching clears the first user's UI state before the second user's record appears;
 - Android/mobile and desktop visual/interaction acceptance passes.
 
-Database policy can now be considerably less gullible than before, but a browser still gets its own acceptance exam. Humans invented browsers, so naturally this remains necessary.
+The database is now rather less willing to accept creative cross-tenant UUID arrangements, which is preferable to discovering them after people have data worth stealing. The browser still gets its own acceptance exam.
 
 ## Current decision
 
-**KEEP** the broad shared-Business-Record architecture, account-owned Supabase persistence, E1–E8 evidence discipline, founder approval before evidence-derived canonical changes, exact-web-source provenance gate, `/api/health`, atomic Business bootstrap, atomic Evidence persistence, verified mutation responses, authenticated-only RPC grants, relationship-aware RLS, account-switch privacy guards, and Sales OS nested under Customers & Growth.
+**KEEP** the broad shared-Business-Record architecture, account-owned Supabase persistence, E1–E8 evidence discipline, founder approval before evidence-derived canonical changes, exact-web-source provenance gate, `/api/health`, atomic Business bootstrap, atomic Evidence persistence, verified mutation responses, authenticated-only RPC grants, Business/Evidence relationship-aware RLS, account-switch privacy guards, and Sales OS nested under Customers & Growth.
 
 **REVISE** the meaning of “done” only by making it stricter: user-facing features must clear source/build checks, exact-source production runtime checks, and a genuine authenticated production workflow before they are called 100% production-tested.
 
