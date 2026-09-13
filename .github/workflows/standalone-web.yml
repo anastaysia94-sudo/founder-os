@@ -65,6 +65,11 @@ jobs:
           grep -q 'FOUNDER ATTENTION' web/app/strategy/page.tsx
           grep -q 'SCENARIO LAB' web/app/strategy/page.tsx
           grep -q 'PORTFOLIO / DYNASTY MODE' web/app/strategy/page.tsx
+          grep -q 'Business language without the' web/app/glossary/page.tsx
+          grep -q 'E3 · Customer-Derived Evidence' web/lib/glossary.ts
+          grep -q 'RLS · Row Level Security' web/lib/glossary.ts
+          grep -q '/glossary' web/app/layout.tsx
+          grep -q '/glossary' web/app/sitemap.ts
           grep -q 'getBusinessXRay' web/lib/fdos.ts
           grep -q 'getMissingIntelligence' web/lib/fdos.ts
           grep -q 'addValueSprint' web/lib/business-store.ts
@@ -104,7 +109,10 @@ jobs:
           test -f web/app/workbench/workbench.module.css
           test -f web/app/strategy/page.tsx
           test -f web/app/strategy/strategy.module.css
+          test -f web/app/glossary/page.tsx
+          test -f web/app/glossary/glossary.module.css
+          test -f PLAIN-ENGLISH-GLOSSARY.md
           test -f web/app/acceptance/page.tsx
           test -f web/app/acceptance/layout.tsx
           test -f web/app/api/health/route.ts
-          echo 'Founder Dynasty OS broad shell, intelligence, build/run workbench, strategy/dynasty layer, evidence integrity, relationship-aware RLS, FK coverage, evidence-class constraints, and production-testability contract verified.'
+          echo 'Founder Dynasty OS broad shell, intelligence, build/run workbench, strategy/dynasty layer, plain-English glossary, evidence integrity, relationship-aware RLS, FK coverage, evidence-class constraints, and production-testability contract verified.'
