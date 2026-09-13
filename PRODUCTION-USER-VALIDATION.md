@@ -115,7 +115,7 @@ Verified tables:
 - `fdos_evidence`
 - `fdos_evidence_proposals`
 
-RLS is enabled on every listed FDOS table. Owner-scoped policies use `auth.uid() = user_id`; the proposal table has explicit SELECT/INSERT/UPDATE/DELETE owner policies.
+RLS is enabled on every listed FDOS table. Owner-scoped policies compare `user_id` with the authenticated user; the proposal table has explicit SELECT/INSERT/UPDATE/DELETE owner policies.
 
 The `fdos_apply_evidence_proposal` RPC exists and requires the proposal to be pending and owned by `auth.uid()` before applying it. It records the approved proposal in Business Memory.
 
@@ -123,18 +123,41 @@ A production-database transactional smoke test inserted a temporary Business Rec
 
 A separate attempted synthetic RLS impersonation test was intentionally not treated as evidence because the execution path was blocked before it ran. Policy inspection is verified; browser-level cross-user isolation remains an acceptance requirement.
 
+### FDOS database hardening verified
+The production Supabase performance advisor initially identified two FDOS-specific classes of findings:
+
+1. owner/user and proposal foreign-key columns without covering indexes;
+2. RLS policies calling `auth.uid()` in a form that could be re-evaluated per row.
+
+Production migration `optimize_fdos_rls_and_foreign_key_indexes` was applied on 2026-09-13. It:
+
+- added covering indexes for FDOS owner/user foreign keys and the proposal business/evidence foreign keys;
+- changed FDOS owner-policy expressions from direct `auth.uid()` calls to `(select auth.uid())`, preserving owner-isolation semantics while allowing PostgreSQL to initialize the auth value once per statement.
+
+The performance advisor was run again after the migration. The previous FDOS unindexed-foreign-key findings and FDOS `auth_rls_initplan` warnings were cleared. Remaining FDOS index notices are only `unused_index` informational messages, which are expected while the FDOS production tables contain no persistent rows or traffic yet.
+
+The exact production migration is mirrored in source at:
+
+`db/migrations/20260913_optimize_fdos_rls_and_foreign_key_indexes.sql`
+
+Source mirror commit: `70e05a1a583a8eefc6b9bbb864a996a508bdb491`.
+
+A fresh security-advisor scan did not identify an FDOS-table security-policy warning. It did report warnings in other products/tables sharing the project and a project-wide Auth leaked-password-protection warning; those are not evidence of an FDOS table-policy failure and should be remediated in their owning workstreams rather than silently conflated with this acceptance loop.
+
 ### What this proves
 
 **VERIFIED:**
 
 - the broad standalone shell compiles and type-checks in both CI and the real production build environment;
-- the exact current source revision is deployed to Railway production;
+- the exact current web source revision is deployed to Railway production;
 - the deployed service starts successfully;
 - the production `/api/health` endpoint exists and passes Railway's healthcheck while validating required public runtime configuration;
 - the shared FDOS persistence tables exist in production;
 - owner-scoped RLS is configured on the implemented FDOS tables;
 - the production schema accepts the representative shared-record persistence shapes exercised by the rollback smoke test;
-- the evidence-proposal apply function has an owner/pending-state gate in its database implementation.
+- the evidence-proposal apply function has an owner/pending-state gate in its database implementation;
+- FDOS-specific advisor findings for missing foreign-key indexes and per-row auth initialization were remediated and cleared on re-scan;
+- the production database hardening change has a source-controlled migration mirror.
 
 ### What is not yet proven
 
@@ -152,7 +175,7 @@ The production database currently contains no persistent FDOS business records, 
 
 ### Current decision
 
-**KEEP** the shared Business Record architecture, broad-shell direction, current-source provenance gate, and dedicated production health endpoint.
+**KEEP** the shared Business Record architecture, broad-shell direction, current-source provenance gate, dedicated production health endpoint, and optimized owner-policy/index structure.
 
 **REVISE** the definition of "done": any source-implemented Founder Dynasty OS web feature must clear build/schema/runtime checks and a real authenticated production UI workflow before it is called 100% production-tested.
 
