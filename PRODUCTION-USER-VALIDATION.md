@@ -29,45 +29,46 @@ A real outreach email was sent to Therma Tech at `info@thermatechhvac.com`. The 
 
 This loop covers the broad standalone `web/` product around the shared Business Record: Business Stage, Business DNA, Founder Command Center, Value Map, Decisions, Opportunities, Risks, Business Memory, authenticated persistence, website evidence capture, evidence proposal review, and Customers & Growth → Sales OS integration.
 
-### Current accepted production runtime
+### Current accepted web runtime
 
 Railway service: `founder-dynasty-os-web`  
 Public domain: `https://founder-dynasty-os-web-production.up.railway.app`
 
 Accepted web/runtime revision:
 
-`5e797e92102027fa8ebf98aafe52ece7f54af4a8`
+`77e14bd8ca8b04f42f50b7c19ef7673f7fec3f62`
 
 Railway deployment:
 
-`bacad4ee-7d90-4fad-b6a8-21353f5be9da`
+`ed02e62d-de35-4fe4-b537-54e825cc1459`
 
 Observed on 2026-09-13:
 
-- deployment status: `SUCCESS`
-- Railway identifies the exact accepted web commit above
-- Next.js: `16.3.4`
-- production compilation: passed
-- TypeScript: passed
-- static generation: passed
-- production container: started successfully
-- Railway `/api/health`: succeeded on the first observed attempt
-- route set includes `/`, `/answers`, `/api/evidence/website`, `/api/health`, `/sales-engine-app`, `/manifest.webmanifest`, `/robots.txt`, and `/sitemap.xml`
-- `FDOS_DEPLOY_REV` was aligned to `5e797e92102027fa8ebf98aafe52ece7f54af4a8` before this deployment
+- deployment status: `SUCCESS`;
+- Railway identifies source commit `77e14bd8ca8b04f42f50b7c19ef7673f7fec3f62`;
+- Next.js `16.3.4` production compilation passed;
+- TypeScript passed;
+- static generation passed;
+- production container started successfully;
+- Railway `/api/health` succeeded on the first observed attempt;
+- route set includes `/`, `/answers`, `/api/evidence/website`, `/api/health`, `/sales-engine-app`, `/manifest.webmanifest`, `/robots.txt`, and `/sitemap.xml`;
+- `FDOS_DEPLOY_REV` was aligned to the accepted web revision before deployment.
 
-### CI evidence for the accepted web revision
+### CI evidence
 
-`Founder OS Standalone Web` run `34761253139`: **SUCCESS**
+For accepted web revision `77e14bd8ca8b04f42f50b7c19ef7673f7fec3f62`:
 
-Verified workflow steps:
+- `Founder OS Standalone Web` run `34762781642`: **SUCCESS**;
+- `PHP Lint` run `34762781636`: **SUCCESS**;
+- dependency installation: success;
+- high/critical vulnerability gate: success;
+- TypeScript: success;
+- production build: success;
+- standalone/evidence-persistence production-testability contract: success.
 
-- dependency installation: success
-- high/critical vulnerability gate: success
-- TypeScript: success
-- standalone production build: success
-- implemented-surface / production-testability contract: success
+The later database-only RLS source mirror revision `fd7d30061ed0c9605f519bf46681c3d7e5a382d5` also triggered the standalone workflow because `db/migrations/**` is now part of that CI contract. `Founder OS Standalone Web` run `34762915913` completed **SUCCESS**, including dependency audit, TypeScript, production build, and contract verification. `PHP Lint` run `34762915861` also completed **SUCCESS**.
 
-`PHP Lint` run `34761253191`: **SUCCESS**.
+A database-only source mirror does not require pretending the unchanged web bundle has a different runtime revision. Web runtime provenance and database migration provenance are tracked separately.
 
 ### Production data layer
 
@@ -82,77 +83,140 @@ Implemented FDOS tables:
 - `fdos_evidence`
 - `fdos_evidence_proposals`
 
-RLS is enabled on the implemented FDOS tables with account-owner policies. The evidence-proposal apply RPC requires an owned pending proposal before applying it and records approved changes in Business Memory.
+RLS is enabled on all eight tables.
 
-A fresh production count after the current deployment and database hardening returned zero persistent rows in all eight FDOS tables above. That is expected because no genuine standalone-web user workflow has yet created the first persistent Business Record. It also confirms the migration/deployment work did not quietly seed synthetic “success” data.
+A fresh production count after the current hardening work returned zero persistent rows in all eight FDOS tables. No deployment, migration, CI check, or validation step inserted synthetic acceptance data.
 
 A prior production-database transaction smoke test inserted representative shared-record rows and rolled the transaction back. It proved schema compatibility for that test shape, not browser auth/RLS behavior.
 
-### Database performance and security hardening
-
-Production migration `optimize_fdos_rls_and_foreign_key_indexes` added covering indexes and optimized FDOS owner RLS expressions. The prior FDOS unindexed-foreign-key and `auth_rls_initplan` findings cleared on advisor re-scan.
-
-A fresh advisor scan after the atomic bootstrap and account-switch-safe web deployment found no new FDOS security-policy warning and no FDOS unindexed-foreign-key or per-row auth-initialization warning. Current FDOS performance notices are `unused_index` informational findings, which are expected while the FDOS tables still contain zero persistent rows and have not received real workload traffic.
-
-The same project-wide security scan still reports findings in other products/schemas plus Supabase Auth leaked-password protection being disabled. Those are not evidence of an FDOS table-policy failure and should be handled in their owning workstreams or as a separate shared-auth hardening decision, rather than silently rewriting unrelated products.
-
-Relevant Supabase remediation references:
-
-- RLS linter: https://supabase.com/docs/guides/database/database-linter
-- Password security / leaked-password protection: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
-
-Source mirror:
-
-`db/migrations/20260913_optimize_fdos_rls_and_foreign_key_indexes.sql`
-
 ### Atomic Business Record bootstrap
 
-Production migration `add_atomic_fdos_business_bootstrap` created `public.fdos_ensure_business()`.
+Production `public.fdos_ensure_business()` is the authenticated first-workspace bootstrap.
 
 Verified properties:
 
-- `SECURITY INVOKER`
-- explicit safe search path
-- derives owner from `auth.uid()`
-- rejects unauthenticated calls
-- serializes same-user initial creation with a transaction-scoped advisory lock
-- returns an existing earliest Business Record if present
-- otherwise creates the default Business Record plus one E4 `Workspace created` memory event
-- public execution revoked
-- authenticated execution granted
+- `SECURITY INVOKER`;
+- explicit safe search path;
+- ownership derived from `auth.uid()`;
+- unauthenticated calls rejected by function logic;
+- same-user first creation serialized with a transaction-scoped advisory lock;
+- existing earliest Business Record returned when present;
+- otherwise the default Business Record plus one E4 `Workspace created` memory event is created atomically.
 
-The web client calls this RPC instead of using browser-side check-then-insert creation.
+Migration mirror:
 
-Web integration commit: `9e34e6e07818ac49eaf0a60c864f97697509e087`  
-Migration mirror: `db/migrations/20260913_add_atomic_fdos_business_bootstrap.sql`
+`db/migrations/20260913_add_atomic_fdos_business_bootstrap.sql`
+
+### Atomic website evidence persistence
+
+Source review found that website capture previously performed three independent persistence steps: Evidence, Proposals, then Business Memory. A later failure could therefore leave a partially persisted capture.
+
+Production migration `add_atomic_fdos_website_evidence_capture` added:
+
+`public.fdos_store_website_evidence(...)`
+
+Verified properties:
+
+- `SECURITY INVOKER`;
+- explicit `search_path = public, pg_temp`;
+- derives the current user from `auth.uid()`;
+- verifies the target Business Record belongs to the authenticated user;
+- stores the E2 website evidence, all reviewable proposals, and the evidence-capture Business Memory event in one database transaction;
+- returns the evidence identifier/timestamp plus inserted proposal data;
+- an insertion failure rolls back the RPC call instead of leaving a half-written evidence loop.
+
+Source mirror:
+
+`db/migrations/20260913_add_atomic_fdos_website_evidence_capture.sql`
+
+The deployed `/api/evidence/website` route now calls this RPC instead of performing independent writes. It also rejects HTML responses larger than the connector limit rather than silently treating a truncated page as complete evidence.
+
+### Protected mutation verification
+
+`web/lib/business-store.ts` now requires positive persistence confirmation for sensitive update/review operations:
+
+- Business DNA update selects the updated row and fails if no owned row was actually changed;
+- proposal rejection selects the changed pending proposal and fails if no owned pending proposal was actually updated;
+- proposal approval fails if the apply RPC returns no result;
+- insert helpers continue to request and validate inserted rows.
+
+This prevents a zero-row RLS-filtered mutation from being reported to the UI as a successful save merely because PostgreSQL returned no transport error.
+
+### RPC execution grants
+
+A production ACL inspection found an important Supabase/Postgres detail: revoking execution from `PUBLIC` did not remove already-explicit `anon` grants on FDOS RPCs.
+
+Production migration `restrict_fdos_rpc_execute_to_authenticated` explicitly removed `anon` execution from:
+
+- `fdos_ensure_business()`;
+- `fdos_apply_evidence_proposal(uuid)`;
+- `fdos_store_website_evidence(...)`.
+
+Post-migration ACL inspection verified those functions are executable by `authenticated` plus administrative/service roles, but not `anon`. All three FDOS application RPCs were also verified as `SECURITY INVOKER`.
+
+Source mirror:
+
+`db/migrations/20260913_restrict_fdos_rpc_execute_to_authenticated.sql`
+
+### Relationship-aware RLS hardening
+
+Owner-column RLS alone is not enough for a relational multi-tenant model. A user could theoretically write their own `user_id` together with another account's known `business_id`, producing cross-tenant referential contamination even if the foreign business remained unreadable.
+
+Production migration `enforce_fdos_business_relationships_in_rls` hardened the child-table policies.
+
+For Value, Decision, Risk, Opportunity, Memory, and Evidence rows, policies now require both:
+
+1. row `user_id = auth.uid()`; and
+2. the referenced Business Record is owned by that same authenticated user.
+
+Evidence Proposal SELECT/INSERT/UPDATE/DELETE policies additionally require the linked evidence to belong to the same authenticated user and the same Business Record. These proposal policies are now scoped to `authenticated` rather than `public`.
+
+Source mirror:
+
+`db/migrations/20260913_enforce_fdos_business_relationships_in_rls.sql`
+
+### Database advisor verification
+
+Fresh Supabase security and performance advisor scans were run after the latest FDOS migrations.
+
+FDOS-specific results:
+
+- no FDOS missing-RLS-policy finding;
+- no FDOS authenticated `SECURITY DEFINER` function warning;
+- no FDOS unindexed-foreign-key finding;
+- no FDOS `auth_rls_initplan` warning;
+- current FDOS performance notices are only `unused_index` informational notices, expected while the FDOS production tables contain no persistent workload data.
+
+The shared Supabase project still reports findings owned by other products/schemas and a project-wide leaked-password-protection warning. Those are not evidence of an FDOS table-policy failure and are not permission to silently rewrite unrelated products.
+
+Relevant Supabase references:
+
+- database linter: https://supabase.com/docs/guides/database/database-linter
+- password security / leaked-password protection: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
 
 ### Auth/session privacy hardening
 
-Source review found two distinct stale-state risks before genuine user acceptance:
-
-1. an asynchronous hydration request started for an old auth state could theoretically complete later and repaint old private state;
-2. on a direct account switch A → B, A's already-rendered Business Record could remain visible during the gap while B's record loaded.
-
-The accepted production revision now:
+The deployed web client:
 
 - tracks the active authenticated user outside stale async closures;
-- version-tags hydration requests so superseded results cannot apply state;
-- rejects hydrate calls for users who are no longer active;
+- version-tags hydration requests so superseded results cannot repaint private state;
+- ignores hydration for users who are no longer active;
 - clears private Business Record state on sign-out;
-- clears the previous account's private Business Record, proposals, evidence receipt, composer/edit state, and website input before hydrating a newly active account;
-- clears password state after successful authentication and successful sign-out;
-- checks that the Supabase session still belongs to the user who initiated website evidence capture;
-- disables rapid Business Stage changes while the stage write is busy.
+- clears the previous account's private state before hydrating a newly active account;
+- clears proposals, evidence receipt, composer/edit state, and website input with the private workspace;
+- clears password state after successful authentication/sign-out;
+- checks that the evidence-capture session still belongs to the user who initiated the capture;
+- prevents rapid overlapping Business Stage writes while a stage save is busy.
 
-This protection is **SOURCE COMPLETE** and **PRODUCTION RUNTIME VERIFIED** because the exact revision passed CI and is deployed with a successful production healthcheck. It is **not yet PRODUCTION USER VERIFIED** because no genuine two-account browser acceptance event has been observed in this chat.
+These safeguards are **SOURCE COMPLETE** and **PRODUCTION RUNTIME VERIFIED**. They are not yet **PRODUCTION USER VERIFIED** because no genuine two-account browser acceptance event has been observed in this chat.
 
 ### Sales OS neighborhood integration
 
-The standalone shell's `/sales-engine-app` route bridges to the separately deployed Sales OS rather than resolving to a nonexistent local asset path.
+The standalone shell's `/sales-engine-app` route bridges to the separately deployed Sales OS rather than resolving to a nonexistent local asset path. Sales remains nested under Customers & Growth.
 
 Bridge source commit: `adccb5a148da64bafb081303352dd582f854062d`.
 
-The bridge requires an HTTPS destination. `/sales-engine-app` is present in the accepted production route set. Independent public-browser observation of the final redirect hop remains separate external evidence.
+The route exists in the accepted production build. Independent public-browser observation of the final redirect hop remains separate external evidence.
 
 ## What is verified
 
@@ -161,21 +225,20 @@ The bridge requires an HTTPS destination. `/sales-engine-app` is present in the 
 At this checkpoint:
 
 - broad standalone shell compiles and type-checks;
-- accepted account-switch-safe web revision is deployed to Railway;
-- production container starts;
-- `/api/health` succeeds;
+- accepted web revision `77e14bd8ca8b04f42f50b7c19ef7673f7fec3f62` is deployed to Railway;
+- production container starts and `/api/health` succeeds;
 - current CI dependency vulnerability gate passes;
-- shared FDOS persistence tables exist;
-- account-owner RLS is configured on implemented FDOS tables;
-- FDOS-specific index/RLS performance findings were remediated;
-- post-hardening advisor scans show no new FDOS security-policy or RLS-initplan problem;
-- atomic first-Business bootstrap exists in production and is used by the client;
-- stale-session hydration protections are deployed;
-- previous-account private UI data is cleared before a new account hydrates;
-- evidence-proposal application has account/pending-state gating;
-- website evidence route is present in production;
-- Sales OS bridge route is present in production;
-- no synthetic persistent FDOS data was created by the hardening/deployment work.
+- shared FDOS persistence tables exist and all eight have RLS enabled;
+- atomic first-Business bootstrap exists in production;
+- website Evidence + Proposals + Memory persistence is atomic in production;
+- protected mutations verify that a row/result was actually changed;
+- FDOS application RPCs no longer grant execution to `anon`;
+- child-table RLS validates ownership of the referenced Business Record;
+- proposal RLS validates owner, Business Record, and linked Evidence relationships;
+- stale-session/account-switch privacy protections are deployed;
+- FDOS-specific index/RLS advisor findings remain clear after the latest migrations;
+- website E2 capture route and Sales OS bridge route are present in production;
+- no synthetic persistent FDOS data was created by this hardening work.
 
 ## What remains unproven
 
@@ -194,17 +257,17 @@ Still requires genuine deployed-browser evidence that:
 - direct account switching clears the first user's UI state before the second user's record appears;
 - Android/mobile and desktop visual/interaction acceptance passes.
 
-The database can be correct and the source can be careful while a browser still finds some new way to be irritating. That is why the last mile stays a separate gate.
+Database policy can now be considerably less gullible than before, but a browser still gets its own acceptance exam. Humans invented browsers, so naturally this remains necessary.
 
 ## Current decision
 
-**KEEP** the broad shared-Business-Record architecture, account-owned Supabase persistence, E1–E8 evidence discipline, founder approval before evidence-derived canonical changes, current-source provenance gate, `/api/health`, optimized RLS/index structure, atomic bootstrap RPC, stale-session/account-switch privacy guards, and Sales OS nested under Customers & Growth.
+**KEEP** the broad shared-Business-Record architecture, account-owned Supabase persistence, E1–E8 evidence discipline, founder approval before evidence-derived canonical changes, exact-web-source provenance gate, `/api/health`, atomic Business bootstrap, atomic Evidence persistence, verified mutation responses, authenticated-only RPC grants, relationship-aware RLS, account-switch privacy guards, and Sales OS nested under Customers & Growth.
 
 **REVISE** the meaning of “done” only by making it stricter: user-facing features must clear source/build checks, exact-source production runtime checks, and a genuine authenticated production workflow before they are called 100% production-tested.
 
 ## Highest-value remaining acceptance loop
 
-`sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → sign out → confirm private state clears → sign back in → verify restore → capture website evidence → approve/reject proposals → verify evidence links + memory → switch to second user → verify immediate old-state clearing + isolation → mobile/desktop visual pass → KEEP / REVISE / REVERT`
+`sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → sign out → confirm private state clears → sign back in → verify restore → capture website evidence → approve/reject proposals → verify evidence links + memory → switch to second user → verify immediate old-state clearing + read/write isolation → mobile/desktop visual pass → KEEP / REVISE / REVERT`
 
 ---
 
@@ -213,7 +276,7 @@ The database can be correct and the source can be careful while a browser still 
 Keep these states separate:
 
 - **SOURCE COMPLETE** — implementation exists and passes build/type/schema checks.
-- **PRODUCTION RUNTIME VERIFIED** — the exact accepted source is deployed and required runtime/dependency paths work.
+- **PRODUCTION RUNTIME VERIFIED** — the accepted source/migrations are deployed and required runtime/dependency paths work.
 - **PRODUCTION USER VERIFIED** — a genuine authenticated user completes the feature in the deployed UI and state survives required session/device boundaries.
 - **COMMERCIAL EVIDENCE** — genuine external customer/user behavior exists.
 
