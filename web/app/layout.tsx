@@ -32,7 +32,7 @@ const structuredData = {
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   description: 'An evidence-first business operating system that connects Business DNA, Business X-Ray, Idea Lab, Value Sprints, finance, offers, operations, customer intelligence, distribution, assets, scenarios, founder attention, portfolio strategy, decisions, risks, evidence and business memory.',
-  featureList: ['Idea Lab', 'Business X-Ray', 'What Am I Missing intelligence', 'Value Sprints', 'Finance Center', 'Product and Offer Lab', 'Operations and Execution', 'Business Model Lab', 'Customer Intelligence', 'Marketing and Distribution', 'Asset Map', 'Scenario Lab', 'Founder Attention', 'Portfolio and Dynasty Mode', 'evidence classification', 'opportunity ranking', 'risk tracking'],
+  featureList: ['Plain-English Glossary', 'Idea Lab', 'Business X-Ray', 'What Am I Missing intelligence', 'Value Sprints', 'Finance Center', 'Product and Offer Lab', 'Operations and Execution', 'Business Model Lab', 'Customer Intelligence', 'Marketing and Distribution', 'Asset Map', 'Scenario Lab', 'Founder Attention', 'Portfolio and Dynasty Mode', 'evidence classification', 'opportunity ranking', 'risk tracking'],
   publisher: { '@type': 'Organization', name: 'SmartPickShop Holdings' },
   ...(siteUrl ? { url: siteUrl } : {}),
 };
@@ -49,6 +49,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <a className={navStyles.featured} href="/intelligence">Idea Lab · X-Ray · Value Sprints</a>
             <a href="/workbench">Finance · Offer · Operations</a>
             <a href="/strategy">Strategy · Customers · Assets · Dynasty</a>
+            <a href="/glossary">Plain-English Glossary</a>
             <a href={salesUrl}>Customers & Growth · Sales OS</a>
           </div>
         </nav>
