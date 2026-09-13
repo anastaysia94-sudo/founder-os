@@ -1,14 +1,16 @@
 # Founder Dynasty OS 10.0 — SMARTPICKSHOP HOLDINGS
 
-Founder Dynasty OS (FDOS) is a business operating system under **SMARTPICKSHOP HOLDINGS** for the full life of a business, from a raw idea through validation, launch, operation, growth, portfolio management, enterprise value, and succession.
+Founder Dynasty OS (FDOS) is a business operating intelligence system under **SMARTPICKSHOP HOLDINGS** for the full life of a business, from a raw idea through validation, launch, operation, growth, portfolio management, enterprise value, and succession.
 
 It is **not** a sales app, a CRM with extra panels, or a generic startup dashboard. The Same-Day Customer Growth Pack / Sales OS is one major component inside the larger Founder Dynasty OS.
 
-Read **`PRODUCT-VISION.md`** before making major product changes. It is the canonical statement of the restored broader vision.
+Read **`PRODUCT-VISION.md`** before making major product changes. Canonical product statement:
+
+> **Founder Dynasty OS is the operating intelligence of the business.**
 
 ## Core operating loop
 
-Understand → identify the highest-value problem or opportunity → separate evidence from assumptions → recommend a next action → help execute it → measure what happened → learn → KEEP / REVISE / REVERT → update the business model → choose the next action.
+Understand → find the highest-value problem or opportunity → separate evidence from assumptions → choose a next action → execute → measure → learn → **KEEP / REVISE / REVERT** → update the business model → choose the next action.
 
 The original FDOS language remains useful internally:
 
@@ -16,67 +18,74 @@ Evidence → Value Leak / Value Opportunity → ranked action → Value Sprint �
 
 ## Who Founder Dynasty OS is for
 
-FDOS must work for:
+FDOS must work for someone with only an idea as well as a solo founder, local service business, ecommerce company, software company, creator, agency, nonprofit, professional practice, retailer, manufacturer, marketplace, franchise, enterprise, or holding company.
 
-- someone with only a business idea,
-- a solo founder or side hustle,
-- a local service business,
-- an online or ecommerce business,
-- a software company,
-- a creator or agency,
-- a nonprofit or professional practice,
-- a physical retailer or manufacturer,
-- a marketplace or franchise,
-- an enterprise,
-- a holding company managing several businesses.
+The system changes guidance by business stage rather than forcing every business into a sales funnel.
 
-The system should change its guidance based on the business stage rather than forcing every user into a sales funnel.
+## Standalone web architecture
+
+The primary product track is the Next.js / React / TypeScript application under `web/`. Major operating surfaces now include:
+
+- `/` — **Founder Command Center**: Business Stage, Business DNA, Value Map, Opportunities, Risks, Decisions, Business Memory, Evidence Inbox, and whole-OS map.
+- `/intelligence` — **Founder Intelligence Layer**: Idea Lab, Business X-Ray, What Am I Missing?, and persistent Value Sprints.
+- `/workbench` — **Build & Run Workbench**: Finance Center, Product & Offer Lab, and Operations & Execution.
+- `/strategy` — **Strategy / Dynasty Workspace**: Business Model Lab, Customer Intelligence, Marketing & Distribution, Asset Map, Founder Attention, Scenario Lab, and Portfolio / Dynasty Mode.
+- `/acceptance` — read-only production acceptance diagnostics. It is intentionally noindex/nofollow and does not manufacture green checks.
+- `/sales-engine-app` — bridge to the separate Customers & Growth → Sales OS production service.
+
+These are neighborhoods of one operating system, not separate products pretending the same business has several incompatible realities.
+
+## Shared Business Record and persistence
+
+The standalone OS is organized around one authenticated, account-owned Business Record. Current Supabase-backed FDOS persistence includes 19 RLS-protected tables:
+
+### Core record and evidence
+- `fdos_business_records`
+- `fdos_value_items`
+- `fdos_decisions`
+- `fdos_risks`
+- `fdos_opportunities`
+- `fdos_memory`
+- `fdos_evidence`
+- `fdos_evidence_proposals`
+
+### Learning and execution
+- `fdos_value_sprints`
+- `fdos_financial_assumptions`
+- `fdos_offer_hypotheses`
+- `fdos_initiatives`
+
+### Strategy, assets, and Dynasty
+- `fdos_business_model_elements`
+- `fdos_customer_insights`
+- `fdos_distribution_experiments`
+- `fdos_business_assets`
+- `fdos_scenarios`
+- `fdos_portfolio_theses`
+- `fdos_attention_blocks`
+
+New child records are scoped by both authenticated user and Business Record. Optional Evidence links are constrained to the same user/business where implemented.
 
 ## Signature Founder Dynasty OS systems
 
-The long-term product architecture includes:
-
-- **Business DNA** — a living model of what the business is.
-- **Value Map** — where value is created, captured, leaked, at risk, or underused.
-- **Value Leak Engine** — finds waste and lost value across the whole business, not just sales.
-- **Opportunity Engine** — identifies and ranks potentially valuable moves.
-- **Decision Engine** — preserves important decisions, assumptions, risks, choices, and outcomes.
-- **Value Sprints** — short measurable attempts to improve one important thing.
-- **Business Memory** — keeps research, decisions, experiments, results, feedback, and lessons.
-- **Business X-Ray** — evaluates the business as a connected system.
-- **What Am I Missing?** — looks for blind spots, missing evidence, risks, and ignored opportunities.
-- **Argue Against Me** — stress-tests important plans with the strongest evidence-based counterargument.
-- **Scenario Lab** — explores what-if decisions without confusing forecasts with facts.
-- **Asset Map** — tracks valuable business assets and underused capabilities.
-- **Founder Attention** — identifies the highest-value use of founder time and what should be stopped, delegated, or automated.
-- **Dynasty Mode** — focuses on durable enterprise value, defensibility, systems, assets, portfolio value, and succession.
-
-## Active implementation tracks
-
-### Standalone Founder OS Web (`web/`)
-
-Non-WordPress Next.js/React/TypeScript primary product track. It currently contains a Founder Command Center shell, evidence classifications, opportunity ranking, Value Sprint concepts, and the beginning of the plain-English interface. This track should grow into the broader product architecture defined in `PRODUCT-VISION.md`.
-
-### Same-Day Customer Growth Pack Android/Web Sales OS (`sales-engine-app/` + `sales-engine/`)
-
-Mobile-first installable PWA and sales operating system. It includes a verified prospect feed, scripts, pipeline tracking, authenticated persistence work, offline support, PWA assets, canonical XLSX CRM, and auditable history.
-
-It belongs inside the broader hierarchy:
-
-**SMARTPICKSHOP HOLDINGS → Founder Dynasty OS → Customers & Growth → Same-Day Customer Growth Pack / Sales OS**
-
-Canonical sales data:
-
-- `sales-engine-app/data/leads.json` — app prospect feed
-- `sales-engine/Same-Day-Customer-Growth-Pack-Live-CRM.xlsx` — canonical CRM workbook
-- `sales-engine/pipeline-history.json` — genuine pipeline/contact history
-- `sales-engine/README.md` — integrity and refresh contract
-
-Research refreshes may improve verified prospect information, but they must never overwrite genuine contact history. A Contact Ready prospect is not evidence that outreach, a reply, payment, customer, or revenue exists.
-
-### WordPress FDOS Value Leak Scanner
-
-The v1.0.1 launch-candidate plugin remains preserved as a compatibility/legacy track with evidence governance, website evidence, experiments, Shopify HMAC webhook handling, launch diagnostics, and production-verification tooling. WordPress is not a prerequisite for the primary standalone product.
+- **Business DNA** — living model of what the business is.
+- **Business X-Ray** — structural diagnosis across clarity, evidence, value, decisions, execution, and risk.
+- **What Am I Missing?** — exposes unanswered questions and missing proof.
+- **Value Map** — where value is created, captured, leaked, at risk, or becoming an asset.
+- **Opportunity Engine** — ranks potentially valuable moves.
+- **Decision Engine** — preserves choices and next steps.
+- **Value Sprints** — hypothesis → action → measure → result → KEEP / REVISE / REVERT.
+- **Business Memory** — dated learning, evidence, decisions, and changes.
+- **Business Model Lab** — tests how customer, value proposition, channels, economics, capabilities, and partners fit together.
+- **Customer Intelligence** — captures customer problems, needs, triggers, objections, behavior, segments, and language without falsely upgrading founder notes to customer proof.
+- **Marketing & Distribution** — measured channel/message experiments rather than vanity-metric theater.
+- **Finance Center** — financial model assumptions remain E6 instead of masquerading as historical truth.
+- **Product / Offer Lab** — offer hypotheses move through operating states without confusing a dropdown with validation.
+- **Operations & Execution** — initiatives, outcomes, owners, due dates, priorities, and status.
+- **Asset Map** — tracks assets that may compound enterprise value.
+- **Founder Attention** — makes time allocation and intended outcomes explicit.
+- **Scenario Lab** — E7 forecasts with early signals and decision rules.
+- **Portfolio / Dynasty Mode** — records the role, capital thesis, attention thesis, and disposition of businesses in a wider portfolio.
 
 ## Research & Evidence Integrity Layer
 
@@ -91,34 +100,45 @@ FDOS preserves explicit evidence classes:
 - E7 Forecast
 - E8 Illustrative Example
 
-Externally derived claims require source attribution, uncertainty must be explicit where evidence is insufficient, and the project must not fabricate market size, pricing, results, testimonials, adoption statistics, regulations, partnerships, product capabilities, contacts, outreach, replies, payments, customers, revenue, ROI, or product-market fit.
+Externally derived claims require source attribution. Uncertainty must remain explicit. Never fabricate market size, pricing, results, testimonials, adoption statistics, regulations, partnerships, capabilities, contacts, outreach, replies, payments, customers, revenue, ROI, or product-market fit.
 
 ## Plain-English product rule
 
-Founder Dynasty OS should be sophisticated underneath and easy to understand on the surface.
-
-Every major screen should answer:
+Founder Dynasty OS should be sophisticated underneath and easy to understand on the surface. Every major screen should answer:
 
 1. What is this?
 2. Why does it matter?
 3. What should I do?
 4. What happens next?
 
-Specialized terms should be explainable in place and available in a searchable plain-English glossary. Advanced details should remain available without forcing beginners to learn jargon first.
+Specialized terms should be explainable in place and available through the plain-English glossary. Advanced details belong behind progressive disclosure, not as an entrance exam.
+
+## Sales OS integration
+
+The Same-Day Customer Growth Pack / Sales OS belongs in this hierarchy:
+
+**SMARTPICKSHOP HOLDINGS → Founder Dynasty OS → Customers & Growth → Same-Day Customer Growth Pack / Sales OS**
+
+Canonical sales data remains:
+
+- `sales-engine-app/data/leads.json`
+- `sales-engine/Same-Day-Customer-Growth-Pack-Live-CRM.xlsx`
+- `sales-engine/pipeline-history.json`
+
+Research refreshes may improve verified prospect information but must never overwrite genuine contact history. A Contact Ready lead is not proof of outreach, reply, payment, customer, or revenue.
+
+## Production verification boundary
+
+Build success is not production proof, and production proof is not commercial proof.
+
+Current source includes read-only `/acceptance` diagnostics that inspect the deployed revision, browser session, owned Business Record, and RLS-scoped row counts across the broad OS. Genuine sign-out/restore, second-user isolation, mobile/desktop visual acceptance, and real-world customer outcomes still require actual observation rather than a flattering interpretation of source code.
 
 ## AI continuation / project handoff
 
-- **`PRODUCT-VISION.md`** — canonical broad product vision. Read this before major product-direction changes.
-- **`AGENTS.md`** — canonical project/component state, operating rules, evidence boundaries, and continuation priorities.
-- **`.github/copilot-instructions.md`** — repository instructions for GitHub Copilot.
-- **`AI-HANDOFF.md`** — continuation guidance for ChatGPT/Codex, Copilot, Grok, and Perplexity.
+- `PRODUCT-VISION.md` — canonical product direction.
+- `PROJECT-STATUS.md` — current implementation and verification boundary.
+- `AGENTS.md` — operating rules and continuation priorities.
+- `.github/copilot-instructions.md` — GitHub Copilot instructions.
+- `AI-HANDOFF.md` — continuation guidance for ChatGPT/Codex, Copilot, Grok, and Perplexity.
 
-Any AI assistant continuing FDOS should inspect the repository, preserve genuine evidence/history, and avoid drifting the product into a generic CRM, sales dashboard, project manager, or startup template.
-
-## Current direction
-
-The immediate product-direction priority is to restore the broader Founder Dynasty OS architecture while preserving and hardening working components. That means building the shared Business DNA / Value Map / Decision / Opportunity / Business Memory foundation, continuing the plain-English experience, and integrating the Sales OS as one module rather than allowing it to define the product.
-
-Production defects in existing components still matter and must be fixed and verified. New architecture is not an excuse to abandon working functionality or rewrite genuine history.
-
-Build/test success and researched pipeline value are not commercial proof.
+Any AI continuing FDOS should inspect the repository, preserve genuine evidence/history, keep Sales OS in its proper neighborhood, and reject drift toward a generic CRM, dashboard, project manager, or startup-template clone.
