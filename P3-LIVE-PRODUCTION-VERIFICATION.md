@@ -4,7 +4,7 @@ Updated: 2026-09-13
 
 ## Current P3 scope
 
-P3 now applies to the standalone Founder Dynasty OS web application. The old WordPress/plugin + Shopify-webhook checklist is legacy and is not the production gate for the current product direction.
+P3 applies to the standalone Founder Dynasty OS web application. The old WordPress/plugin + Shopify-webhook checklist is legacy and is not the production gate for the current product direction.
 
 Production service: `founder-dynasty-os-web`  
 Public domain: `https://founder-dynasty-os-web-production.up.railway.app`  
@@ -14,9 +14,9 @@ Runtime: Next.js standalone web + Supabase Auth/Postgres/RLS.
 
 P3 is complete only when all of the following are true:
 
-1. The exact accepted Git commit is deployed to the production service.
+1. The exact accepted web-source commit is deployed to production.
 2. Production build and TypeScript validation pass.
-3. `GET /api/health` succeeds and reports a configured deployment revision plus required public Supabase configuration.
+3. `GET /api/health` succeeds and reports configured deployment provenance plus required public Supabase configuration.
 4. The production database schema and account-owner RLS required by the implemented web surfaces are present.
 5. A real authenticated user can create or load the shared Business Record through the deployed UI.
 6. Business DNA and Business Stage survive sign-out and a new signed-in session.
@@ -28,21 +28,35 @@ P3 is complete only when all of the following are true:
 
 ## Current production-runtime evidence
 
-As of 2026-09-13, the current source-controlled production head includes the atomic Business Record bootstrap migration and client integration.
+Accepted web/runtime revision: `f82f488f231baf71e576024f9dfecde466e958f2`  
+Railway deployment: `72a3c73a-c285-4473-a75b-97d7edf22764`
 
-- current production deployment: `4fd5eadb-35c6-4bf2-b66d-e21f3e3e8974`
-- deployed Git commit: `be8fd931a22d83cf0e9c7c9af9a1aeb8686d4827`
+Observed on 2026-09-13:
+
 - deployment status: `SUCCESS`
 - Next.js: `16.3.4`
 - production compilation: passed
 - TypeScript: passed
-- production dependency audit: 0 vulnerabilities in the observed build
-- `/api/health`: Railway healthcheck succeeded
+- CI dependency vulnerability gate: passed
+- standalone product build: passed
+- implemented-surface/production-testability contract: passed
+- PHP lint: passed
+- `/api/health`: Railway healthcheck succeeded on the first observed attempt
 - `/sales-engine-app`: present in the production route set
-- Supabase `fdos_ensure_business()` exists as `SECURITY INVOKER` and is executable by authenticated users
-- the web client uses `fdos_ensure_business()` instead of a client-side select-then-insert bootstrap race
+- atomic Business Record bootstrap client + production RPC remain in this deployed source lineage
+- auth/session hardening now prevents an older in-flight hydration request from repopulating private Business Record state after sign-out or a user switch
+- password state is cleared after successful authentication and sign-out
+- website evidence capture refuses to proceed if the active session no longer matches the user who initiated the action
 
-These items establish **PRODUCTION RUNTIME VERIFIED** for the current source, not **PRODUCTION USER VERIFIED**.
+The auth/session hardening commit's `Founder OS Standalone Web` run `34761083989` completed successfully. PHP lint run `34761084005` also completed successfully.
+
+These items establish **PRODUCTION RUNTIME VERIFIED** for the accepted source. They do not establish **PRODUCTION USER VERIFIED**.
+
+## Database bootstrap evidence
+
+Production Supabase includes authenticated `fdos_ensure_business()` as `SECURITY INVOKER`. It rejects unauthenticated calls, serializes same-user initial creation with a transaction-scoped advisory lock, returns an existing Business Record when one is present, and creates the default Business Record plus one E4 `Workspace created` memory event only when needed.
+
+The client no longer performs browser-side `check then insert` first-record creation.
 
 ## Evidence boundary
 
