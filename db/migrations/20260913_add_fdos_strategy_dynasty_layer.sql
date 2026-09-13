@@ -1,0 +1,1 @@
+-- Founder Dynasty OS strategy and dynasty layer.
