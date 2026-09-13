@@ -23,34 +23,44 @@ P3 is complete only when all of the following are true:
 7. Value, Decision, Risk, Opportunity, and Business Memory records can be created and restored through the deployed UI.
 8. A real authenticated website-evidence capture succeeds through `POST /api/evidence/website`.
 9. The founder can approve one evidence proposal and reject one proposal through the production UI, with the approved change and Business Memory entry preserved.
-10. A second genuine user session cannot read or mutate the first user's Business Record.
+10. A second genuine user session cannot read or mutate the first user's Business Record, including during an account switch.
 11. The accepted workflow passes mobile and desktop visual/interaction checks.
 
 ## Current production-runtime evidence
 
-Accepted web/runtime revision: `f82f488f231baf71e576024f9dfecde466e958f2`  
-Railway deployment: `72a3c73a-c285-4473-a75b-97d7edf22764`
+Accepted web/runtime revision: `5e797e92102027fa8ebf98aafe52ece7f54af4a8`  
+Railway deployment: `bacad4ee-7d90-4fad-b6a8-21353f5be9da`
 
 Observed on 2026-09-13:
 
 - deployment status: `SUCCESS`
+- Railway identifies the exact accepted web commit above
 - Next.js: `16.3.4`
 - production compilation: passed
 - TypeScript: passed
-- CI dependency vulnerability gate: passed
-- standalone product build: passed
-- implemented-surface/production-testability contract: passed
-- PHP lint: passed
+- static generation: passed
+- expected route set emitted, including `/api/evidence/website`, `/api/health`, and `/sales-engine-app`
+- production container started successfully
 - `/api/health`: Railway healthcheck succeeded on the first observed attempt
-- `/sales-engine-app`: present in the production route set
-- atomic Business Record bootstrap client + production RPC remain in this deployed source lineage
-- auth/session hardening now prevents an older in-flight hydration request from repopulating private Business Record state after sign-out or a user switch
-- password state is cleared after successful authentication and sign-out
-- website evidence capture refuses to proceed if the active session no longer matches the user who initiated the action
+- `FDOS_DEPLOY_REV` was aligned to the accepted web revision before deployment
+- GitHub `Founder OS Standalone Web` run `34761253139`: **SUCCESS**
+- GitHub `PHP Lint` run `34761253191`: **SUCCESS**
+- CI dependency high/critical vulnerability gate: passed
+- CI implemented-surface/production-testability contract: passed
 
-The auth/session hardening commit's `Founder OS Standalone Web` run `34761083989` completed successfully. PHP lint run `34761084005` also completed successfully.
+### Account-switch privacy hardening in this revision
 
-These items establish **PRODUCTION RUNTIME VERIFIED** for the accepted source. They do not establish **PRODUCTION USER VERIFIED**.
+The deployed client now clears the previous account's private Business Record UI state before loading a newly active account, rather than leaving the old record visible during the hydration gap.
+
+It also retains the earlier protections that:
+
+- version-tag hydration requests and ignore stale results;
+- reject hydration for a user who is no longer the active session user;
+- clear private state on sign-out;
+- clear password state after successful auth/sign-out;
+- confirm the website-evidence session still belongs to the initiating user before sending the authenticated request.
+
+These protections are **SOURCE COMPLETE** and **PRODUCTION RUNTIME VERIFIED**. Their real two-user browser behavior remains a **PRODUCTION USER VERIFIED** acceptance item.
 
 ## Database bootstrap evidence
 
@@ -66,6 +76,6 @@ A healthy deployment is not proof of authenticated persistence, cross-user isola
 
 ## Remaining P3 acceptance loop
 
-`sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → sign out → sign back in → verify restore → capture website evidence → approve/reject proposals → verify evidence links + memory → second-user isolation → mobile/desktop visual pass → KEEP / REVISE / REVERT`
+`sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → sign out → confirm private state clears → sign back in → verify restore → capture website evidence → approve/reject proposals → verify evidence links + memory → switch to second user → verify immediate old-state clearing + isolation → mobile/desktop visual pass → KEEP / REVISE / REVERT`
 
 Until that loop is exercised in genuine production browser sessions, P3 remains runtime-verified but user-acceptance incomplete.
