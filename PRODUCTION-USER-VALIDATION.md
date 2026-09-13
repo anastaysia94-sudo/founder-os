@@ -27,20 +27,7 @@ A real outreach email was sent to Therma Tech at `info@thermatechhvac.com`. The 
 
 ### Scope
 
-This loop covers the broad standalone `web/` product around the shared Business Record:
-
-- Business Stage
-- Business DNA
-- Founder Command Center
-- Value Map
-- Decisions
-- Opportunities
-- Risks
-- Business Memory
-- authenticated persistence
-- website evidence capture
-- evidence proposal review
-- Customers & Growth → Sales OS integration
+This loop covers the broad standalone `web/` product around the shared Business Record: Business Stage, Business DNA, Founder Command Center, Value Map, Decisions, Opportunities, Risks, Business Memory, authenticated persistence, website evidence capture, evidence proposal review, and Customers & Growth → Sales OS integration.
 
 ### Current accepted production runtime
 
@@ -49,29 +36,30 @@ Public domain: `https://founder-dynasty-os-web-production.up.railway.app`
 
 Accepted web/runtime revision:
 
-`f82f488f231baf71e576024f9dfecde466e958f2`
+`5e797e92102027fa8ebf98aafe52ece7f54af4a8`
 
 Railway deployment:
 
-`72a3c73a-c285-4473-a75b-97d7edf22764`
+`bacad4ee-7d90-4fad-b6a8-21353f5be9da`
 
 Observed on 2026-09-13:
 
 - deployment status: `SUCCESS`
+- Railway identifies the exact accepted web commit above
 - Next.js: `16.3.4`
 - production compilation: passed
 - TypeScript: passed
-- production route generation: passed
-- production container: started successfully and reported ready
+- static generation: passed
+- production container: started successfully
 - Railway `/api/health`: succeeded on the first observed attempt
 - route set includes `/`, `/answers`, `/api/evidence/website`, `/api/health`, `/sales-engine-app`, `/manifest.webmanifest`, `/robots.txt`, and `/sitemap.xml`
-- `FDOS_DEPLOY_REV` was aligned to `f82f488f231baf71e576024f9dfecde466e958f2` for this deployment
+- `FDOS_DEPLOY_REV` was aligned to `5e797e92102027fa8ebf98aafe52ece7f54af4a8` before this deployment
 
-### CI evidence for the accepted auth-safe web revision
+### CI evidence for the accepted web revision
 
-`Founder OS Standalone Web` run `34761083989`: **SUCCESS**
+`Founder OS Standalone Web` run `34761253139`: **SUCCESS**
 
-Verified workflow steps include:
+Verified workflow steps:
 
 - dependency installation: success
 - high/critical vulnerability gate: success
@@ -79,7 +67,7 @@ Verified workflow steps include:
 - standalone production build: success
 - implemented-surface / production-testability contract: success
 
-`PHP Lint` run `34761084005`: **SUCCESS**.
+`PHP Lint` run `34761253191`: **SUCCESS**.
 
 ### Production data layer
 
@@ -127,23 +115,25 @@ The web client calls this RPC instead of using browser-side check-then-insert cr
 Web integration commit: `9e34e6e07818ac49eaf0a60c864f97697509e087`  
 Migration mirror: `db/migrations/20260913_add_atomic_fdos_business_bootstrap.sql`
 
-### Auth/session stale-state hardening
+### Auth/session privacy hardening
 
-A source audit identified a separate privacy/consistency risk: an asynchronous hydration request started for one auth state could theoretically finish after sign-out or after another user became active and repaint stale private Business Record state into the page.
+Source review found two distinct stale-state risks before genuine user acceptance:
 
-The accepted production web revision `f82f488f231baf71e576024f9dfecde466e958f2` now:
+1. an asynchronous hydration request started for an old auth state could theoretically complete later and repaint old private state;
+2. on a direct account switch A → B, A's already-rendered Business Record could remain visible during the gap while B's record loaded.
+
+The accepted production revision now:
 
 - tracks the active authenticated user outside stale async closures;
-- version-tags hydration requests so superseded work cannot apply state;
-- clears Business Record, proposals, evidence receipt, composer/edit state, and website input on sign-out;
-- rejects hydration attempts for a user who is no longer active;
+- version-tags hydration requests so superseded results cannot apply state;
+- rejects hydrate calls for users who are no longer active;
+- clears private Business Record state on sign-out;
+- clears the previous account's private Business Record, proposals, evidence receipt, composer/edit state, and website input before hydrating a newly active account;
 - clears password state after successful authentication and successful sign-out;
-- checks that the current Supabase session still belongs to the user who initiated website evidence capture;
-- serializes Business Stage persistence at the UI level by disabling stage controls while that write is busy.
+- checks that the Supabase session still belongs to the user who initiated website evidence capture;
+- disables rapid Business Stage changes while the stage write is busy.
 
-The first implementation pass was tightened once more after review so an old user action cannot call `hydrate(oldUser)` and re-assert that old identity in the guard itself. The final deployed `hydrate()` rejects mismatched users before starting work.
-
-This protection is **source complete and production-runtime verified** because CI passes and the exact web revision is deployed. It is **not yet production-user verified** because no genuine account-switch browser acceptance event has been observed in this chat.
+This protection is **SOURCE COMPLETE** and **PRODUCTION RUNTIME VERIFIED** because the exact revision passed CI and is deployed with a successful production healthcheck. It is **not yet PRODUCTION USER VERIFIED** because no genuine two-account browser acceptance event has been observed in this chat.
 
 ### Sales OS neighborhood integration
 
@@ -160,7 +150,7 @@ The bridge requires an HTTPS destination. `/sales-engine-app` is present in the 
 At this checkpoint:
 
 - broad standalone shell compiles and type-checks;
-- accepted auth-safe web revision is deployed to Railway;
+- accepted account-switch-safe web revision is deployed to Railway;
 - production container starts;
 - `/api/health` succeeds;
 - current CI dependency vulnerability gate passes;
@@ -169,6 +159,7 @@ At this checkpoint:
 - FDOS-specific index/RLS performance findings were remediated;
 - atomic first-Business bootstrap exists in production and is used by the client;
 - stale-session hydration protections are deployed;
+- previous-account private UI data is cleared before a new account hydrates;
 - evidence-proposal application has account/pending-state gating;
 - website evidence route is present in production;
 - Sales OS bridge route is present in production.
@@ -187,20 +178,20 @@ Still requires genuine deployed-browser evidence that:
 - the founder approves one proposal and rejects one proposal through production UI;
 - approved evidence-linked changes and Business Memory survive restore;
 - a second genuine user cannot read or mutate the first user's data;
-- switching users does not reveal stale first-user UI state;
+- direct account switching clears the first user's UI state before the second user's record appears;
 - Android/mobile and desktop visual/interaction acceptance passes.
 
 The database can be correct and the source can be careful while a browser still finds some new way to be irritating. That is why the last mile stays a separate gate.
 
 ## Current decision
 
-**KEEP** the broad shared-Business-Record architecture, account-owned Supabase persistence, E1–E8 evidence discipline, founder approval before evidence-derived canonical changes, current-source provenance gate, `/api/health`, optimized RLS/index structure, atomic bootstrap RPC, stale-session privacy guards, and Sales OS nested under Customers & Growth.
+**KEEP** the broad shared-Business-Record architecture, account-owned Supabase persistence, E1–E8 evidence discipline, founder approval before evidence-derived canonical changes, current-source provenance gate, `/api/health`, optimized RLS/index structure, atomic bootstrap RPC, stale-session/account-switch privacy guards, and Sales OS nested under Customers & Growth.
 
 **REVISE** the meaning of “done” only by making it stricter: user-facing features must clear source/build checks, exact-source production runtime checks, and a genuine authenticated production workflow before they are called 100% production-tested.
 
 ## Highest-value remaining acceptance loop
 
-`sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → sign out → confirm private state clears → sign back in → verify restore → capture website evidence → approve/reject proposals → verify evidence links + memory → switch to second user → verify isolation/no stale first-user state → mobile/desktop visual pass → KEEP / REVISE / REVERT`
+`sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → sign out → confirm private state clears → sign back in → verify restore → capture website evidence → approve/reject proposals → verify evidence links + memory → switch to second user → verify immediate old-state clearing + isolation → mobile/desktop visual pass → KEEP / REVISE / REVERT`
 
 ---
 
