@@ -38,15 +38,16 @@ For a source-implemented feature to be called complete, verify as applicable:
 1. production build succeeds;
 2. TypeScript/build validation succeeds;
 3. deployed Railway service is healthy;
-4. relevant database tables/functions exist;
-5. RLS/ownership boundaries are present;
-6. create/read/update flow works for the shared business record;
-7. logout/session behavior does not expose another account's data;
-8. mobile and desktop layouts remain usable;
-9. external evidence actions preserve E1–E8 integrity;
-10. no claim of customers, revenue, results, ROI, or product-market fit is inferred from implementation or testing.
+4. **the production deployment commit contains the current `web/` source being accepted**;
+5. relevant database tables/functions exist;
+6. RLS/ownership boundaries are present;
+7. create/read/update flow works for the shared business record;
+8. logout/session behavior does not expose another account's data;
+9. mobile and desktop layouts remain usable;
+10. external evidence actions preserve E1–E8 integrity;
+11. no claim of customers, revenue, results, ROI, or product-market fit is inferred from implementation or testing.
 
-Any item that has not been exercised in the real production runtime must remain explicitly marked **NOT YET PROVEN**.
+A healthy deployment of an older commit does not validate newer source. Any item that has not been exercised in the real production runtime must remain explicitly marked **NOT YET PROVEN**.
 
 ## Run locally
 
