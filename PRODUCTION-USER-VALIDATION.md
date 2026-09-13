@@ -1,6 +1,6 @@
 # Founder Dynasty OS 10.0 — Production/User Validation
 
-Updated: 2026-09-12
+Updated: 2026-09-13
 
 This document tracks production and user validation evidence only. It does not convert deployments, researched prospects, outbound messages, internal tests, database smoke tests, or implemented product surfaces into claims of customers, revenue, ROI, product-market fit, or successful fulfillment.
 
@@ -79,27 +79,30 @@ The `web/` source currently connects the broad shell to one shared `BusinessReco
 
 The Supabase-backed store loads and writes these modules against one account-owned business ID rather than maintaining unrelated local copies.
 
-### Production build/runtime evidence
+### Current production build/runtime evidence
 Railway service: `founder-dynasty-os-web`
 Public domain: `https://founder-dynasty-os-web-production.up.railway.app`
-Production deployment: `8ac92b65-717d-4dac-bd97-839781742219`
-Deployed source commit: `6804c96f0efaf1d98b9184e7996da9f69b4a088e`
+Production deployment: `5a914db9-5885-47ad-bea3-93e68582a45e`
+Deployed source commit: `e9d7bafb96778af3631ed9a3478c2aaebf9c1e79`
 
-Observed Railway evidence:
+Observed Railway evidence on 2026-09-13:
 
 - deployment status: `SUCCESS`;
-- production build executed `npm install --ignore-scripts && npm run build`;
-- npm audit in the Railway build reported `0 vulnerabilities` for the installed production dependency set at that deployment;
+- Railway built the exact current source commit shown above, removing the earlier stale-revision ambiguity;
 - Next.js compilation completed successfully;
 - TypeScript validation completed successfully;
 - static generation completed successfully;
-- build emitted `/`, `/answers`, `/api/evidence/website`, `/manifest.webmanifest`, `/robots.txt`, and `/sitemap.xml`;
+- build emitted `/`, `/answers`, `/api/evidence/website`, `/api/health`, `/manifest.webmanifest`, `/robots.txt`, and `/sitemap.xml`;
 - production container started successfully with Next.js 16.3.4;
-- Railway healthcheck on `/` succeeded;
-- subsequent observed crawler requests to `/robots.txt` returned HTTP 200.
+- Railway production healthcheck now targets `/api/health`, not merely `/`;
+- `/api/health` returns non-success when the public Supabase URL, public Supabase publishable key, or deployment source revision is missing;
+- Railway's `/api/health` healthcheck succeeded for deployment `5a914db9-5885-47ad-bea3-93e68582a45e`, proving those required production configuration values were present at runtime and the route returned a successful status;
+- `FDOS_DEPLOY_REV` was set to the exact deployed Git commit so the runtime can report production provenance without exposing credentials;
+- the GitHub `Founder OS Standalone Web` workflow for commit `e9d7bafb96778af3631ed9a3478c2aaebf9c1e79` completed successfully;
+- the PHP lint workflow for the same commit also completed successfully.
 
 ### Production data-layer evidence
-On 2026-09-12 the production Supabase project was inspected directly.
+On 2026-09-13 the production Supabase project was inspected directly.
 
 Verified tables:
 
@@ -116,14 +119,18 @@ RLS is enabled on every listed FDOS table. Owner-scoped policies use `auth.uid()
 
 The `fdos_apply_evidence_proposal` RPC exists and requires the proposal to be pending and owned by `auth.uid()` before applying it. It records the approved proposal in Business Memory.
 
-A production-database transactional smoke test inserted a temporary Business Record plus representative Value, Decision, Risk, Opportunity, Memory, and Evidence rows inside a single transaction, verified the Business Record existed, and rolled the transaction back. No smoke-test rows were left behind.
+A production-database transactional smoke test inserted a temporary Business Record plus representative Value, Decision, Risk, Opportunity, Memory, and Evidence rows inside a single transaction and rolled the transaction back. No smoke-test rows were left behind.
+
+A separate attempted synthetic RLS impersonation test was intentionally not treated as evidence because the execution path was blocked before it ran. Policy inspection is verified; browser-level cross-user isolation remains an acceptance requirement.
 
 ### What this proves
 
 **VERIFIED:**
 
-- the broad standalone shell compiles and type-checks in the real production build environment;
-- the deployed service starts and passes its Railway root healthcheck;
+- the broad standalone shell compiles and type-checks in both CI and the real production build environment;
+- the exact current source revision is deployed to Railway production;
+- the deployed service starts successfully;
+- the production `/api/health` endpoint exists and passes Railway's healthcheck while validating required public runtime configuration;
 - the shared FDOS persistence tables exist in production;
 - owner-scoped RLS is configured on the implemented FDOS tables;
 - the production schema accepts the representative shared-record persistence shapes exercised by the rollback smoke test;
@@ -145,9 +152,9 @@ The production database currently contains no persistent FDOS business records, 
 
 ### Current decision
 
-**KEEP** the shared Business Record architecture and broad-shell direction.
+**KEEP** the shared Business Record architecture, broad-shell direction, current-source provenance gate, and dedicated production health endpoint.
 
-**REVISE** the definition of "done": any source-implemented Founder Dynasty OS web feature must clear both build/schema checks and a real authenticated production UI workflow before it is called 100% production-tested.
+**REVISE** the definition of "done": any source-implemented Founder Dynasty OS web feature must clear build/schema/runtime checks and a real authenticated production UI workflow before it is called 100% production-tested.
 
 The highest-value remaining acceptance loop is:
 
@@ -164,7 +171,7 @@ The Sales OS has separate authenticated-persistence evidence and should not be u
 For every source-implemented feature, distinguish:
 
 - **SOURCE COMPLETE** — implementation exists and passes build/type/schema checks;
-- **PRODUCTION RUNTIME VERIFIED** — deployed runtime and relevant external dependency path work;
+- **PRODUCTION RUNTIME VERIFIED** — the exact source revision is deployed and its required runtime/dependency path works;
 - **PRODUCTION USER VERIFIED** — a real authenticated user completes the feature in the deployed UI and state survives the required session/device boundaries;
 - **COMMERCIAL EVIDENCE** — genuine external customer/user behavior exists.
 
