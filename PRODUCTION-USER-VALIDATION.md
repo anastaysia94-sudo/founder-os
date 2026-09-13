@@ -2,109 +2,92 @@
 
 Updated: 2026-09-13
 
-This document tracks production and user validation evidence only. It does not convert deployments, researched prospects, outbound messages, internal tests, database smoke tests, or implemented product surfaces into claims of customers, revenue, ROI, product-market fit, or successful fulfillment.
+This document tracks production and user validation evidence only. It does not convert deployments, research, outbound messages, internal tests, database smoke tests, or implemented surfaces into claims of customers, revenue, ROI, product-market fit, or successful fulfillment.
 
 ## Evidence Loop 001 — Public Sales OS Delivery
 
 ### Hypothesis
-A real external browser can reach the Same-Day Customer Growth Pack production PWA and retrieve the minimum assets needed to present the live sales operating system and prospect feed without server-side failure.
-
-### External action
-Production service: `sales-engine-pwa`
-Public domain: `https://sales-engine-pwa-production.up.railway.app`
-Production environment: Railway project `same-day-customer-growth-pack`.
+A real external browser can reach the Same-Day Customer Growth Pack production PWA and retrieve the minimum assets needed to present the live Sales OS without server-side failure.
 
 ### Observed evidence
-- Railway reports the current `sales-engine-pwa` deployment as `SUCCESS` with one running replica and no current service issues.
-- Railway healthcheck for `/` succeeded.
-- Observed external Chromium traffic received HTTP 200 responses for `/`, `/styles.css`, `/supabase-config.js`, `/app.js`, `/manifest.webmanifest`, `/data/scripts.json`, `/data/leads.json`, `/favicon.ico`, `/icon.svg`, and `/sw.js`.
-- The sampled production HTTP window contained 2xx/3xx responses and no observed 4xx or 5xx responses.
-- Observed response latency in that window was low: sampled p50 approximately 2 ms and p99 approximately 12 ms at the Railway edge/service measurement layer.
+Production service: `sales-engine-pwa`  
+Public domain: `https://sales-engine-pwa-production.up.railway.app`
 
-### Evidence classification
-- E1 Verified Fact: deployment state, healthcheck state, repository configuration, RLS configuration.
-- E2 Current External Evidence: real public-domain HTTP requests and returned status codes.
-- E4 Internal Observation: interpretation that the production delivery path is functioning for the sampled requests.
-- No E3 Customer-Derived Evidence is claimed from this loop because no authenticated external user or customer feedback is present.
+Previously observed production Chromium traffic received successful responses for the application and required assets. Railway reported the service healthy in that verification window.
 
 ### Decision
-**KEEP** the current public Railway PWA delivery path.
+**KEEP** the public Railway Sales OS delivery path.
 
-**REVISE** the production validation milestone: architecture work is not the priority. The next required proof is authenticated-user persistence and a real workflow event written/read through Supabase from the production client.
-
-### Limitations
-This loop proves public delivery of the PWA assets in the sampled production traffic. It does not prove visual correctness on every device, authentication success, cross-device persistence, offline reconciliation, prospect response, payment, customer acquisition, revenue, or commercial conversion.
+This does not prove authenticated Founder Dynasty OS persistence, prospect response, payment, revenue, or commercial conversion.
 
 ---
 
-## Evidence Loop 002 — Genuine Prospect Outreach (in observation)
+## Evidence Loop 002 — Genuine Prospect Outreach (observation)
 
-### Hypothesis
-A verified prospect can be contacted through the current evidence-backed sales workflow, with the real contact event preserved separately from research refreshes.
+A real outreach email was sent to Therma Tech at `info@thermatechhvac.com`. The Gmail send event exists and the pipeline preserved the prospect as Contacted while reply, paid, fulfilled, and opt-out fields remained empty unless those events genuinely occurred.
 
-### External action observed
-On 2026-09-07 a real outreach email was sent from the connected Gmail account to Therma Tech at `info@thermatechhvac.com` using the prospect-specific Same-Day Customer Growth Pack message. Gmail message/thread ID: `1a07d94dc355abc7`.
-
-### Current observed result
-- Send event exists in Gmail and is labeled SENT.
-- No genuine reply was present at the immediate follow-up check.
-- Pipeline history records Therma Tech as `Contacted` while leaving reply, paid, fulfilled, and opt-out fields empty unless those events actually occur.
-
-### Evidence classification
-- E1 Verified Fact: Gmail send event and message identifier.
-- E2 Current External Evidence: verified prospect/contact endpoint used for outreach.
-- E4 Internal Observation: pipeline transition from Contact Ready to Contacted.
-- E3 Customer-Derived Evidence: **none yet**.
-
-### Decision state
-**OBSERVE**. Do not count the send as a reply, customer, payment, revenue, or successful conversion. If a genuine reply occurs, classify and record it. If no reply occurs after the defined follow-up window, record that non-response as the outcome and use it to REVISE targeting/message strategy rather than inventing success.
+### Decision
+**OBSERVE**. A sent email is not a reply, a customer, a payment, or revenue.
 
 ---
 
-## Evidence Loop 003 — Standalone Founder Dynasty OS Web Production Acceptance
+## Evidence Loop 003 — Standalone Founder Dynasty OS Production Acceptance
 
 ### Scope
-This loop covers the source-implemented broad standalone `web/` surfaces around the shared business record: Business Stage, Business DNA, Founder Command Center, Value Map, Decisions, Opportunities, Risks, Business Memory, authenticated persistence structure, evidence capture/review structure, metadata, and production deployment.
 
-### Source state verified
-The `web/` source currently connects the broad shell to one shared `BusinessRecord` model containing:
+This loop covers the broad standalone `web/` product around the shared Business Record:
 
-- Business DNA and stage;
-- value items;
-- decisions;
-- risks;
-- opportunities;
-- business memory;
-- evidence-linked proposals.
+- Business Stage
+- Business DNA
+- Founder Command Center
+- Value Map
+- Decisions
+- Opportunities
+- Risks
+- Business Memory
+- authenticated persistence structure
+- website evidence capture
+- evidence proposal review
+- Customers & Growth → Sales OS integration
 
-The Supabase-backed store loads and writes these modules against one account-owned business ID rather than maintaining unrelated local copies.
+### Current exact production runtime
 
-### Current production build/runtime evidence
-Railway service: `founder-dynasty-os-web`
+Railway service: `founder-dynasty-os-web`  
 Public domain: `https://founder-dynasty-os-web-production.up.railway.app`
-Production deployment: `5a914db9-5885-47ad-bea3-93e68582a45e`
-Deployed source commit: `e9d7bafb96778af3631ed9a3478c2aaebf9c1e79`
 
-Observed Railway evidence on 2026-09-13:
+Current accepted production checkpoint:
 
-- deployment status: `SUCCESS`;
-- Railway built the exact current source commit shown above, removing the earlier stale-revision ambiguity;
-- Next.js compilation completed successfully;
-- TypeScript validation completed successfully;
-- static generation completed successfully;
-- build emitted `/`, `/answers`, `/api/evidence/website`, `/api/health`, `/manifest.webmanifest`, `/robots.txt`, and `/sitemap.xml`;
-- production container started successfully with Next.js 16.3.4;
-- Railway production healthcheck now targets `/api/health`, not merely `/`;
-- `/api/health` returns non-success when the public Supabase URL, public Supabase publishable key, or deployment source revision is missing;
-- Railway's `/api/health` healthcheck succeeded for deployment `5a914db9-5885-47ad-bea3-93e68582a45e`, proving those required production configuration values were present at runtime and the route returned a successful status;
-- `FDOS_DEPLOY_REV` was set to the exact deployed Git commit so the runtime can report production provenance without exposing credentials;
-- the GitHub `Founder OS Standalone Web` workflow for commit `e9d7bafb96778af3631ed9a3478c2aaebf9c1e79` completed successfully;
-- the PHP lint workflow for the same commit also completed successfully.
+- deployment: `4fd5eadb-35c6-4bf2-b66d-e21f3e3e8974`
+- deployed Git commit: `be8fd931a22d83cf0e9c7c9af9a1aeb8686d4827`
+- deployment status: `SUCCESS`
+- application: `founder-os-web@0.3.0`
+- Next.js: `16.3.4`
+- production compilation: passed
+- TypeScript: passed
+- static generation: passed
+- observed production install audit: 37 packages, **0 vulnerabilities**
+- production container: started successfully
+- Railway healthcheck path: `/api/health`
+- `/api/health`: succeeded on the first observed healthcheck attempt
+- production route set includes `/`, `/answers`, `/api/evidence/website`, `/api/health`, `/sales-engine-app`, `/manifest.webmanifest`, `/robots.txt`, and `/sitemap.xml`
+- `FDOS_DEPLOY_REV` was aligned to the accepted repository revision
+
+### CI evidence
+
+Atomic-bootstrap web integration commit:
+
+`9e34e6e07818ac49eaf0a60c864f97697509e087`
+
+For that commit:
+
+- `Founder OS Standalone Web` run `34760724373`: **SUCCESS**
+- `PHP Lint` run `34760724411`: **SUCCESS**
+
+The later repository-head commit `be8fd931a22d83cf0e9c7c9af9a1aeb8686d4827` mirrors the already-applied production database migration and is the exact revision Railway deployed.
 
 ### Production data-layer evidence
-On 2026-09-13 the production Supabase project was inspected directly.
 
-Verified tables:
+Verified FDOS tables:
 
 - `fdos_business_records`
 - `fdos_value_items`
@@ -115,87 +98,126 @@ Verified tables:
 - `fdos_evidence`
 - `fdos_evidence_proposals`
 
-RLS is enabled on every listed FDOS table. Owner-scoped policies compare `user_id` with the authenticated user; the proposal table has explicit SELECT/INSERT/UPDATE/DELETE owner policies.
+RLS is enabled on the implemented FDOS tables with account-owner policies. The proposal table has explicit owner operations. The evidence-apply RPC requires an owned pending proposal before applying it and records the approved change in Business Memory.
 
-The `fdos_apply_evidence_proposal` RPC exists and requires the proposal to be pending and owned by `auth.uid()` before applying it. It records the approved proposal in Business Memory.
+A prior production-database transaction smoke test inserted representative shared-record rows and rolled the transaction back. It proved schema compatibility for that test shape but did not prove browser auth/RLS behavior. No smoke-test rows were intentionally left behind.
 
-A production-database transactional smoke test inserted a temporary Business Record plus representative Value, Decision, Risk, Opportunity, Memory, and Evidence rows inside a single transaction and rolled the transaction back. No smoke-test rows were left behind.
+### Database performance hardening
 
-A separate attempted synthetic RLS impersonation test was intentionally not treated as evidence because the execution path was blocked before it ran. Policy inspection is verified; browser-level cross-user isolation remains an acceptance requirement.
+Production migration `optimize_fdos_rls_and_foreign_key_indexes` added covering indexes and changed FDOS owner RLS expressions to `(select auth.uid())` where appropriate. The prior FDOS unindexed-foreign-key and `auth_rls_initplan` findings cleared on advisor re-scan.
 
-### FDOS database hardening verified
-The production Supabase performance advisor initially identified two FDOS-specific classes of findings:
-
-1. owner/user and proposal foreign-key columns without covering indexes;
-2. RLS policies calling `auth.uid()` in a form that could be re-evaluated per row.
-
-Production migration `optimize_fdos_rls_and_foreign_key_indexes` was applied on 2026-09-13. It:
-
-- added covering indexes for FDOS owner/user foreign keys and the proposal business/evidence foreign keys;
-- changed FDOS owner-policy expressions from direct `auth.uid()` calls to `(select auth.uid())`, preserving owner-isolation semantics while allowing PostgreSQL to initialize the auth value once per statement.
-
-The performance advisor was run again after the migration. The previous FDOS unindexed-foreign-key findings and FDOS `auth_rls_initplan` warnings were cleared. Remaining FDOS index notices are only `unused_index` informational messages, which are expected while the FDOS production tables contain no persistent rows or traffic yet.
-
-The exact production migration is mirrored in source at:
+Source mirror:
 
 `db/migrations/20260913_optimize_fdos_rls_and_foreign_key_indexes.sql`
 
-Source mirror commit: `70e05a1a583a8eefc6b9bbb864a996a508bdb491`.
+### Atomic Business Record bootstrap hardening
 
-A fresh security-advisor scan did not identify an FDOS-table security-policy warning. It did report warnings in other products/tables sharing the project and a project-wide Auth leaked-password-protection warning; those are not evidence of an FDOS table-policy failure and should be remediated in their owning workstreams rather than silently conflated with this acceptance loop.
+The previous browser-side first-record path used a select followed by a conditional insert. Two overlapping auth hydration paths could therefore race during first use.
 
-### What this proves
+Production migration `add_atomic_fdos_business_bootstrap` created `public.fdos_ensure_business()` with these properties:
 
-**VERIFIED:**
+- `SECURITY INVOKER`
+- explicit safe search path
+- derives the current owner from `auth.uid()`
+- rejects unauthenticated calls
+- takes a same-user transaction-scoped advisory lock before checking/creating
+- returns the existing earliest Business Record if one is already present
+- otherwise creates the default Business Record plus one E4 `Workspace created` memory event
+- public execution revoked
+- authenticated execution granted
 
-- the broad standalone shell compiles and type-checks in both CI and the real production build environment;
-- the exact current web source revision is deployed to Railway production;
+A production inspection confirmed the function exists as non-`SECURITY DEFINER` and the authenticated role can execute it.
+
+The web client now calls `fdos_ensure_business()` instead of performing its own check-then-insert sequence.
+
+Web integration commit:
+
+`9e34e6e07818ac49eaf0a60c864f97697509e087`
+
+Production migration mirror:
+
+`db/migrations/20260913_add_atomic_fdos_business_bootstrap.sql`
+
+Mirror/current deployed repository head:
+
+`be8fd931a22d83cf0e9c7c9af9a1aeb8686d4827`
+
+### Sales OS neighborhood integration
+
+The standalone shell's `/sales-engine-app` route now bridges to the separately deployed Sales OS rather than resolving to a nonexistent local application path.
+
+Bridge source commit:
+
+`adccb5a148da64bafb081303352dd582f854062d`
+
+The bridge validates its configured destination, requires HTTPS, and issues a temporary redirect. `/sales-engine-app` is present in the current production route set. An independent public-browser observation of the final redirect hop remains separate external evidence and has not been fabricated.
+
+## What this proves
+
+### SOURCE COMPLETE / PRODUCTION RUNTIME VERIFIED
+
+Verified at this checkpoint:
+
+- the broad standalone shell compiles and type-checks;
+- the exact accepted repository revision is deployed to Railway production;
 - the deployed service starts successfully;
-- the production `/api/health` endpoint exists and passes Railway's healthcheck while validating required public runtime configuration;
-- the shared FDOS persistence tables exist in production;
-- owner-scoped RLS is configured on the implemented FDOS tables;
-- the production schema accepts the representative shared-record persistence shapes exercised by the rollback smoke test;
-- the evidence-proposal apply function has an owner/pending-state gate in its database implementation;
-- FDOS-specific advisor findings for missing foreign-key indexes and per-row auth initialization were remediated and cleared on re-scan;
-- the production database hardening change has a source-controlled migration mirror.
+- `/api/health` succeeds while enforcing required public runtime configuration and deployment provenance;
+- current dependency audit in the observed production build reports zero vulnerabilities;
+- the shared FDOS persistence tables exist;
+- account-owner RLS is configured on implemented FDOS tables;
+- FDOS-specific index/RLS performance findings were remediated;
+- evidence-proposal application has an owner/pending-state gate;
+- the website evidence route is present in production;
+- the Sales OS bridge route is present in production;
+- atomic first-Business bootstrap exists in production;
+- the deployed client uses the atomic bootstrap RPC.
 
-### What is not yet proven
+## What is not yet proven
 
-**NOT YET PROVEN:**
+### PRODUCTION USER VERIFIED — NOT YET COMPLETE
 
-- a real browser session signing into the standalone Founder Dynasty OS web app and creating its first `fdos_business_records` row;
-- Business DNA save → logout → second-session login → restore through the standalone web UI;
-- UI-level create/read flows for Value, Decision, Risk, Opportunity, and Memory in a real authenticated production browser;
-- website evidence capture through the deployed `/api/evidence/website` route with a real authenticated token;
+Still requires genuine deployed-browser evidence:
+
+- a real user signs into the standalone Founder Dynasty OS app and creates or loads the first persistent `fdos_business_records` row;
+- Business DNA save → sign out → fresh sign in → restore through the UI;
+- UI create/read flows for Value, Decision, Risk, Opportunity, and Memory;
+- website evidence capture through the deployed UI with a real authenticated token;
 - founder approve/reject of evidence proposals through the production UI;
-- second-user isolation through two genuine authenticated browser sessions;
-- visual correctness on every supported Android/desktop viewport.
+- approved evidence-linked changes and Business Memory are observed after restore;
+- second-user isolation is verified using two genuine authenticated sessions;
+- mobile/Android and desktop visual/interaction acceptance is completed.
 
-The production database currently contains no persistent FDOS business records, so authenticated standalone-web workflow completion must not be claimed yet.
+A function existing in Postgres and a green healthcheck do not magically become a user journey. Computers are annoyingly literal that way.
 
-### Current decision
+## Current decision
 
-**KEEP** the shared Business Record architecture, broad-shell direction, current-source provenance gate, dedicated production health endpoint, and optimized owner-policy/index structure.
+**KEEP**:
 
-**REVISE** the definition of "done": any source-implemented Founder Dynasty OS web feature must clear build/schema/runtime checks and a real authenticated production UI workflow before it is called 100% production-tested.
+- broad shared-Business-Record architecture
+- account-owned Supabase persistence
+- E1–E8 evidence discipline
+- founder approval before evidence-derived canonical changes
+- current-source provenance gate
+- `/api/health`
+- optimized RLS/index structure
+- atomic bootstrap RPC
+- Sales OS nested under Customers & Growth
 
-The highest-value remaining acceptance loop is:
+**REVISE** the definition of “done” only by making it stricter: every source-implemented user-facing feature must clear source/build checks, exact-source production runtime checks, and a genuine authenticated production workflow before it is called 100% production-tested.
 
-`sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → log out → sign back in → verify restore → capture website evidence → approve/reject proposals → verify evidence links + memory → second-user isolation → mobile/desktop visual pass → KEEP / REVISE / REVERT`.
+## Highest-value remaining acceptance loop
+
+`sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → sign out → sign back in → verify restore → capture website evidence → approve/reject proposals → verify evidence links + memory → second-user isolation → mobile/desktop visual pass → KEEP / REVISE / REVERT`
 
 ---
 
-## Sales OS Authenticated Persistence Validation Status
-
-The Sales OS has separate authenticated-persistence evidence and should not be used as proof that the standalone Founder Dynasty OS web client has completed the same browser-level workflow.
-
 ## Production completion rule
 
-For every source-implemented feature, distinguish:
+Keep these states separate:
 
-- **SOURCE COMPLETE** — implementation exists and passes build/type/schema checks;
-- **PRODUCTION RUNTIME VERIFIED** — the exact source revision is deployed and its required runtime/dependency path works;
-- **PRODUCTION USER VERIFIED** — a real authenticated user completes the feature in the deployed UI and state survives the required session/device boundaries;
+- **SOURCE COMPLETE** — implementation exists and passes build/type/schema checks.
+- **PRODUCTION RUNTIME VERIFIED** — the exact accepted source is deployed and required runtime/dependency paths work.
+- **PRODUCTION USER VERIFIED** — a genuine authenticated user completes the feature in the deployed UI and state survives required session/device boundaries.
 - **COMMERCIAL EVIDENCE** — genuine external customer/user behavior exists.
 
-Do not collapse these categories. Humans have already invented enough ways to call something "done" while quietly meaning four different things.
+Do not collapse them. “It deployed” and “a person successfully used it” are different sentences for a reason.
