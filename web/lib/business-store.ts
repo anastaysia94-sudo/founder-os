@@ -2,13 +2,11 @@ import type { User } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 import type { BusinessDNA, BusinessRecord, Decision, EvidenceProposal, MemoryEvent, Opportunity, Risk, ValueItem } from './fdos';
 
-function blankDNA(): BusinessDNA {return {name:'Untitled business',stage:'Idea',purpose:'',problem:'',customer:'',offer:'',revenueModel:'',advantage:'',constraint:'',currentGoal:'Reduce the biggest uncertainty first.'};}
-
-export async function ensureBusiness(user: User): Promise<string> {
-  const existing=await supabase.from('fdos_business_records').select('id').eq('user_id',user.id).order('created_at').limit(1).maybeSingle();
-  if(existing.error)throw existing.error;if(existing.data?.id)return existing.data.id;
-  const dna=blankDNA();const created=await supabase.from('fdos_business_records').insert({user_id:user.id,name:dna.name,stage:dna.stage,purpose:dna.purpose,problem:dna.problem,customer:dna.customer,offer:dna.offer,revenue_model:dna.revenueModel,advantage:dna.advantage,constraint_text:dna.constraint,current_goal:dna.currentGoal}).select('id').single();
-  if(created.error)throw created.error;await supabase.from('fdos_memory').insert({user_id:user.id,business_id:created.data.id,kind:'Workspace created',summary:'Founder Dynasty OS created this business record.',evidence_class:'E4'});return created.data.id;
+export async function ensureBusiness(_user: User): Promise<string> {
+  const q=await supabase.rpc('fdos_ensure_business');
+  if(q.error)throw q.error;
+  if(!q.data)throw new Error('Could not create or load the business record.');
+  return q.data as string;
 }
 
 export async function loadBusinessRecord(user:User,businessId:string):Promise<BusinessRecord>{
