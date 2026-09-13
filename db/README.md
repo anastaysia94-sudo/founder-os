@@ -54,7 +54,7 @@ This migration created `fdos_store_website_evidence(...)`, which writes the E2 E
 
 A production ACL inspection found that explicit `anon` EXECUTE grants could survive a revoke from `PUBLIC`. This migration explicitly removes anonymous execution from FDOS application RPCs and retains authenticated execution.
 
-### Relationship-aware RLS
+### Business relationship-aware RLS
 
 `migrations/20260913_enforce_fdos_business_relationships_in_rls.sql`
 
@@ -62,12 +62,22 @@ This migration strengthens child-table policies so owner identity and referenced
 
 This matters because `user_id = auth.uid()` alone is not enough to prevent a malicious caller from supplying another tenant's known `business_id` as a foreign key. Multi-tenant isolation should validate the relationship, not merely admire the UUIDs and hope everyone behaves.
 
+### Evidence relationship-aware RLS
+
+`migrations/20260913_enforce_fdos_evidence_relationships_in_rls.sql`
+
+Value, Decision, Risk, Opportunity, and Business Memory rows may optionally point to an Evidence row. Their policies now require any non-null `evidence_id` to reference Evidence owned by the same authenticated user and attached to the same Business Record.
+
+This closes a second referential-isolation gap: a row could previously belong to the correct user and Business while still carrying another tenant's known Evidence UUID. Evidence Proposals already require the same owner/Business/Evidence relationship and remain scoped to `authenticated`.
+
 ## Verification discipline
 
 After an FDOS database migration, inspect at least the relevant subset of:
 
 - table RLS enablement;
 - policy roles, USING expressions, and WITH CHECK expressions;
+- Business ownership of child rows;
+- Evidence ownership and Business consistency for every non-null evidence link;
 - function security mode and configured search path;
 - effective function EXECUTE grants, including explicit role grants;
 - foreign-key indexes;
