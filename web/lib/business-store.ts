@@ -1,6 +1,6 @@
 import type { User } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import type { BusinessDNA, BusinessRecord, Decision, EvidenceProposal, MemoryEvent, Opportunity, Risk, ValueItem } from './fdos';
+import type { BusinessDNA, BusinessRecord, Decision, EvidenceProposal, MemoryEvent, Opportunity, Risk, ValueItem, ValueSprint } from './fdos';
 
 export async function ensureBusiness(_user: User): Promise<string> {
   const q = await supabase.rpc('fdos_ensure_business');
@@ -10,16 +10,17 @@ export async function ensureBusiness(_user: User): Promise<string> {
 }
 
 export async function loadBusinessRecord(user: User, businessId: string): Promise<BusinessRecord> {
-  const [b, v, d, r, o, m] = await Promise.all([
+  const [b, v, d, r, o, m, s] = await Promise.all([
     supabase.from('fdos_business_records').select('*').eq('id', businessId).eq('user_id', user.id).single(),
     supabase.from('fdos_value_items').select('*').eq('business_id', businessId).eq('user_id', user.id).order('created_at'),
     supabase.from('fdos_decisions').select('*').eq('business_id', businessId).eq('user_id', user.id).order('created_at'),
     supabase.from('fdos_risks').select('*').eq('business_id', businessId).eq('user_id', user.id).order('created_at'),
     supabase.from('fdos_opportunities').select('*').eq('business_id', businessId).eq('user_id', user.id).order('created_at'),
     supabase.from('fdos_memory').select('*').eq('business_id', businessId).eq('user_id', user.id).order('occurred_at', { ascending: false }),
+    supabase.from('fdos_value_sprints').select('*').eq('business_id', businessId).eq('user_id', user.id).order('created_at', { ascending: false }),
   ]);
 
-  for (const q of [b, v, d, r, o, m]) if (q.error) throw q.error;
+  for (const q of [b, v, d, r, o, m, s]) if (q.error) throw q.error;
   const row: any = b.data;
 
   return {
@@ -41,6 +42,7 @@ export async function loadBusinessRecord(user: User, businessId: string): Promis
     risks: (r.data || []).map((x: any): Risk => ({ id: x.id, title: x.title, level: x.level, evidence: x.evidence_class, response: x.response, evidenceId: x.evidence_id || undefined, sourceUrl: x.source_url || undefined })),
     opportunities: (o.data || []).map((x: any): Opportunity => ({ id: x.id, title: x.title, observation: x.observation, evidence: x.evidence_class, confidence: x.confidence, impact: x.impact, speed: x.speed, reversibility: x.reversibility, cost: x.cost, complexity: x.complexity, risk: x.risk, evidenceId: x.evidence_id || undefined, sourceUrl: x.source_url || undefined })),
     memory: (m.data || []).map((x: any): MemoryEvent => ({ id: x.id, date: new Date(x.occurred_at).toLocaleString(), kind: x.kind, summary: x.summary, evidence: x.evidence_class, evidenceId: x.evidence_id || undefined, sourceUrl: x.source_url || undefined })),
+    valueSprints: (s.data || []).map((x: any): ValueSprint => ({ id: x.id, title: x.title, hypothesis: x.hypothesis, action: x.action, measure: x.measure, baseline: x.baseline, target: x.target, result: x.result, status: x.status, decision: x.decision || undefined, evidence: x.evidence_class, evidenceId: x.evidence_id || undefined, sourceUrl: x.source_url || undefined, startedAt: x.started_at || undefined, measuredAt: x.measured_at || undefined })),
   };
 }
 
@@ -94,6 +96,55 @@ export async function addOpportunity(user: User, businessId: string, item: Omit<
 
 export async function addMemory(user: User, businessId: string, item: Omit<MemoryEvent, 'id' | 'date'>) {
   const q = await supabase.from('fdos_memory').insert({ user_id: user.id, business_id: businessId, kind: item.kind, summary: item.summary, evidence_class: item.evidence, source_url: item.sourceUrl || null, evidence_id: item.evidenceId || null }).select('*').single();
+  if (q.error) throw q.error;
+  return q.data;
+}
+
+export async function addValueSprint(user: User, businessId: string, item: Omit<ValueSprint, 'id' | 'startedAt' | 'measuredAt'>) {
+  const q = await supabase.from('fdos_value_sprints').insert({
+    user_id: user.id,
+    business_id: businessId,
+    title: item.title,
+    hypothesis: item.hypothesis,
+    action: item.action,
+    measure: item.measure,
+    baseline: item.baseline,
+    target: item.target,
+    result: item.result,
+    status: item.status,
+    decision: item.decision || null,
+    evidence_class: item.evidence,
+    source_url: item.sourceUrl || null,
+    evidence_id: item.evidenceId || null,
+    started_at: item.status === 'Running' ? new Date().toISOString() : null,
+  }).select('*').single();
+  if (q.error) throw q.error;
+  return q.data;
+}
+
+export async function updateValueSprint(user: User, businessId: string, sprintId: string, patch: Partial<Omit<ValueSprint, 'id' | 'evidenceId' | 'sourceUrl' | 'evidence'>>) {
+  const row: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (patch.title !== undefined) row.title = patch.title;
+  if (patch.hypothesis !== undefined) row.hypothesis = patch.hypothesis;
+  if (patch.action !== undefined) row.action = patch.action;
+  if (patch.measure !== undefined) row.measure = patch.measure;
+  if (patch.baseline !== undefined) row.baseline = patch.baseline;
+  if (patch.target !== undefined) row.target = patch.target;
+  if (patch.result !== undefined) row.result = patch.result;
+  if (patch.status !== undefined) row.status = patch.status;
+  if (patch.decision !== undefined) row.decision = patch.decision;
+  if (patch.startedAt !== undefined) row.started_at = patch.startedAt;
+  if (patch.measuredAt !== undefined) row.measured_at = patch.measuredAt;
+  if (patch.status === 'Running' && patch.startedAt === undefined) row.started_at = new Date().toISOString();
+  if (['Measured', 'Keep', 'Revise', 'Revert'].includes(patch.status || '') && patch.measuredAt === undefined) row.measured_at = new Date().toISOString();
+
+  const q = await supabase.from('fdos_value_sprints')
+    .update(row)
+    .eq('id', sprintId)
+    .eq('business_id', businessId)
+    .eq('user_id', user.id)
+    .select('*')
+    .single();
   if (q.error) throw q.error;
   return q.data;
 }
