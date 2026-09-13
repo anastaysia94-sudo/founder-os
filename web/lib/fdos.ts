@@ -62,6 +62,25 @@ export type ValueItem = {
   evidence: EvidenceClass;
 } & EvidenceLink;
 
+export type ValueSprintStatus = 'Planned' | 'Running' | 'Measured' | 'Keep' | 'Revise' | 'Revert';
+export type ValueSprintDecision = 'Keep' | 'Revise' | 'Revert';
+
+export type ValueSprint = {
+  id: string;
+  title: string;
+  hypothesis: string;
+  action: string;
+  measure: string;
+  baseline: string;
+  target: string;
+  result: string;
+  status: ValueSprintStatus;
+  decision?: ValueSprintDecision;
+  evidence: EvidenceClass;
+  startedAt?: string;
+  measuredAt?: string;
+} & EvidenceLink;
+
 export type BusinessDNA = {
   name: string;
   stage: BusinessStage;
@@ -83,6 +102,7 @@ export type BusinessRecord = {
   risks: Risk[];
   memory: MemoryEvent[];
   valueMap: ValueItem[];
+  valueSprints: ValueSprint[];
 };
 
 export type EvidenceProposal = {
@@ -102,6 +122,31 @@ export type StageGuide = {
   job: string;
   prove: string;
   avoid: string;
+};
+
+export type MissingIntelligenceItem = {
+  id: string;
+  level: 'Now' | 'Soon' | 'Watch';
+  area: string;
+  question: string;
+  why: string;
+  next: string;
+};
+
+export type XRaySignal = {
+  id: string;
+  label: string;
+  score: number;
+  state: 'Strong' | 'Developing' | 'Weak';
+  why: string;
+  next: string;
+};
+
+export type IdeaLabPrompt = {
+  id: string;
+  title: string;
+  question: string;
+  writesTo: keyof BusinessDNA;
 };
 
 export const evidenceLabels: Record<EvidenceClass, string> = {
@@ -178,6 +223,21 @@ export const stageGuidance: Record<BusinessStage, StageGuide> = {
   },
 };
 
+const evidenceWeight: Record<EvidenceClass, number> = {
+  E1: 1,
+  E2: 0.9,
+  E3: 0.95,
+  E4: 0.55,
+  E5: 0.35,
+  E6: 0.3,
+  E7: 0.25,
+  E8: 0.1,
+};
+
+function clampScore(value: number) {
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
 export function score(o: Opportunity) {
   const denominator = Math.max(1, (o.cost + o.complexity + o.risk) * 10);
   return Math.min(
@@ -203,22 +263,82 @@ export function dnaCompleteness(dna: BusinessDNA) {
 }
 
 export function getMissingQuestions(record: BusinessRecord) {
-  const missing: string[] = [];
+  return getMissingIntelligence(record).map((item) => item.question).slice(0, 6);
+}
+
+export function getMissingIntelligence(record: BusinessRecord): MissingIntelligenceItem[] {
+  const items: MissingIntelligenceItem[] = [];
   const dna = record.dna;
 
-  if (!dna.problem.trim()) missing.push('What painful or valuable problem are we actually solving?');
-  if (!dna.customer.trim()) missing.push('Who specifically has this problem strongly enough to care?');
-  if (!dna.offer.trim()) missing.push('What are we promising to deliver to that customer?');
-  if (!dna.revenueModel.trim()) missing.push('How does value turn into money, funding or another durable return?');
-  if (!dna.advantage.trim()) missing.push('Why might this business win instead of being interchangeable?');
-  if (!dna.constraint.trim()) missing.push('What is the biggest limit on progress right now?');
-  if (!dna.currentGoal.trim()) missing.push('What single result matters most next?');
-  if (!record.opportunities.length) missing.push('What is the highest-value next action worth testing?');
-  if (!record.decisions.length) missing.push('What important choice is still unresolved?');
-  if (!record.risks.length) missing.push('What could seriously damage the current goal?');
-  if (!record.valueMap.length) missing.push('Where is value created, captured, leaking, at risk or becoming an asset?');
+  const add = (item: MissingIntelligenceItem) => items.push(item);
+  if (!dna.problem.trim()) add({ id: 'problem', level: 'Now', area: 'Idea & Strategy', question: 'What painful or valuable problem are we actually solving?', why: 'Without a specific problem, product and marketing decisions drift into feature collecting.', next: 'Write one problem statement in the customer’s language.' });
+  if (!dna.customer.trim()) add({ id: 'customer', level: 'Now', area: 'Customer Intelligence', question: 'Who specifically has this problem strongly enough to care?', why: 'A business cannot validate demand against “everyone.”', next: 'Name the narrowest plausible first customer group.' });
+  if (!dna.offer.trim()) add({ id: 'offer', level: 'Now', area: 'Product & Offer', question: 'What are we promising to deliver to that customer?', why: 'The customer needs a concrete outcome, not an internal list of features.', next: 'Describe the result, delivery form and boundary of the first offer.' });
+  if (!dna.revenueModel.trim()) add({ id: 'money', level: 'Soon', area: 'Money', question: 'How does value turn into money, funding or another durable return?', why: 'A useful product still needs a sustainable value-capture mechanism.', next: 'Choose the first pricing or funding assumption to test.' });
+  if (!dna.advantage.trim()) add({ id: 'advantage', level: 'Soon', area: 'Strategy', question: 'Why might this business win instead of being interchangeable?', why: 'Without an advantage hypothesis, competition usually becomes a price race.', next: 'Name one capability, asset, insight, relationship or experience that could compound.' });
+  if (!dna.constraint.trim()) add({ id: 'constraint', level: 'Now', area: 'Founder Attention', question: 'What is the biggest limit on progress right now?', why: 'The highest-value work usually attacks the current bottleneck, not the longest task list.', next: 'Name the one constraint that makes everything else harder.' });
+  if (!dna.currentGoal.trim()) add({ id: 'goal', level: 'Now', area: 'Command Center', question: 'What single result matters most next?', why: 'Prioritization is impossible if every result is simultaneously “top priority.”', next: 'Choose one observable result for the current stage.' });
+  if (!record.opportunities.length) add({ id: 'opportunity', level: 'Now', area: 'Opportunity Engine', question: 'What is the highest-value next action worth testing?', why: 'A business record should convert uncertainty into action.', next: 'Add at least one reversible, evidence-seeking opportunity.' });
+  if (!record.decisions.length) add({ id: 'decision', level: 'Soon', area: 'Decision Engine', question: 'What important choice is still unresolved?', why: 'Unrecorded decisions get re-litigated and lose their original reasoning.', next: 'Capture one decision, the next step and what evidence would change your mind.' });
+  if (!record.risks.length) add({ id: 'risk', level: 'Soon', area: 'Risk Center', question: 'What could seriously damage the current goal?', why: 'Risk ignored is not risk removed. Humans have tried this strategy for centuries with mixed reviews.', next: 'Record the most consequential plausible failure and a response.' });
+  if (!record.valueMap.length) add({ id: 'value', level: 'Soon', area: 'Value Map', question: 'Where is value created, captured, leaking, at risk or becoming an asset?', why: 'The OS needs to know where enterprise value is actually moving.', next: 'Add one value creator and one leak or at-risk item.' });
+  if (!record.valueSprints.length) add({ id: 'sprint', level: 'Now', area: 'Value Sprint', question: 'What single improvement can we test and measure instead of debating?', why: 'A measured test turns a strategic argument into evidence.', next: 'Start one Value Sprint with a hypothesis, action and success measure.' });
 
-  return missing.slice(0, 6);
+  const externalEvidenceCount = [...record.opportunities, ...record.decisions, ...record.risks, ...record.valueMap, ...record.valueSprints]
+    .filter((item) => item.evidence === 'E1' || item.evidence === 'E2' || item.evidence === 'E3').length;
+  if (externalEvidenceCount === 0) add({ id: 'evidence', level: 'Now', area: 'Research & Evidence', question: 'What do we know from outside the founder’s own head?', why: 'A beautifully organized assumption is still an assumption.', next: 'Capture current external evidence or customer-derived evidence for the riskiest claim.' });
+
+  return items.slice(0, 10);
+}
+
+export function getIdeaLabPrompts(record: BusinessRecord): IdeaLabPrompt[] {
+  const dna = record.dna;
+  const candidates: IdeaLabPrompt[] = [
+    { id: 'purpose', title: 'Reason to exist', question: 'If this business works, what becomes meaningfully better for someone?', writesTo: 'purpose' },
+    { id: 'problem', title: 'Problem worth solving', question: 'What frustrating, expensive, risky or valuable problem are you trying to change?', writesTo: 'problem' },
+    { id: 'customer', title: 'First customer', question: 'Who feels that problem most strongly and is easiest to reach first?', writesTo: 'customer' },
+    { id: 'offer', title: 'First offer', question: 'What useful result could you deliver before building the giant version?', writesTo: 'offer' },
+    { id: 'revenueModel', title: 'Value capture', question: 'If the customer gets value, how could the business capture enough value to survive?', writesTo: 'revenueModel' },
+    { id: 'advantage', title: 'Reason to choose you', question: 'What might make this meaningfully better, easier, faster, safer or harder to copy?', writesTo: 'advantage' },
+    { id: 'constraint', title: 'Current bottleneck', question: 'What one limit is most likely to slow learning or progress?', writesTo: 'constraint' },
+    { id: 'currentGoal', title: 'Next proof point', question: 'What one result would make the next decision easier?', writesTo: 'currentGoal' },
+  ];
+  return candidates.sort((a, b) => Number(Boolean(dna[a.writesTo].trim())) - Number(Boolean(dna[b.writesTo].trim())));
+}
+
+export function getBusinessXRay(record: BusinessRecord): XRaySignal[] {
+  const allEvidence = [...record.opportunities, ...record.decisions, ...record.risks, ...record.valueMap, ...record.valueSprints];
+  const evidenceScore = allEvidence.length
+    ? allEvidence.reduce((sum, item) => sum + evidenceWeight[item.evidence], 0) / allEvidence.length * 100
+    : 0;
+  const clarity = dnaCompleteness(record.dna);
+  const valueCoverage = clampScore(Math.min(100, record.valueMap.length * 22 + (record.valueMap.some((item) => item.kind === 'Leak') ? 18 : 0) + (record.valueMap.some((item) => item.kind === 'Asset') ? 18 : 0)));
+  const decisionDiscipline = clampScore(Math.min(100, record.decisions.length * 22 + record.memory.length * 7));
+  const execution = clampScore(Math.min(100, record.opportunities.length * 14 + record.valueSprints.length * 30 + record.valueSprints.filter((s) => ['Measured', 'Keep', 'Revise', 'Revert'].includes(s.status)).length * 18));
+  const resilience = clampScore(record.risks.length ? Math.min(100, 35 + record.risks.filter((r) => r.response.trim()).length * 18 - record.risks.filter((r) => r.level === 'High').length * 8) : 0);
+
+  const make = (id: string, label: string, value: number, why: string, next: string): XRaySignal => ({
+    id,
+    label,
+    score: clampScore(value),
+    state: value >= 72 ? 'Strong' : value >= 42 ? 'Developing' : 'Weak',
+    why,
+    next,
+  });
+
+  return [
+    make('clarity', 'Business clarity', clarity, 'Measures how much of the core Business DNA is actually defined.', clarity < 72 ? 'Fill the most consequential missing Business DNA fields.' : 'Keep the DNA current as evidence changes.'),
+    make('evidence', 'Evidence strength', evidenceScore, 'Measures whether saved claims lean toward facts, current external evidence and customer evidence instead of assumptions.', evidenceScore < 60 ? 'Attach stronger outside or customer evidence to the riskiest claims.' : 'Protect the distinction between evidence and interpretation.'),
+    make('value', 'Value visibility', valueCoverage, 'Measures whether the system can see value creation, capture, leakage, risk and assets.', valueCoverage < 60 ? 'Map at least one value creator, one leak or risk, and one compounding asset.' : 'Use the Value Map to choose what deserves a sprint.'),
+    make('decisions', 'Decision discipline', decisionDiscipline, 'Measures whether important choices and lessons are being recorded instead of disappearing into memory and chat threads.', decisionDiscipline < 60 ? 'Record the next important decision and the reasoning behind it.' : 'Close the loop by recording outcomes and changed assumptions.'),
+    make('execution', 'Learning velocity', execution, 'Measures whether opportunities are turning into explicit, measured Value Sprints.', execution < 60 ? 'Turn the highest-ranked reversible opportunity into one Value Sprint.' : 'Finish active sprints and make KEEP / REVISE / REVERT explicit.'),
+    make('resilience', 'Risk readiness', resilience, 'Measures whether meaningful risks are visible and have responses.', resilience < 60 ? 'Name the largest plausible failure and define a response before it becomes a surprise.' : 'Keep high risks visible until their probability or impact changes.'),
+  ];
+}
+
+export function getXRayScore(record: BusinessRecord) {
+  const signals = getBusinessXRay(record);
+  return clampScore(signals.reduce((sum, signal) => sum + signal.score, 0) / signals.length);
 }
 
 export const blankBusiness: BusinessRecord = {
@@ -240,6 +360,7 @@ export const blankBusiness: BusinessRecord = {
   risks: [],
   memory: [],
   valueMap: [],
+  valueSprints: [],
 };
 
 export const demoBusiness: BusinessRecord = {
@@ -307,4 +428,5 @@ export const demoBusiness: BusinessRecord = {
       evidence: 'E5',
     },
   ],
+  valueSprints: [],
 };
