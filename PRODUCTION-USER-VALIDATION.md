@@ -84,11 +84,22 @@ Implemented FDOS tables:
 
 RLS is enabled on the implemented FDOS tables with account-owner policies. The evidence-proposal apply RPC requires an owned pending proposal before applying it and records approved changes in Business Memory.
 
+A fresh production count after the current deployment and database hardening returned zero persistent rows in all eight FDOS tables above. That is expected because no genuine standalone-web user workflow has yet created the first persistent Business Record. It also confirms the migration/deployment work did not quietly seed synthetic “success” data.
+
 A prior production-database transaction smoke test inserted representative shared-record rows and rolled the transaction back. It proved schema compatibility for that test shape, not browser auth/RLS behavior.
 
-### Database performance hardening
+### Database performance and security hardening
 
 Production migration `optimize_fdos_rls_and_foreign_key_indexes` added covering indexes and optimized FDOS owner RLS expressions. The prior FDOS unindexed-foreign-key and `auth_rls_initplan` findings cleared on advisor re-scan.
+
+A fresh advisor scan after the atomic bootstrap and account-switch-safe web deployment found no new FDOS security-policy warning and no FDOS unindexed-foreign-key or per-row auth-initialization warning. Current FDOS performance notices are `unused_index` informational findings, which are expected while the FDOS tables still contain zero persistent rows and have not received real workload traffic.
+
+The same project-wide security scan still reports findings in other products/schemas plus Supabase Auth leaked-password protection being disabled. Those are not evidence of an FDOS table-policy failure and should be handled in their owning workstreams or as a separate shared-auth hardening decision, rather than silently rewriting unrelated products.
+
+Relevant Supabase remediation references:
+
+- RLS linter: https://supabase.com/docs/guides/database/database-linter
+- Password security / leaked-password protection: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
 
 Source mirror:
 
@@ -157,12 +168,14 @@ At this checkpoint:
 - shared FDOS persistence tables exist;
 - account-owner RLS is configured on implemented FDOS tables;
 - FDOS-specific index/RLS performance findings were remediated;
+- post-hardening advisor scans show no new FDOS security-policy or RLS-initplan problem;
 - atomic first-Business bootstrap exists in production and is used by the client;
 - stale-session hydration protections are deployed;
 - previous-account private UI data is cleared before a new account hydrates;
 - evidence-proposal application has account/pending-state gating;
 - website evidence route is present in production;
-- Sales OS bridge route is present in production.
+- Sales OS bridge route is present in production;
+- no synthetic persistent FDOS data was created by the hardening/deployment work.
 
 ## What remains unproven
 
