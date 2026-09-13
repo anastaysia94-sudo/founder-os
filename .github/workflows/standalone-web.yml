@@ -76,6 +76,10 @@ jobs:
           grep -q 'fdos_financial_assumptions' db/migrations/20260913_add_fdos_operating_workbench.sql
           grep -q 'fdos_business_model_elements' db/migrations/20260913_add_fdos_strategy_dynasty_layer.sql
           grep -q 'fdos portfolio theses own rows' db/migrations/20260913_add_fdos_strategy_dynasty_layer.sql
+          grep -q 'fdos_financial_assumptions_business_fk_idx' db/migrations/20260913_harden_fdos_expansion_relationships_and_indexes.sql
+          grep -q 'fdos_business_model_elements_evidence_fk_idx' db/migrations/20260913_harden_fdos_expansion_relationships_and_indexes.sql
+          grep -q 'fdos financial assumptions own rows' db/migrations/20260913_harden_fdos_expansion_relationships_and_indexes.sql
+          grep -q 'e.business_id = fdos_initiatives.business_id' db/migrations/20260913_harden_fdos_expansion_relationships_and_indexes.sql
           grep -q 'fdos_store_website_evidence' web/app/api/evidence/website/route.ts
           grep -q 'Production acceptance diagnostics' web/app/acceptance/page.tsx
           grep -q 'Copy diagnostic snapshot' web/app/acceptance/page.tsx
@@ -100,4 +104,4 @@ jobs:
           test -f web/app/acceptance/page.tsx
           test -f web/app/acceptance/layout.tsx
           test -f web/app/api/health/route.ts
-          echo 'Founder Dynasty OS broad shell, intelligence, build/run workbench, strategy/dynasty layer, evidence integrity, relational RLS, and production-testability contract verified.'
+          echo 'Founder Dynasty OS broad shell, intelligence, build/run workbench, strategy/dynasty layer, evidence integrity, relationship-aware RLS, FK coverage, and production-testability contract verified.'
