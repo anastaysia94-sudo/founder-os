@@ -25,18 +25,18 @@ jobs:
           node-version: '22'
       - name: Install dependencies
         run: npm install --no-audit --no-fund
+      - name: Reject high or critical dependency vulnerabilities
+        run: npm audit --audit-level=high
       - name: Type check
         run: npx tsc --noEmit
       - name: Build standalone web product
         env:
           NEXT_PUBLIC_SITE_URL: https://example.invalid
-          # CI intentionally uses non-secret placeholders. Browser auth/network calls do
-          # not execute during prerender; production deployments must provide the real
-          # public Supabase URL and publishable key.
           NEXT_PUBLIC_SUPABASE_URL: https://ci-placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-public-placeholder-key
+          FDOS_DEPLOY_REV: ci-${{ github.sha }}
         run: npm run build
-      - name: Verify implemented standalone and discovery contract
+      - name: Verify implemented standalone and production-testability contract
         working-directory: .
         run: |
           grep -q 'Business Operating System' web/app/layout.tsx
@@ -50,8 +50,11 @@ jobs:
           grep -q 'Risk' web/app/page.tsx
           grep -q 'Evidence' web/app/page.tsx
           grep -q 'Sales' web/app/page.tsx
+          grep -q 'sourceRevision' web/app/api/health/route.ts
+          grep -q 'cache-control' web/app/api/health/route.ts
           test -f web/app/robots.ts
           test -f web/app/sitemap.ts
           test -f web/app/manifest.ts
           test -f web/app/answers/page.tsx
-          echo 'Founder Dynasty OS implemented standalone web contract verified.'
+          test -f web/app/api/health/route.ts
+          echo 'Founder Dynasty OS standalone source and production-testability contract verified.'
