@@ -55,11 +55,27 @@ jobs:
           grep -q 'IDEA LAB' web/app/intelligence/page.tsx
           grep -q 'WHAT AM I MISSING' web/app/intelligence/page.tsx
           grep -q 'VALUE SPRINTS' web/app/intelligence/page.tsx
+          grep -q 'MONEY → FINANCE CENTER' web/app/workbench/page.tsx
+          grep -q 'PRODUCT & OFFER LAB' web/app/workbench/page.tsx
+          grep -q 'OPERATIONS' web/app/workbench/page.tsx
+          grep -q 'BUSINESS MODEL LAB' web/app/strategy/page.tsx
+          grep -q 'CUSTOMER INTELLIGENCE' web/app/strategy/page.tsx
+          grep -q 'MARKETING & DISTRIBUTION' web/app/strategy/page.tsx
+          grep -q 'ASSET MAP' web/app/strategy/page.tsx
+          grep -q 'FOUNDER ATTENTION' web/app/strategy/page.tsx
+          grep -q 'SCENARIO LAB' web/app/strategy/page.tsx
+          grep -q 'PORTFOLIO / DYNASTY MODE' web/app/strategy/page.tsx
           grep -q 'getBusinessXRay' web/lib/fdos.ts
           grep -q 'getMissingIntelligence' web/lib/fdos.ts
           grep -q 'addValueSprint' web/lib/business-store.ts
+          grep -q 'loadOperatingWorkbench' web/lib/operating-store.ts
+          grep -q 'loadStrategyDynasty' web/lib/strategy-store.ts
+          grep -q 'getStrategySignals' web/lib/strategy-dynasty.ts
           grep -q 'fdos_value_sprints' db/migrations/20260913_add_fdos_value_sprints.sql
           grep -q 'fdos value sprints own rows' db/migrations/20260913_add_fdos_value_sprints.sql
+          grep -q 'fdos_financial_assumptions' db/migrations/20260913_add_fdos_operating_workbench.sql
+          grep -q 'fdos_business_model_elements' db/migrations/20260913_add_fdos_strategy_dynasty_layer.sql
+          grep -q 'fdos portfolio theses own rows' db/migrations/20260913_add_fdos_strategy_dynasty_layer.sql
           grep -q 'fdos_store_website_evidence' web/app/api/evidence/website/route.ts
           grep -q 'Production acceptance diagnostics' web/app/acceptance/page.tsx
           grep -q 'Copy diagnostic snapshot' web/app/acceptance/page.tsx
@@ -77,7 +93,11 @@ jobs:
           test -f web/app/answers/page.tsx
           test -f web/app/intelligence/page.tsx
           test -f web/app/intelligence/intelligence.module.css
+          test -f web/app/workbench/page.tsx
+          test -f web/app/workbench/workbench.module.css
+          test -f web/app/strategy/page.tsx
+          test -f web/app/strategy/strategy.module.css
           test -f web/app/acceptance/page.tsx
           test -f web/app/acceptance/layout.tsx
           test -f web/app/api/health/route.ts
-          echo 'Founder Dynasty OS standalone shell, intelligence layer, value sprint persistence, relational RLS, evidence integrity, and production-testability contract verified.'
+          echo 'Founder Dynasty OS broad shell, intelligence, build/run workbench, strategy/dynasty layer, evidence integrity, relational RLS, and production-testability contract verified.'
