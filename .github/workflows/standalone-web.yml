@@ -54,6 +54,8 @@ jobs:
           grep -q 'fdos_store_website_evidence' web/app/api/evidence/website/route.ts
           grep -q 'Production acceptance diagnostics' web/app/acceptance/page.tsx
           grep -q 'Copy diagnostic snapshot' web/app/acceptance/page.tsx
+          grep -q 'index: false' web/app/acceptance/layout.tsx
+          grep -q 'follow: false' web/app/acceptance/layout.tsx
           grep -q 'security invoker' db/migrations/20260913_add_atomic_fdos_website_evidence_capture.sql
           grep -q 'fdos_store_website_evidence' db/migrations/20260913_restrict_fdos_rpc_execute_to_authenticated.sql
           grep -q 'fdos_business_records' db/migrations/20260913_enforce_fdos_business_relationships_in_rls.sql
@@ -65,5 +67,6 @@ jobs:
           test -f web/app/manifest.ts
           test -f web/app/answers/page.tsx
           test -f web/app/acceptance/page.tsx
+          test -f web/app/acceptance/layout.tsx
           test -f web/app/api/health/route.ts
-          echo 'Founder Dynasty OS standalone source, relational RLS, acceptance diagnostics, evidence persistence, and production-testability contract verified.'
+          echo 'Founder Dynasty OS standalone source, relational RLS, noindex acceptance diagnostics, evidence persistence, and production-testability contract verified.'
