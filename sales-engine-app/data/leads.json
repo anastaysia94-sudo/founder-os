@@ -1,7 +1,7 @@
 {
   "meta": {
     "app": "Same-Day Customer Growth Pack",
-    "lastUpdated": "2026-09-13",
+    "lastUpdated": "2026-09-14",
     "sourceOfTruth": "ChatGPT prospect refresh + GitHub CRM + connected Gmail audit",
     "updateRule": "Fresh lead discovery updates leads.json; real outreach/reply/payment history is preserved separately in sales-engine/pipeline-history.json.",
     "freshLeadCount": 20,
@@ -10,6 +10,91 @@
   "leads": [
     {
       "rank": 1,
+      "business": "RCK Development",
+      "category": "Remodeling / ADU / Additions / HVAC / Plumbing",
+      "city": "San Jose / Bay Area, CA",
+      "tier": "A",
+      "opportunity": "Official site crawled Sep 14 publishes direct email, free estimates, same-day message response, realistic estimate/timeline promises, permit coordination and high-ticket remodel/ADU work.",
+      "phone": "(408) 982-7586",
+      "email": "therckdevelopment@gmail.com",
+      "reachability": "Direct email; same-day message response; free estimate",
+      "angle": "Turn realistic scope, timeline and permit coordination into a no-pressure pre-estimate decision funnel.",
+      "subject": "Realistic remodel estimate campaign idea for RCK",
+      "initial": "Hi — I reviewed RCK Development’s current site and noticed you make a useful promise most contractors avoid: realistic estimates and timelines, with permits and changes handled clearly. Campaign angle: ‘Before choosing finishes, know what the project can realistically cost, how long it can take, and what has to happen first.’ I’d turn that into planning FAQs, ADU/remodel posts and estimate follow-ups. Same-Day Customer Growth Pack: $150 flat. Want two RCK-specific examples first?",
+      "source": "https://www.rckdevelopment.com/",
+      "verified": "2026-09-14",
+      "status": "Contact Ready"
+    },
+    {
+      "rank": 2,
+      "business": "Fox Electric",
+      "category": "Electrical / EV Charger / Panel Upgrade",
+      "city": "San Jose / Bay Area, CA",
+      "tier": "A",
+      "opportunity": "Current San Jose EV page advertises free on-site estimates, a 2-hour quote response, same-day availability, written fixed pricing, permit handling, PG&E coordination and panel/load-management options.",
+      "phone": "(650) 550-0719",
+      "email": "info@foxelectrician.com",
+      "reachability": "Direct email; 2-hour quote response; same-day slots",
+      "angle": "Use EV load calculation and panel-readiness education to prevent unnecessary upgrades and make the estimate feel trustworthy.",
+      "subject": "2-hour EV + panel readiness campaign idea for Fox Electric",
+      "initial": "Hi — I reviewed Fox Electric’s San Jose EV page and the strongest marketing angle may be that you check whether a home actually needs a panel upgrade before selling one. Campaign idea: ‘Before upgrading the panel, calculate what the home and charger really require.’ I’d turn that into EV-readiness FAQs, load-management education, permit/PG&E posts and estimate follow-ups. $150 flat. Want two Fox-specific examples first?",
+      "source": "https://foxelectrician.com/services/ev-charger-installation/san-jose/",
+      "verified": "2026-09-14",
+      "status": "Contact Ready"
+    },
+    {
+      "rank": 3,
+      "business": "EMC Remodels",
+      "category": "Remodeling / ADU / Additions / Structural",
+      "city": "San Jose / Bay Area, CA",
+      "tier": "A",
+      "opportunity": "Official site crawled Sep 14 publishes direct estimate email, free estimates, detailed proposals, ADUs/additions, structural and seismic work, permit experience and response within one business day.",
+      "phone": "(510) 650-5555",
+      "email": "estimates@emcremodels.com",
+      "reachability": "Direct estimates email; response within one business day",
+      "angle": "Turn project type, budget, structural risk and permitting into an estimate-readiness campaign.",
+      "subject": "Estimate-readiness campaign idea for EMC Remodels",
+      "initial": "Hi — I reviewed EMC Remodels’ current estimate flow and noticed you already ask the questions that determine whether a project is ready to move: scope, budget, start timing and structural needs. I’d turn that into an ‘Is your remodel or ADU ready for an estimate?’ campaign with permit FAQs, structural-risk education and estimate follow-ups. Same-Day Customer Growth Pack: $150 flat. Want two EMC-specific examples first?",
+      "source": "https://www.emcremodels.com/",
+      "verified": "2026-09-14",
+      "status": "Contact Ready"
+    },
+    {
+      "rank": 4,
+      "business": "Primework Construction",
+      "category": "Remodeling / Renovation / Design-Build",
+      "city": "San Jose / Bay Area, CA",
+      "tier": "A",
+      "opportunity": "Current official pages publish direct email, free quotes, 24/7 service hours, full-house/kitchen/bath/exterior renovation and a design-build process with budget proposals and timelines.",
+      "phone": "669-345-7070",
+      "email": "info@primeworkconstructionca.com",
+      "reachability": "Direct email; 24/7 listed service hours; free quote",
+      "angle": "Use design-first planning, budget breakdown and timeline clarity to reduce fear of change orders and renovation uncertainty.",
+      "subject": "Design-to-budget campaign idea for Primework Construction",
+      "initial": "Hi — I reviewed Primework Construction’s current process and noticed a strong decision-making story: design first, then a detailed budget proposal and timeline before the renovation moves forward. I’d turn that into planning posts, ‘avoid costly change-order’ FAQs and free-quote follow-ups. Same-Day Customer Growth Pack: $150 flat. Want two Primework-specific examples first?",
+      "source": "https://primeworkconstructionca.com/",
+      "verified": "2026-09-14",
+      "status": "Contact Ready"
+    },
+    {
+      "rank": 5,
+      "business": "Bayco Builders & Restoration",
+      "category": "Water / Fire / Mold / Sewage / Remodeling",
+      "city": "San Jose / Bay Area, CA",
+      "tier": "A",
+      "opportunity": "Official site crawled Sep 14 publishes direct email, 24/7 emergency response, IICRC-certified restoration, insurance coordination, free estimates and mitigation-to-remodel/rebuild capability.",
+      "phone": "(669) 770-5373",
+      "email": "baycobuildersandrestoration@gmail.com",
+      "reachability": "Direct email; 24/7 emergency response; free estimate",
+      "angle": "Explain the first-hour mitigation, insurance documentation and rebuild path in calm plain language.",
+      "subject": "First-hour restoration campaign idea for Bayco",
+      "initial": "Hi — I reviewed Bayco’s current San Jose restoration pages and think the strongest campaign is the full path after an emergency: ‘Stop the damage first, document what happened, then keep the rebuild moving without starting over.’ I’d turn that into first-hour checklists, insurance FAQs, emergency posts and rebuild follow-ups. Same-Day Customer Growth Pack: $150 flat. Want two Bayco-specific examples first?",
+      "source": "https://baycobuildersandrestoration.com/",
+      "verified": "2026-09-14",
+      "status": "Contact Ready"
+    },
+    {
+      "rank": 6,
       "business": "Hertz Electric Inc",
       "category": "Electrical / EV / Panel / Battery",
       "city": "San Jose / Bay Area, CA",
@@ -26,7 +111,7 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 2,
+      "rank": 7,
       "business": "1-800 WATER DAMAGE of West San Jose & Sunnyvale",
       "category": "Water / Fire / Mold / Sewage Restoration",
       "city": "West San Jose / Sunnyvale, CA",
@@ -43,7 +128,7 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 3,
+      "rank": 8,
       "business": "Ozone Service",
       "category": "HVAC / Electrical / Panel / EV",
       "city": "San Jose / Bay Area, CA",
@@ -60,12 +145,12 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 4,
+      "rank": 9,
       "business": "Silicon Valley Building Service and Repair",
       "category": "Remodeling / ADU / Additions",
       "city": "San Jose / South Bay, CA",
       "tier": "A",
-      "opportunity": "Official pages crawled Sep 12-13 publish free estimates, fixed-price written scopes, same-day replies during business hours, remodeling, ADUs and additions.",
+      "opportunity": "Official pages publish free estimates, fixed-price written scopes, same-day replies during business hours, remodeling, ADUs and additions.",
       "phone": "(408) 667-4946",
       "email": "info@siliconvalleybuilding.com",
       "reachability": "Direct email; usually same-day reply; free estimate",
@@ -77,12 +162,12 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 5,
+      "rank": 10,
       "business": "Shefer Builder",
       "category": "Remodeling / ADU / Additions / New Construction",
       "city": "San Jose / Bay Area, CA",
       "tier": "A",
-      "opportunity": "Official site crawled Sep 12-13 publishes direct email, free estimates, ADU/garage conversion, room and second-story additions, general remodeling and Sunday hours 9 AM-7 PM.",
+      "opportunity": "Official site publishes direct email, free estimates, ADU/garage conversion, room and second-story additions, general remodeling and Sunday hours 9 AM-7 PM.",
       "phone": "510-571-0060",
       "email": "sheferbuilder@gmail.com",
       "reachability": "Direct email; open Sunday; free estimate",
@@ -94,12 +179,12 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 6,
+      "rank": 11,
       "business": "California Bay Builders & Remodeling",
       "category": "ADU / Remodeling / Design-Build",
       "city": "San Jose / Bay Area, CA",
       "tier": "A",
-      "opportunity": "Official San Jose ADU pages crawled Sep 11 publish a direct email, free consultation, turnkey design-build service, permitting support and owner-led delivery.",
+      "opportunity": "Official San Jose ADU pages publish a direct email, free consultation, turnkey design-build service, permitting support and owner-led delivery.",
       "phone": "(800) 209-0051",
       "email": "info@californiabaybuildersandremodeling.com",
       "reachability": "Direct email; free consultation",
@@ -111,7 +196,7 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 7,
+      "rank": 12,
       "business": "Atra Construction",
       "category": "ADU / Design / Construction Management",
       "city": "San Jose / Bay Area, CA",
@@ -128,7 +213,7 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 8,
+      "rank": 13,
       "business": "South San Jose Electric",
       "category": "Residential / Commercial Electrical",
       "city": "San Jose, CA",
@@ -145,12 +230,12 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 9,
+      "rank": 14,
       "business": "RoofCraft Inc",
       "category": "Roofing",
       "city": "Sunnyvale / Bay Area, CA",
       "tier": "A",
-      "opportunity": "Official financing page crawled Sep 10 publishes free estimates/inspections, financing from $1,000-$100,000, typical Bay Area roof-replacement ranges around $12,000-$40,000 and financing decisions often within minutes.",
+      "opportunity": "Official financing page publishes free estimates/inspections, financing from $1,000-$100,000, typical Bay Area roof-replacement ranges around $12,000-$40,000 and financing decisions often within minutes.",
       "phone": "(408) 904-8900",
       "email": "info@roofcraftcompany.com",
       "reachability": "Direct email; high-ticket roofing; financing",
@@ -162,7 +247,7 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 10,
+      "rank": 15,
       "business": "SERVPRO of Mountain View, Los Altos",
       "category": "Water / Fire / Mold / Storm / Construction",
       "city": "Sunnyvale / Mountain View / Los Altos, CA",
@@ -179,7 +264,7 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 11,
+      "rank": 16,
       "business": "Courtesy Electric",
       "category": "Electrical / Remodel / Service Upgrades",
       "city": "Sunnyvale / South Bay, CA",
@@ -196,7 +281,7 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 12,
+      "rank": 17,
       "business": "408 Builders Inc",
       "category": "Remodeling / ADU / New Construction",
       "city": "San Jose, CA",
@@ -213,7 +298,7 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 13,
+      "rank": 18,
       "business": "AYH Remodeling & Construction Inc",
       "category": "Remodeling / ADU / Additions",
       "city": "San Jose / Bay Area, CA",
@@ -230,7 +315,7 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 14,
+      "rank": 19,
       "business": "Pylon Builders",
       "category": "Remodeling / ADU / Design-Build",
       "city": "Sunnyvale / Bay Area, CA",
@@ -247,103 +332,18 @@
       "status": "Contact Ready"
     },
     {
-      "rank": 15,
-      "business": "Home Pro Roofing and Solar",
-      "category": "Roofing / Solar / Battery / EV",
-      "city": "Sunnyvale / Bay Area, CA",
-      "tier": "A",
-      "opportunity": "Current contact page advertises free estimates within 24 hours and offers through Sep 15, 2026, including roof-replacement and roof-plus-solar savings.",
-      "phone": "(800) 650-3134",
-      "email": "",
-      "reachability": "Phone/web form; seven-day availability; Sep 15 deadline",
-      "angle": "Use the Sep 15 roof+solar deadline to explain bundling readiness rather than repeating a discount.",
-      "subject": "Sep 15 roof + solar campaign idea for Home Pro",
-      "initial": "Hi — I reviewed Home Pro’s current page and saw the roof and roof-plus-solar offers run through September 15. Campaign angle: ‘If the roof and solar system will live together for years, plan them as one project before installation.’ I’d build roof-readiness posts, solar/battery FAQs and offer follow-ups. $150 flat. Want two Home Pro-specific examples first?",
-      "source": "https://homeproroofingandsolar.com/contact/",
-      "verified": "2026-09-12",
-      "status": "Contact Ready"
-    },
-    {
-      "rank": 16,
-      "business": "Foundation Repair of California",
-      "category": "Foundation / Concrete / Crawl Space",
-      "city": "San Jose / Bay Area, CA",
-      "tier": "A",
-      "opportunity": "Current San Jose pages advertise free expert inspections, financing and foundation/concrete services.",
-      "phone": "(925) 961-9012",
-      "email": "",
-      "reachability": "Phone/web form; free inspection; financing",
-      "angle": "Build inspection-first education around cracks and settlement without fear-based claims.",
-      "subject": "Foundation inspection decision-flow idea",
-      "initial": "Hi — I reviewed your San Jose pages and think the free inspection can support a stronger campaign than generic foundation-problem advertising. Angle: ‘Start with evidence of what is moving, why, and what actually needs repair.’ I’d build symptom FAQs, inspection-prep posts and estimate follow-ups. $150 flat. Want two business-specific examples first?",
-      "source": "https://www.foundationrepairofca.com/service-areas/san-jose-ca/",
-      "verified": "2026-09-12",
-      "status": "Contact Ready"
-    },
-    {
-      "rank": 17,
-      "business": "Bentson Window & Door",
-      "category": "Windows / Doors",
-      "city": "San Jose / Campbell / Sunnyvale, CA",
-      "tier": "A",
-      "opportunity": "Current official pages publish free in-home estimates, itemized estimates typically within 24 hours and flexible financing for larger replacement projects.",
-      "phone": "(408) 479-7960",
-      "email": "",
-      "reachability": "Phone/web form; 24-hour estimate target; financing",
-      "angle": "Use the itemized 24-hour estimate as the trust hook for multi-window replacement.",
-      "subject": "24-hour window-estimate campaign idea",
-      "initial": "Hi — I reviewed Bentson’s current estimate process and noticed you typically provide an itemized estimate within 24 hours. Campaign angle: ‘Before replacing several windows, know the itemized scope, efficiency choices and financing options.’ I’d build comparison FAQs, estimate follow-ups and financing education. $150 flat. Want two Bentson-specific examples first?",
-      "source": "https://bentsonwindows.com/",
-      "verified": "2026-09-12",
-      "status": "Contact Ready"
-    },
-    {
-      "rank": 18,
-      "business": "Atlas Trillo",
-      "category": "HVAC / Plumbing",
-      "city": "San Jose, CA",
-      "tier": "A",
-      "opportunity": "Current site has September residential offers through Sep 30, including a seasonal HVAC tune-up and qualifying service-repair savings.",
-      "phone": "(408) 444-9511",
-      "email": "",
-      "reachability": "Phone/web form; active Sep 30 offers",
-      "angle": "Use the tune-up as a diagnostic/decision campaign rather than coupon-only advertising.",
-      "subject": "September HVAC tune-up campaign idea for Atlas Trillo",
-      "initial": "Hi — I checked Atlas Trillo’s September offers and saw the seasonal HVAC tune-up and repair savings are live through September 30. Campaign angle: ‘Use the tune-up to learn what actually needs attention before peak heating season.’ I’d build symptom posts, tune-up FAQs and repair follow-ups. $150 flat. Want two examples first?",
-      "source": "https://www.atlastrillo.com/specials/",
-      "verified": "2026-09-12",
-      "status": "Contact Ready"
-    },
-    {
-      "rank": 19,
-      "business": "Rooter Hero Plumbing & Air of San Jose",
-      "category": "Plumbing / Drain / HVAC",
-      "city": "San Jose, CA",
-      "tier": "A",
-      "opportunity": "Current San Jose pages publish 24/7 service and active September residential promotions including drain/camera-inspection and qualifying repair savings.",
-      "phone": "(408) 703-6715",
-      "email": "",
-      "reachability": "24/7 phone/web; active Sep 30 residential offers",
-      "angle": "Turn drain-camera and repair offers into see-the-problem-before-choosing-the-repair education.",
-      "subject": "Drain-camera decision campaign idea for Rooter Hero",
-      "initial": "Hi — I reviewed Rooter Hero San Jose’s September residential offers and think the camera-inspection angle supports a better campaign than discount-only messaging: ‘See what is causing the drain problem before choosing the repair.’ I’d build diagnosis posts, FAQs and service follow-ups. $150 flat. Want two San Jose-specific examples first?",
-      "source": "https://rooterhero.com/san-jose/",
-      "verified": "2026-09-12",
-      "status": "Contact Ready"
-    },
-    {
       "rank": 20,
       "business": "Home Additions San Jose",
       "category": "Home Additions / ADU / Remodeling",
       "city": "San Jose, CA",
       "tier": "A",
-      "opportunity": "Official site crawled today publishes direct email, free itemized on-site estimates, design-build ADUs/additions/second stories, permit handling and Sunday appointments.",
+      "opportunity": "Official site publishes direct email, free itemized on-site estimates, design-build ADUs/additions/second stories, permit handling and Sunday appointments.",
       "phone": "",
       "email": "info@homeadditionssanjose.com",
       "reachability": "Direct email; free estimate; Sunday by appointment",
       "angle": "Use feasibility-to-itemized-estimate planning as a high-ticket addition/ADU funnel.",
       "subject": "Addition + ADU feasibility campaign idea",
-      "initial": "Hi — I reviewed Home Additions San Jose today and saw you handle additions, ADUs and second-story projects with design, permits and free itemized estimates. Campaign angle: ‘Before designing a major addition, establish what is feasible, what needs permitting and what the project scope should include.’ I’d build feasibility FAQs and estimate follow-ups. $150 flat. Want two examples first?",
+      "initial": "Hi — I reviewed Home Additions San Jose and saw you handle additions, ADUs and second-story projects with design, permits and free itemized estimates. Campaign angle: ‘Before designing a major addition, establish what is feasible, what needs permitting and what the project scope should include.’ I’d build feasibility FAQs and estimate follow-ups. $150 flat. Want two examples first?",
       "source": "https://www.homeadditionssanjose.com/",
       "verified": "2026-09-13",
       "status": "Contact Ready"
