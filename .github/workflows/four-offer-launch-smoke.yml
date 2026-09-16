@@ -31,6 +31,13 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Check server syntax
+        run: |
+          node --check server.js
+          node --check paypal-orders.js
+          node --check fulfillment.js
+          node --check tools/build-campaign-links.mjs
+
       - name: Start storefront
         run: |
           npm start > /tmp/four-offer-storefront.log 2>&1 &
@@ -43,6 +50,7 @@ jobs:
           done
           cat /tmp/health.json
           grep -q '"ok":true' /tmp/health.json
+          grep -q '"paypal_api_ready":false' /tmp/health.json
 
       - name: Verify storefront content
         run: |
@@ -59,6 +67,23 @@ jobs:
           grep -q 'anastaysia98@gmail.com' /tmp/config.js
           grep -q 'four-offer-analytics' /tmp/config.js
           grep -q 'four-offer-delivery' /tmp/config.js
+          grep -q 'paypalApiReady' /tmp/config.js
+          grep -q '/api/paypal/create-order' /tmp/config.js
+
+      - name: Verify unconfigured checkout fails closed
+        run: |
+          status=$(curl --silent --output /tmp/checkout.json --write-out '%{http_code}' \
+            -X POST http://127.0.0.1:3000/api/paypal/create-order \
+            -H 'Content-Type: application/json' \
+            --data '{"offer_slug":"remote-career-diy"}')
+          test "$status" = '503'
+          grep -q 'paypal_checkout_not_configured' /tmp/checkout.json
+
+      - name: Verify tracked campaign link builder
+        run: |
+          node tools/build-campaign-links.mjs https://example.test >/tmp/campaign-links.txt
+          grep -q 'utm_source=telegram_solofounders' /tmp/campaign-links.txt
+          grep -q 'utm_campaign=four_offer_launch_2026_09_16' /tmp/campaign-links.txt
 
       - name: Stop storefront
         if: always()
