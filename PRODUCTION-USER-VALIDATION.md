@@ -27,12 +27,10 @@ Current canonical pipeline state still records `paid: 0`; the standard offer val
 
 ## Evidence Loop 003 — Standalone Founder Dynasty OS Production Runtime
 
-### Accepted privacy-hardened web runtime
-
 Railway service: `founder-dynasty-os-web`  
 Public domain: `https://founder-dynasty-os-web-production.up.railway.app`
 
-Accepted web code revision:
+Accepted privacy-hardened **web code revision**:
 
 `8cf11db3c798f5a90d19e892c217ab88d79232e6`
 
@@ -40,23 +38,31 @@ Commit:
 
 `fix(web): enforce auth privacy boundary across modules`
 
-Railway deployment:
+Current production deployment:
 
-`7c04e794-081c-4268-89da-7a8ccca94941`
+`6a976ff8-bc37-4c7c-864d-767bb3f5556b`
+
+Current deployed **repository revision**:
+
+`31ee76a27e3a825ba9efd9628b07990320c8d310`
+
+The later repository revision contains the same accepted `web/` code tree plus current AI/status documentation. It was rebuilt after production canonical-site configuration was added.
 
 Observed on 2026-09-16:
-- deployment status: `SUCCESS`;
-- Railway identified exact source commit `8cf11db3c798f5a90d19e892c217ab88d79232e6`;
+- deployment status: **SUCCESS**;
+- Railway identified exact repository revision `31ee76a27e3a825ba9efd9628b07990320c8d310`;
 - repository: `anastaysia94-sudo/founder-os`;
 - branch: `main`;
 - root directory: `/web`;
+- dependency installation reported **0 vulnerabilities**;
+- Next.js 16.3.4 compiled successfully;
 - TypeScript completed successfully;
 - all 13 generated/dynamic routes completed build generation;
-- Next.js 16.3.4 production container started and became Ready;
+- production container started and became Ready;
 - configured healthcheck remained `/api/health`;
-- stale commit `284c496...` is not the active runtime.
+- deployment reached `SUCCESS`.
 
-Current production route set includes:
+Current production route set:
 - `/`
 - `/acceptance`
 - `/answers`
@@ -71,17 +77,29 @@ Current production route set includes:
 - `/strategy`
 - `/workbench`
 
+### Production canonical / sitemap configuration
+
+`NEXT_PUBLIC_SITE_URL` is set to the production HTTPS domain.
+
+The existing metadata/sitemap implementation therefore has the production origin available for:
+- canonical metadata;
+- Open Graph URL;
+- structured WebApplication URL;
+- sitemap entries for `/`, `/answers`, and `/glossary`.
+
+`/acceptance` remains intentionally excluded/noindex.
+
 ### Source provenance hardening
 
-The health endpoint prefers Railway's automatically injected `RAILWAY_GIT_COMMIT_SHA`, falling back to `FDOS_DEPLOY_REV` only when necessary. Production provenance therefore reports the source actually running rather than a manually maintained guess wearing a reassuring green hat.
+The health endpoint prefers Railway's automatically injected `RAILWAY_GIT_COMMIT_SHA`, falling back to `FDOS_DEPLOY_REV` only when necessary. Production provenance therefore reports the repository revision actually running instead of a manually maintained aspiration wearing a cheerful status badge.
 
 ### Build determinism hardening
 
-Next.js 16 TypeScript defaults are committed in `web/tsconfig.json`, including `jsx: react-jsx` and `.next/dev/types/**/*.ts`. The accepted production build no longer depends on Next rewriting those settings inside the build container.
+Next.js 16 TypeScript defaults are committed in `web/tsconfig.json`, including `jsx: react-jsx` and `.next/dev/types/**/*.ts`. Production builds do not depend on Next rewriting those settings inside the build container.
 
 ### Current CI evidence
 
-For web revision `8cf11db3c798f5a90d19e892c217ab88d79232e6`:
+For the last web-changing revision `8cf11db3c798f5a90d19e892c217ab88d79232e6`:
 - `Founder OS Standalone Web` run `35073170177`: **SUCCESS**;
 - `PHP Lint` run `35073170169`: **SUCCESS**.
 
@@ -182,6 +200,9 @@ All three are `SECURITY INVOKER`; anonymous execution is denied and authenticate
 - Scenario Lab
 - Portfolio / Dynasty Mode
 
+### `/answers`
+Public answer-oriented discovery content intended for search/AEO entry points.
+
 ### `/glossary`
 Searchable plain-English glossary for business, Evidence and technical terms.
 
@@ -189,7 +210,7 @@ Searchable plain-English glossary for business, Evidence and technical terms.
 
 ## Auth/session privacy hardening
 
-The accepted runtime now includes a root-level `AuthPrivacyGuard` in addition to each workspace's scoped hydration guards.
+The accepted runtime includes a root-level `AuthPrivacyGuard` in addition to each workspace's scoped hydration guards.
 
 It watches Supabase identity changes and creates a hard client boundary on:
 - sign-out from an authenticated account; or
@@ -199,7 +220,18 @@ The guard updates/clears the previous account identifier in browser `sessionStor
 
 This closes the source-level privacy gap where persisted records were account-scoped but unsaved component-local drafts could otherwise remain mounted during an in-place identity change.
 
-**Source, CI and runtime deployment are verified. Genuine browser observation of the sign-out/account-switch behavior is still pending.**
+**Source, CI and runtime deployment are verified. Genuine browser observation of sign-out/account-switch behavior is still pending.**
+
+---
+
+## AI handoff integrity
+
+The canonical AI continuation material was audited after the broad standalone rebuild. Stale instructions that still centered WordPress deployment were corrected in:
+- `AGENTS.md`
+- `AI-HANDOFF.md`
+- `.github/copilot-instructions.md`
+
+Current assistants are now directed toward the standalone shared-Business-Record product and genuine production-user acceptance rather than historical WordPress-first milestones.
 
 ---
 
@@ -237,14 +269,14 @@ Broad shared-Business-Record architecture and the current planned module surface
 The accepted privacy-hardened web revision passes standalone web CI and PHP lint.
 
 ### PRODUCTION RUNTIME VERIFIED
-The exact accepted web revision is live on Railway and reached `SUCCESS` with the configured healthcheck.
+The accepted web code tree is live on Railway in deployment `6a976ff8-bc37-4c7c-864d-767bb3f5556b`, with production canonical URL configuration, and reached `SUCCESS` with the configured healthcheck.
 
 ### LIVE BACKEND ACCEPTANCE VERIFIED
 All 19 FDOS persistence neighborhoods, the Evidence capture/review RPC loop, cleanup behavior and a foreign-identity RLS visibility check have been exercised against production policies with no synthetic FDOS rows left behind.
 
 ### PRODUCTION USER VERIFIED — NOT YET COMPLETE
 Still requires genuine browser/user actions:
-- sign in on the exact deployed revision;
+- sign in on the deployed production site;
 - create/load the first real Business Record through the deployed UI;
 - edit Business DNA and save;
 - sign out → confirm private persisted state and unsaved drafts disappear;
@@ -266,7 +298,7 @@ There is currently only one production auth user, so genuine second-user browser
 
 ## Current decision
 
-**KEEP** the broad shared-Business-Record architecture, E1–E8 discipline, Founder Command Center, Intelligence Layer, Workbench, Strategy/Dynasty workspace, Plain-English Glossary, account-owned persistence, production source provenance, `/api/health`, noindex `/acceptance`, atomic Business bootstrap, atomic Evidence persistence, relationship-aware RLS, global auth/privacy boundary, deterministic TypeScript config, and Sales OS nested under Customers & Growth.
+**KEEP** the broad shared-Business-Record architecture, E1–E8 discipline, Founder Command Center, Intelligence Layer, Workbench, Strategy/Dynasty workspace, Answers/AEO surface, Plain-English Glossary, account-owned persistence, production source provenance, production canonical-site configuration, `/api/health`, noindex `/acceptance`, atomic Business bootstrap, atomic Evidence persistence, relationship-aware RLS, global auth/privacy boundary, deterministic TypeScript config, corrected AI handoff, and Sales OS nested under Customers & Growth.
 
 **REVISE** only when genuine browser evidence reveals a real defect or a measured Value Sprint provides a reason to change the system.
 
@@ -280,7 +312,8 @@ There is currently only one production auth user, so genuine second-user browser
 
 Keep these states separate:
 - **SOURCE COMPLETE** — implementation exists and passes build/type/schema checks.
-- **PRODUCTION RUNTIME VERIFIED** — exact accepted source is deployed and runtime checks pass.
+- **CI VERIFIED** — the accepted web code actually passed automated checks.
+- **PRODUCTION RUNTIME VERIFIED** — accepted code/config is deployed and runtime checks pass.
 - **LIVE BACKEND ACCEPTANCE VERIFIED** — production-policy database/RPC behavior has been exercised.
 - **PRODUCTION USER VERIFIED** — a genuine authenticated human completes the deployed UI workflow across session/device boundaries.
 - **COMMERCIAL EVIDENCE** — genuine external customer/user behavior exists.
