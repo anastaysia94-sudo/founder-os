@@ -21,10 +21,6 @@ Core loop:
 
 **Understand → identify the highest-value problem or opportunity → separate evidence from assumptions → choose the next action → help execute it → measure what happened → learn → KEEP / REVISE / REVERT → update the business model / Business Memory → choose the next action.**
 
-Original FDOS internal language remains valid:
-
-**Evidence → Value Leak / Value Opportunity → ranked action → Value Sprint → measurement → KEEP / REVISE / REVERT.**
-
 Canonical product statement:
 
 > **Founder Dynasty OS is the operating intelligence of the business.**
@@ -47,12 +43,14 @@ The legacy WordPress/plugin implementation remains preserved compatibility/histo
 
 Current major standalone surfaces:
 
-- `/` — Founder Command Center, Business Stage, Business DNA, Value Map, Opportunities, Decisions, Risks, Business Memory, Missing Intelligence, Evidence Inbox, whole-OS map.
+- `/` — Founder Command Center for the active Business Record: Business Stage, Business DNA, Value Map, Opportunities, Decisions, Risks, Business Memory, Missing Intelligence, Evidence Inbox, whole-OS map.
 - `/intelligence` — Idea Lab, Business X-Ray, What Am I Missing?, Value Sprints, KEEP / REVISE / REVERT.
 - `/workbench` — Finance Center, Product & Offer Lab, Operations & Execution.
 - `/strategy` — Business Model Lab, Customer Intelligence, Marketing & Distribution, Asset Map, Founder Attention, Scenario Lab, Portfolio / Dynasty Mode.
+- `/portfolio` — private Business Registry + Cross-Business Intelligence.
 - `/glossary` — searchable plain-English glossary.
-- `/acceptance` — read-only, noindex production diagnostics.
+- `/answers` — public answer-oriented discovery surface.
+- `/acceptance` and `/acceptance/restore` — noindex production-user proof helpers.
 - `/sales-engine-app` — bridge to the separate Sales OS production service.
 
 ## Business-stage awareness
@@ -74,20 +72,40 @@ FDOS adapts to the actual stage:
 
 Never assume customers, revenue, a website, employees, metrics, or even a formed company exist.
 
-## Shared Business Record architecture
+## Multi-business shared-record architecture
 
-Major modules must attach to the same authenticated, account-owned Business Record and, where appropriate, to Evidence, a Decision, Risk, Opportunity, Value Sprint, Asset, Initiative, measurable result, or Business Memory.
+FDOS supports **multiple authenticated, account-owned Business Records**. One Business Record is active at a time. Major operating modules read/write the active record; they must not invent their own business identity.
+
+The global Business Switcher and `/portfolio` registry are part of the canonical architecture. `fdos_create_business(...)` creates another independent record and its initial E4 Business Memory event. Anonymous RPC execution is denied.
+
+Inside a Business Record, important child data stays scoped by both `user_id` and `business_id`. Across businesses, Cross-Business Intelligence may compare owner-scoped signals but must never merge canonical histories or silently move evidence, decisions, risks, opportunities, assets, Value Sprints, customer intelligence, finance, or memory between businesses.
 
 The current production FDOS data model spans **19 RLS-enabled tables** covering:
 
-- Business Record / Value / Decisions / Risks / Opportunities / Memory;
+- Business Records / Value / Decisions / Risks / Opportunities / Memory;
 - Evidence + Evidence Proposals;
 - Value Sprints;
 - Finance assumptions / Offer hypotheses / Initiatives;
 - Business Model / Customer Intelligence / Distribution;
 - Assets / Scenarios / Portfolio theses / Founder Attention.
 
-Before adding a table or module, inspect current domain/store layers and migrations. Do not create disconnected mini-apps or duplicate entities that let the same business have several conflicting realities.
+Before adding a table or module, inspect current domain/store layers and migrations. Do not create disconnected mini-apps or duplicate entities.
+
+## Cross-Business Intelligence boundary
+
+The private `/portfolio` layer currently compares descriptive operating signals including:
+
+- high risks;
+- open decisions;
+- blocked initiatives;
+- pending Evidence review;
+- running Value Sprints;
+- planned Founder Attention;
+- opportunities;
+- assets;
+- measured Value Sprint loops.
+
+Do **not** turn these into a synthetic “best business” ranking, valuation, revenue claim, product-market-fit score, founder-performance score, or election-style horse race between companies. Recommendations must remain explainable and grounded in the underlying saved records.
 
 ## Plain-English requirement
 
@@ -119,7 +137,7 @@ Rules:
 
 1. Attribute externally derived claims.
 2. State uncertainty when evidence is insufficient.
-3. Never fabricate market size, pricing, customers, revenue, conversions, adoption, testimonials, regulations, partnerships, product capabilities, ROI, profit, or product-market fit.
+3. Never fabricate market size, pricing, customers, revenue, conversions, adoption, testimonials, regulations, partnerships, capabilities, ROI, profit, or product-market fit.
 4. Before/after movement is not automatically causation.
 5. Build success is not production-user verification.
 6. Preserve evidence confidence/limitations where recorded.
@@ -140,60 +158,49 @@ Research refreshes may improve verified prospects but must never overwrite genui
 
 ## Auth / privacy boundary
 
-Preserve account-scoped RLS and the root-level `AuthPrivacyGuard`.
-
-The guard complements individual workspace hydration guards by forcing a client reload on sign-out or direct account switch so **unsaved React-local business drafts** cannot remain mounted across identities.
+Preserve account-scoped RLS, per-business scoping, the root-level `AuthPrivacyGuard`, and the hard reload on Business Record switch.
 
 When adding client state:
 - treat business drafts as private;
-- ensure auth identity changes clear them;
+- ensure auth identity and business identity changes clear or rehydrate them safely;
 - do not store secrets/private business data in long-lived browser storage without deliberate scoping/design;
-- never weaken RLS to solve a frontend problem.
+- never weaken RLS to solve a frontend problem;
+- validate stored active-business identifiers against current owner access before trusting them.
 
-## Current verified technical state — 2026-09-16 checkpoint
+## Verified technical state — 2026-09-16 checkpoint
 
-Read `PROJECT-STATUS.md` for exact identifiers before quoting them, but the current evidence boundary is:
+Read `PROJECT-STATUS.md` for current identifiers before quoting exact commits/deployments.
 
-### SOURCE COMPLETE
-The current planned broad standalone product surface is implemented.
+### SOURCE / CI
+The broad standalone product, multi-business registry, active-business switcher and first Cross-Business Intelligence layer are implemented. Standalone CI typechecks/builds the Next app and PHP lint protects the legacy compatibility track.
 
-### CI VERIFIED
-Standalone web CI and PHP lint pass for the accepted privacy-hardened web revision.
+### PRODUCTION RUNTIME
+The multi-business web source has been deployed successfully on Railway. Cross-Business Intelligence must also be verified against the exact deployed revision after each change before calling it runtime-verified.
 
-### PRODUCTION RUNTIME VERIFIED
-The accepted standalone web revision is deployed successfully on Railway with `/api/health` and actual Railway git-revision provenance.
-
-### LIVE BACKEND ACCEPTANCE VERIFIED
-A live production-policy ephemeral test:
-- exercised all 19 FDOS tables;
-- approved an Evidence Proposal through production RPC;
-- switched to a foreign authenticated identity and observed zero owner Business/child rows through RLS;
-- exercised E2 website Evidence capture with two Proposals, one approve and one reject;
-- preserved Evidence linkage + Business Memory;
-- deleted the ephemeral Business graph;
-- left zero synthetic FDOS rows.
+### LIVE BACKEND ACCEPTANCE
+A production-policy ephemeral test previously exercised all 19 FDOS tables, Evidence approve/reject, foreign-identity RLS visibility and cleanup. The multi-business RPC is live as `SECURITY INVOKER`, denies anonymous execute and permits authenticated execute.
 
 See `FDOS-PRODUCTION-BACKEND-ACCEPTANCE-2026-09-16.md`.
 
 ### PRODUCTION USER VERIFIED — NOT YET COMPLETE
-Do not falsely promote technical proof into human proof. Still requires genuine browser/session actions such as sign-in, Business bootstrap/save/restore, auth-boundary observation, browser module writes, website Evidence review, a second real account, mobile/desktop visual acceptance, and one genuinely measured Value Sprint.
+Do not falsely promote technical proof into human proof. Genuine browser/session evidence still includes sign-in, save/restore, creating and switching Business Records without bleed, browser module writes, website Evidence review, second real account isolation, mobile/desktop visual acceptance, and one genuinely measured Value Sprint.
 
 ### COMMERCIAL EVIDENCE
-Keep external customer/user behavior separate from all of the above.
+Keep external customer/user behavior separate from all technical states.
 
 ## Current highest-value priority
 
-The earlier priorities to “restore the broad architecture,” “build the standalone shell,” “add plain-English glossary,” and “nest Sales OS properly” are **done for the current planned scope**.
+The broad architecture, Sales OS nesting, plain-English glossary, multi-business registry and first Cross-Business Intelligence layer are built for the current planned scope.
 
-The highest-value unfinished milestone is now:
+The highest-value unfinished milestone is:
 
-> **Complete genuine production-user/browser acceptance of the broad system that already exists before adding another department.**
+> **Complete genuine production-user/browser acceptance of the broad multi-business system before adding another department.**
 
 Preferred sequence:
 
-`open exact production revision → sign in → create/load Business Record → edit/save Business DNA → stage change → Value + Decision + Risk + Opportunity + Memory → Idea Lab/X-Ray → run one real Value Sprint → /acceptance → sign out → confirm private records/drafts clear → fresh sign in → verify restore → browser Evidence capture → approve + reject → Workbench writes → Strategy/Dynasty writes → second genuine account isolation → mobile + desktop visual pass → KEEP / REVISE / REVERT`
+`open exact production revision → sign in → create/load first Business Record → edit/save Business DNA → stage change → Value + Decision + Risk + Opportunity + Memory → create second intentional Business Record → switch between businesses and verify no bleed → Idea Lab/X-Ray → run one real Value Sprint → /acceptance → sign out → confirm private records/drafts clear → fresh sign in → verify restore + active-business behavior → browser Evidence capture → approve + reject → Workbench writes → Strategy/Dynasty writes → second genuine account isolation → mobile + desktop visual pass → KEEP / REVISE / REVERT`
 
-If available tools cannot perform a genuine browser/user step, do **not** fake it. Improve only technically verifiable blockers and leave the human proof explicitly pending.
+If available tools cannot perform a genuine browser/user step, do **not** fake it. Improve only technically verifiable blockers and leave human proof explicitly pending.
 
 ## Development rules
 
@@ -201,7 +208,7 @@ If available tools cannot perform a genuine browser/user step, do **not** fake i
 - Preserve working behavior and genuine history.
 - Run relevant tests and inspect CI after changes.
 - For web changes, typecheck + production build must stay green.
-- For database changes, preserve RLS, account/business relationships, Evidence integrity and migration safety; inspect Supabase advisors.
+- For database changes, preserve RLS, account/business relationships, Evidence integrity and migration safety; inspect live privileges after RPC changes.
 - Never commit credentials, `.env`, private keys, tokens, passwords, or private customer/user data.
 - Update status/validation docs when behavior or proof materially changes.
 - Do not churn prospect/CRM files just to change dates.
@@ -211,8 +218,9 @@ If available tools cannot perform a genuine browser/user step, do **not** fake i
 
 Before adding a major feature ask:
 
-- Does it help FDOS understand the business better?
+- Does it help FDOS understand one or more businesses better?
 - Does it connect evidence to a decision/action?
+- Does it preserve the boundary between businesses?
 - Does it work for multiple business types/stages?
 - Does it preserve what happened and what was learned?
 - Does it create capability beyond a generic CRM/task manager/dashboard?
