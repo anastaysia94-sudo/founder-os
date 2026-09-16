@@ -36,6 +36,7 @@ jobs:
           npm run check
           node --check test/paypal-orders.test.js
           node --check test/fulfillment.test.js
+          node --check test/readiness.test.js
 
       - name: Verify server-side offer catalog
         run: |
@@ -55,7 +56,7 @@ jobs:
           );
           NODE
 
-      - name: Verify PayPal and fulfillment contracts
+      - name: Verify PayPal, fulfillment and readiness contracts
         run: npm test
 
       - name: Start storefront
@@ -71,6 +72,18 @@ jobs:
           cat /tmp/health.json
           grep -q '"ok":true' /tmp/health.json
           grep -q '"paypal_api_ready":false' /tmp/health.json
+
+      - name: Verify deployment readiness fails closed without secrets
+        run: |
+          status=$(curl --silent --output /tmp/ready.json --write-out '%{http_code}' http://127.0.0.1:3000/ready)
+          test "$status" = '503'
+          grep -q '"ready":false' /tmp/ready.json
+          grep -q 'PAYPAL_CLIENT_ID' /tmp/ready.json
+          grep -q 'PAYPAL_CLIENT_SECRET' /tmp/ready.json
+          grep -q 'PUBLIC_BASE_URL' /tmp/ready.json
+          grep -q 'SUPABASE_SECRET_KEY' /tmp/ready.json
+          grep -q 'DELIVERY_TOKEN_SECRET' /tmp/ready.json
+          ! grep -q 'secret-value' /tmp/ready.json
 
       - name: Verify storefront content
         run: |
