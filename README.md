@@ -18,7 +18,7 @@ Evidence → Value Leak / Value Opportunity → ranked action → Value Sprint �
 
 ## Who Founder Dynasty OS is for
 
-FDOS must work for someone with only an idea as well as a solo founder, local service business, ecommerce company, software company, creator, agency, nonprofit, professional practice, retailer, manufacturer, marketplace, franchise, enterprise, or holding company.
+FDOS must work for someone with only an idea as well as a solo founder, local service business, ecommerce company, software company, creator, agency, nonprofit, professional practice, retailer, manufacturer, marketplace, franchise, enterprise, portfolio, or holding company.
 
 The system changes guidance by business stage rather than forcing every business into a sales funnel.
 
@@ -26,18 +26,25 @@ The system changes guidance by business stage rather than forcing every business
 
 The primary product track is the Next.js / React / TypeScript application under `web/`. Major operating surfaces now include:
 
-- `/` — **Founder Command Center**: Business Stage, Business DNA, Value Map, Opportunities, Risks, Decisions, Business Memory, Evidence Inbox, and whole-OS map.
+- `/` — **Founder Command Center**: Business Stage, Business DNA, Value Map, Opportunities, Risks, Decisions, Business Memory, Evidence Inbox, and whole-OS map for the active Business Record.
 - `/intelligence` — **Founder Intelligence Layer**: Idea Lab, Business X-Ray, What Am I Missing?, and persistent Value Sprints.
 - `/workbench` — **Build & Run Workbench**: Finance Center, Product & Offer Lab, and Operations & Execution.
 - `/strategy` — **Strategy / Dynasty Workspace**: Business Model Lab, Customer Intelligence, Marketing & Distribution, Asset Map, Founder Attention, Scenario Lab, and Portfolio / Dynasty Mode.
-- `/acceptance` — read-only production acceptance diagnostics. It is intentionally noindex/nofollow and does not manufacture green checks.
+- `/portfolio` — **Business Registry + Cross-Business Intelligence**: create/switch account-owned Business Records and compare descriptive operating signals without merging their histories.
+- `/glossary` — searchable plain-English business/evidence/technical glossary.
+- `/answers` — public answer-oriented discovery surface.
+- `/acceptance` and `/acceptance/restore` — owner-facing production acceptance helpers. They do not manufacture green checks.
 - `/sales-engine-app` — bridge to the separate Customers & Growth → Sales OS production service.
 
 These are neighborhoods of one operating system, not separate products pretending the same business has several incompatible realities.
 
-## Shared Business Record and persistence
+## Shared Business Records and persistence
 
-The standalone OS is organized around one authenticated, account-owned Business Record. Current Supabase-backed FDOS persistence includes 19 RLS-protected tables:
+The standalone OS supports **multiple authenticated, account-owned Business Records**. One Business Record is active at a time. Command Center, Intelligence, Workbench and Strategy/Dynasty all operate on that selected business.
+
+The active selection is account-scoped in the browser session and validated against owner-scoped database access. Switching businesses performs a hard UI boundary so unsaved component-local state from one business is not left mounted inside another.
+
+Current Supabase-backed FDOS persistence includes 19 RLS-protected tables:
 
 ### Core record and evidence
 - `fdos_business_records`
@@ -64,7 +71,17 @@ The standalone OS is organized around one authenticated, account-owned Business 
 - `fdos_portfolio_theses`
 - `fdos_attention_blocks`
 
-New child records are scoped by both authenticated user and Business Record. Optional Evidence links are constrained to the same user/business where implemented.
+Child records are scoped by both authenticated user and Business Record. Optional Evidence links are constrained to the same user/business where implemented.
+
+`fdos_create_business(...)` creates another independent Business Record plus its first E4 `Workspace created` Business Memory event. It is `SECURITY INVOKER`; anonymous execution is denied and authenticated execution is allowed.
+
+## Cross-Business Intelligence
+
+The private portfolio layer can compare **descriptive owner-scoped signals** across businesses while preserving every business's canonical history.
+
+Current signals include high risks, open decisions, blocked initiatives, pending Evidence review, running Value Sprints, planned Founder Attention, opportunities, assets and measured sprint loops.
+
+These are not rankings, valuations, revenue claims, success grades, product-market-fit judgments or forecasts. The system may compare Business Records; it must not blur them together.
 
 ## Signature Founder Dynasty OS systems
 
@@ -72,7 +89,7 @@ New child records are scoped by both authenticated user and Business Record. Opt
 - **Business X-Ray** — structural diagnosis across clarity, evidence, value, decisions, execution, and risk.
 - **What Am I Missing?** — exposes unanswered questions and missing proof.
 - **Value Map** — where value is created, captured, leaked, at risk, or becoming an asset.
-- **Opportunity Engine** — ranks potentially valuable moves.
+- **Opportunity Engine** — ranks potentially valuable moves inside the active business using transparent inputs.
 - **Decision Engine** — preserves choices and next steps.
 - **Value Sprints** — hypothesis → action → measure → result → KEEP / REVISE / REVERT.
 - **Business Memory** — dated learning, evidence, decisions, and changes.
@@ -85,7 +102,8 @@ New child records are scoped by both authenticated user and Business Record. Opt
 - **Asset Map** — tracks assets that may compound enterprise value.
 - **Founder Attention** — makes time allocation and intended outcomes explicit.
 - **Scenario Lab** — E7 forecasts with early signals and decision rules.
-- **Portfolio / Dynasty Mode** — records the role, capital thesis, attention thesis, and disposition of businesses in a wider portfolio.
+- **Portfolio / Dynasty Mode** — records portfolio roles and theses while the Business Registry provides the real multi-business operating boundary.
+- **Cross-Business Intelligence** — compares account-owned risks, decisions, work, evidence, learning, assets and attention without rewriting per-business truth.
 
 ## Research & Evidence Integrity Layer
 
@@ -129,9 +147,9 @@ Research refreshes may improve verified prospect information but must never over
 
 ## Production verification boundary
 
-Build success is not production proof, and production proof is not commercial proof.
+Build success is not production proof, production backend proof is not human-browser proof, and any of those is not commercial proof.
 
-Current source includes read-only `/acceptance` diagnostics that inspect the deployed revision, browser session, owned Business Record, and RLS-scoped row counts across the broad OS. Genuine sign-out/restore, second-user isolation, mobile/desktop visual acceptance, and real-world customer outcomes still require actual observation rather than a flattering interpretation of source code.
+Current source includes read-only `/acceptance` diagnostics and `/acceptance/restore` workflow support. Genuine save/restore, business switching, second-user isolation, mobile/desktop visual acceptance, and real-world customer outcomes still require actual observation rather than a flattering interpretation of source code.
 
 ## AI continuation / project handoff
 
@@ -141,4 +159,4 @@ Current source includes read-only `/acceptance` diagnostics that inspect the dep
 - `.github/copilot-instructions.md` — GitHub Copilot instructions.
 - `AI-HANDOFF.md` — continuation guidance for ChatGPT/Codex, Copilot, Grok, and Perplexity.
 
-Any AI continuing FDOS should inspect the repository, preserve genuine evidence/history, keep Sales OS in its proper neighborhood, and reject drift toward a generic CRM, dashboard, project manager, or startup-template clone.
+Any AI continuing FDOS should inspect the repository, preserve genuine evidence/history, keep Sales OS in its proper neighborhood, preserve per-business boundaries, and reject drift toward a generic CRM, dashboard, project manager, or startup-template clone.
