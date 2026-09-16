@@ -8,6 +8,12 @@ on:
       - 'web/**'
       - 'db/migrations/**'
       - '.github/workflows/standalone-web.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'db/migrations/**'
+      - '.github/workflows/standalone-web.yml'
 
 permissions:
   contents: read
