@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const paypal = require('./paypal-orders');
 const fulfillment = require('./fulfillment');
+const readiness = require('./readiness');
 
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = path.join(__dirname, 'public');
@@ -117,6 +118,11 @@ async function handle(req, res) {
 
   if (url.pathname === '/health') {
     return sendJson(res, 200, { ok: true, paypal_api_ready: checkoutReady(), paypal_environment: process.env.PAYPAL_ENV === 'live' ? 'live' : 'sandbox' });
+  }
+
+  if (url.pathname === '/ready') {
+    const state = readiness.getReadiness();
+    return sendJson(res, state.ready ? 200 : 503, state);
   }
 
   if (url.pathname === '/config.js') {
