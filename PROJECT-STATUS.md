@@ -68,6 +68,9 @@ The primary standalone `web/` application is organized around one authenticated,
 - business + technical term definitions
 - global navigation access
 
+### `/answers`
+- public answer-oriented content surface for search/AEO discovery
+
 ### `/acceptance`
 Read-only production diagnostics for runtime revision, genuine browser session, owned Business Record, RLS-scoped module counts, viewport and browser state. It writes no synthetic acceptance data and does not auto-pass human steps.
 
@@ -127,37 +130,37 @@ Rules preserved:
 
 ## Auth / privacy hardening
 
-The accepted source now includes a global `AuthPrivacyGuard` mounted in the root layout.
+The accepted source includes a global `AuthPrivacyGuard` mounted in the root layout.
 
-It complements each workspace's own account-scoped hydration guards by clearing **all unsaved React-local drafts** across the entire app on:
+It complements each workspace's account-scoped hydration guards by clearing **all unsaved React-local drafts** across the app on:
 - sign-out from an authenticated account; or
 - direct account switching.
 
-The guard records only the prior account identifier in browser `sessionStorage`, updates/clears it before reload, and reloads once at the auth boundary so drafts from `/intelligence`, `/workbench`, `/strategy`, and future modules cannot remain mounted across identities.
+The guard stores only the prior account identifier in browser `sessionStorage`, updates/clears it before reload, and reloads once at the auth boundary so private drafts from `/intelligence`, `/workbench`, `/strategy`, and future modules cannot remain mounted across identities.
 
-This is source/CI/runtime verified. The actual browser-observed sign-out/switch behavior still belongs to genuine production-user acceptance.
+Source, CI and production deployment are verified. Actual browser-observed sign-out/switch behavior remains genuine production-user acceptance.
 
 ## Live production backend acceptance
 
-A live authenticated production-policy acceptance pass was performed with ephemeral data and then fully cleaned up. Detailed evidence is in:
+Detailed evidence:
 
 `FDOS-PRODUCTION-BACKEND-ACCEPTANCE-2026-09-16.md`
 
-Observed:
-- **19 / 19** FDOS tables accepted an owner-scoped ephemeral record graph;
-- `fdos_apply_evidence_proposal` successfully approved one Proposal;
-- switching the authenticated JWT identity to a foreign UUID exposed **0** owner Business rows and **0** owner child rows through RLS;
+Observed against production policies with ephemeral data:
+- **19 / 19** FDOS tables accepted an owner-scoped record graph;
+- `fdos_apply_evidence_proposal` approved one Proposal;
+- a foreign authenticated JWT identity saw **0** owner Business rows and **0** owner child rows through RLS;
 - website Evidence RPC captured **1 E2 Evidence** + **2 Proposals**;
 - **1 Proposal approved**, **1 rejected**;
-- the approved Decision retained the E2 Evidence/source link;
+- approved Decision retained its E2 Evidence/source link;
 - capture created Business Memory;
 - cleanup returned persistent synthetic FDOS row count to **0**.
 
-This proves live backend behavior under production policies, not a second genuine person's browser session.
+This proves production backend behavior, not a second genuine person's browser session.
 
 ## CI state
 
-Current accepted **web code revision**:
+Accepted **web code revision**:
 
 `8cf11db3c798f5a90d19e892c217ab88d79232e6`
 
@@ -169,11 +172,11 @@ GitHub Actions:
 - `Founder OS Standalone Web` run `35073170177`: **SUCCESS**
 - `PHP Lint` run `35073170169`: **SUCCESS**
 
-The standalone workflow verifies dependency/vulnerability gates, TypeScript, Next.js production build, broad Command Center contracts, Intelligence, Workbench, Strategy/Dynasty, Glossary, persistence contracts, RLS migrations, Evidence restrictions, diagnostics/noindex behavior, and health endpoint behavior.
+The standalone workflow verifies dependency/vulnerability gates, TypeScript, Next.js production build, Command Center, Intelligence, Workbench, Strategy/Dynasty, Glossary, persistence contracts, RLS migrations, Evidence restrictions, diagnostics/noindex behavior, and health endpoint behavior.
 
-Next.js 16 TypeScript defaults are committed in `web/tsconfig.json`, so production builds do not need to rewrite the config.
+Next.js 16 TypeScript defaults are committed in `web/tsconfig.json`; the production build no longer depends on build-time mutation of that file.
 
-## Production runtime — privacy-hardened web revision is live
+## Production runtime — accepted web code + current production configuration
 
 Railway service:
 - service: `founder-dynasty-os-web`
@@ -184,24 +187,45 @@ Railway service:
 
 Current deployment:
 
-`7c04e794-081c-4268-89da-7a8ccca94941`
+`6a976ff8-bc37-4c7c-864d-767bb3f5556b`
 
-Current deployed web source:
+Deployed repository revision:
 
-`8cf11db3c798f5a90d19e892c217ab88d79232e6`
+`31ee76a27e3a825ba9efd9628b07990320c8d310`
+
+The deployed repository revision contains the same accepted `web/` code tree whose last web-changing commit is `8cf11db3...`, plus later documentation/handoff corrections.
 
 Railway status: **SUCCESS**.
 
 Observed build/runtime evidence:
-- exact repository/branch fetched: `anastaysia94-sudo/founder-os` / `main`;
-- exact commit identified by Railway: `8cf11db3...`;
+- repository/branch: `anastaysia94-sudo/founder-os` / `main`;
+- Railway identified exact deployed repository revision `31ee76a27...`;
+- dependency install reported **0 vulnerabilities**;
+- Next.js 16.3.4 compiled successfully;
 - TypeScript completed successfully;
-- all 13 generated/dynamic routes completed production build generation;
-- production container started;
-- Next.js 16.3.4 became Ready;
-- healthcheck completed and deployment reached `SUCCESS`.
+- all 13 generated/dynamic routes completed build generation;
+- production container reached Ready;
+- configured `/api/health` healthcheck passed and deployment reached `SUCCESS`.
 
-The health endpoint prefers Railway's injected `RAILWAY_GIT_COMMIT_SHA` over the legacy `FDOS_DEPLOY_REV`, so runtime provenance reports the code actually running.
+### Production canonical/sitemap configuration
+
+`NEXT_PUBLIC_SITE_URL` is now set to the production HTTPS domain. That enables the existing metadata/sitemap code to emit the production canonical URL and public sitemap entries for:
+- `/`
+- `/answers`
+- `/glossary`
+
+`/acceptance` remains intentionally excluded from the sitemap.
+
+The health endpoint prefers Railway's injected `RAILWAY_GIT_COMMIT_SHA` over the legacy `FDOS_DEPLOY_REV`, so runtime provenance reflects the repository revision actually running.
+
+## AI handoff drift corrected
+
+The canonical continuation docs were audited after the web rebuild. Stale instructions that still described WordPress deployment as the primary milestone were corrected in:
+- `AGENTS.md`
+- `AI-HANDOFF.md`
+- `.github/copilot-instructions.md`
+
+Future assistants are now directed to the standalone broad OS, shared Business Record, current Evidence boundary, and genuine production-user acceptance instead of trying to drag the project backward into its historical WordPress launch path. Humanity has enough legacy instructions already.
 
 ## Completion state
 
@@ -229,6 +253,7 @@ The health endpoint prefers Railway's injected `RAILWAY_GIT_COMMIT_SHA` over the
 - Scenario Lab
 - Portfolio / Dynasty Mode
 - Plain-English Glossary
+- public Answers/AEO surface
 - website Evidence capture/review architecture
 - 19-table RLS-protected persistence
 - relationship-aware Evidence links
@@ -237,10 +262,12 @@ The health endpoint prefers Railway's injected `RAILWAY_GIT_COMMIT_SHA` over the
 - production source provenance
 - deterministic Next.js 16 TypeScript config
 - global auth/privacy draft boundary
+- production canonical URL + sitemap configuration
+- corrected multi-AI handoff instructions
 - Sales OS correctly nested under Customers & Growth
 
 ### STILL REQUIRES GENUINE HUMAN / PRODUCTION-USER PROOF
-These cannot truthfully be manufactured by CI or backend SQL:
+These cannot truthfully be manufactured by CI, SQL, or a deploy tool:
 - genuine browser sign-in on the current deployed revision;
 - first Business Record bootstrap/load through the browser UI;
 - save → sign out → fresh sign in → restore;
@@ -252,7 +279,7 @@ These cannot truthfully be manufactured by CI or backend SQL:
 - desktop visual/interaction acceptance;
 - one real Value Sprint completed through an observable result → KEEP / REVISE / REVERT.
 
-There is currently only one authenticated production user, so genuine second-user acceptance cannot be honestly marked complete yet.
+There is currently only one authenticated production user, so genuine second-user acceptance cannot honestly be marked complete yet.
 
 ## Highest-value remaining milestone
 
@@ -260,7 +287,7 @@ There is currently only one authenticated production user, so genuine second-use
 
 Sequence:
 
-`open production → sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → Idea Lab/X-Ray → run one Value Sprint → /acceptance → sign out → confirm all private state/drafts clear → sign back in → verify restore → browser Evidence capture → approve + reject → Workbench writes → Strategy/Dynasty writes → second genuine account → mobile + desktop visual pass → KEEP / REVISE / REVERT`
+`open production → sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → Idea Lab/X-Ray → run one Value Sprint → /acceptance → sign out → verify all private state/drafts clear → sign back in → verify restore → browser Evidence capture → approve + reject → Workbench writes → Strategy/Dynasty writes → second genuine account → mobile + desktop visual pass → KEEP / REVISE / REVERT`
 
 ## Product guardrail
 
