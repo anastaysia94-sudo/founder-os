@@ -14,16 +14,24 @@ const OFFERS = Object.freeze({
 
 let tokenCache = { value: '', expiresAt: 0 };
 
+function publicBase() {
+  const raw = String(process.env.PUBLIC_BASE_URL || '').trim().replace(/\/$/, '');
+  if (!raw) return '';
+  let url;
+  try { url = new URL(raw); } catch { throw new Error('invalid_public_base_url'); }
+  const local = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+  if (url.protocol !== 'https:' && !(local && url.protocol === 'http:')) throw new Error('public_base_url_must_be_https');
+  if (url.username || url.password || url.search || url.hash) throw new Error('invalid_public_base_url');
+  return url.origin;
+}
+
 function configured() {
-  return Boolean(process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET && process.env.PUBLIC_BASE_URL);
+  if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) return false;
+  try { return Boolean(publicBase()); } catch { return false; }
 }
 
 function apiBase() {
   return process.env.PAYPAL_ENV === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
-}
-
-function publicBase() {
-  return String(process.env.PUBLIC_BASE_URL || '').replace(/\/$/, '');
 }
 
 async function accessToken() {
@@ -67,6 +75,15 @@ async function createOrder(offerSlug) {
   };
   if (offer.kind === 'digital') item.category = 'DIGITAL_GOODS';
 
+  const base = publicBase();
+  const experienceContext = {
+    brand_name: 'SmartPickShop Holdings',
+    shipping_preference: 'NO_SHIPPING',
+    user_action: 'PAY_NOW',
+    return_url: `${base}/paypal/return?offer=${encodeURIComponent(offerSlug)}`,
+    cancel_url: `${base}/paypal/cancel?offer=${encodeURIComponent(offerSlug)}`
+  };
+
   const payload = {
     intent: 'CAPTURE',
     purchase_units: [{
@@ -80,12 +97,10 @@ async function createOrder(offerSlug) {
       },
       items: [item]
     }],
-    application_context: {
-      brand_name: 'SmartPickShop Holdings',
-      shipping_preference: 'NO_SHIPPING',
-      user_action: 'PAY_NOW',
-      return_url: `${publicBase()}/paypal/return?offer=${encodeURIComponent(offerSlug)}`,
-      cancel_url: `${publicBase()}/paypal/cancel?offer=${encodeURIComponent(offerSlug)}`
+    payment_source: {
+      paypal: {
+        experience_context: experienceContext
+      }
     }
   };
 
