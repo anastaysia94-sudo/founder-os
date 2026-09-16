@@ -86,8 +86,26 @@ alter table public.four_offer_downloads enable row level security;
 alter table public.four_offer_download_tokens enable row level security;
 alter table public.four_offer_payments enable row level security;
 
--- These tables are backend-only. There are deliberately no anon/authenticated RLS policies.
+-- These tables are backend-only. Browser roles get neither table privileges nor an
+-- RLS path to rows. Explicit restrictive deny policies make the security boundary
+-- auditable while preserving service-role/server access.
 revoke all on table public.four_offer_events from anon, authenticated;
 revoke all on table public.four_offer_downloads from anon, authenticated;
 revoke all on table public.four_offer_download_tokens from anon, authenticated;
 revoke all on table public.four_offer_payments from anon, authenticated;
+
+drop policy if exists four_offer_events_client_deny_all on public.four_offer_events;
+create policy four_offer_events_client_deny_all on public.four_offer_events
+  as restrictive for all to anon, authenticated using (false) with check (false);
+
+drop policy if exists four_offer_downloads_client_deny_all on public.four_offer_downloads;
+create policy four_offer_downloads_client_deny_all on public.four_offer_downloads
+  as restrictive for all to anon, authenticated using (false) with check (false);
+
+drop policy if exists four_offer_download_tokens_client_deny_all on public.four_offer_download_tokens;
+create policy four_offer_download_tokens_client_deny_all on public.four_offer_download_tokens
+  as restrictive for all to anon, authenticated using (false) with check (false);
+
+drop policy if exists four_offer_payments_client_deny_all on public.four_offer_payments;
+create policy four_offer_payments_client_deny_all on public.four_offer_payments
+  as restrictive for all to anon, authenticated using (false) with check (false);
