@@ -40,6 +40,23 @@ The global active-business switcher uses an account-scoped browser session selec
 
 `fdos_create_business(...)` performs authenticated atomic Business Record creation and writes the initial E4 `Workspace created` Business Memory event. Anonymous execution is explicitly denied.
 
+## Cross-business intelligence
+
+The private `/portfolio` surface now also reads owner-scoped signals across Business Records without merging their canonical histories.
+
+Current account-wide signals include:
+
+- high risks;
+- open decisions;
+- blocked initiatives;
+- Evidence proposals waiting for review;
+- running Value Sprints;
+- planned weekly Founder Attention.
+
+Per-business comparison also shows saved opportunities, mapped assets and measured Value Sprint loops. Attention flags explain where an individual business currently has high risks, blocked work, pending Evidence review or unresolved decisions.
+
+These are **descriptive operating signals**, not a ranking of which business is best, a valuation, a success score, revenue evidence, product-market fit, or a forecast. Cross-business intelligence can compare the records; it does not rewrite them.
+
 ## Source-of-truth rule
 
 Inside a business, all modules read from and write to the same selected Business Record. Do not create disconnected copies of Business DNA, opportunities, decisions, risks, value items, Value Sprints, evidence, or memory for individual screens.
@@ -85,7 +102,9 @@ npm run start
 
 ## Build direction
 
-Continue outward from the shared per-business operating record. The next distinctive layer is **cross-business intelligence**: compare constraints, assets, risks, opportunities, founder attention and portfolio roles across account-owned businesses without weakening each business's evidence/history boundary.
+The broad architecture, multi-business registry and first cross-business intelligence layer now exist. The highest-value milestone is **genuine production-user acceptance** of what is already built: real browser sign-in, persistence/restore, business creation and switching, browser Evidence review, module writes, mobile/desktop interaction, and one observable Value Sprint loop.
+
+After that evidence is closed, expand Cross-Business Intelligence only where it produces explainable decisions about shared constraints, assets, founder attention, portfolio roles or reusable capabilities.
 
 Sales OS remains under **Customers & Growth**. It is a major neighborhood, not the municipal government.
 
