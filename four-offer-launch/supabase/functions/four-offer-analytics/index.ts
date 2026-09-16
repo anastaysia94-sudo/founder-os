@@ -122,6 +122,7 @@ Deno.serve(async (req: Request) => {
       utm_source: clean((body as Record<string, unknown>).utm_source, 100),
       utm_medium: clean((body as Record<string, unknown>).utm_medium, 100),
       utm_campaign: clean((body as Record<string, unknown>).utm_campaign, 120),
+      utm_content: clean((body as Record<string, unknown>).utm_content, 120),
       offer_slug: clean((body as Record<string, unknown>).offer_slug, 80),
     };
 
