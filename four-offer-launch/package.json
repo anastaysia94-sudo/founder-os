@@ -1,0 +1,12 @@
+{
+  "name": "smartpickshop-four-offer-launch",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SmartPickShop Holdings Four Offer Launch storefront",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
