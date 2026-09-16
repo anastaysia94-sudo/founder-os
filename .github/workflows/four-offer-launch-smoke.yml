@@ -1,0 +1,135 @@
+name: Four Offer Launch Smoke
+
+on:
+  pull_request:
+    paths:
+      - 'four-offer-launch/**'
+      - '.github/workflows/four-offer-launch-smoke.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'four-offer-launch/**'
+      - '.github/workflows/four-offer-launch-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  storefront-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: four-offer-launch
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check server syntax
+        run: |
+          npm run check
+          node --check test/paypal-orders.test.js
+          node --check test/fulfillment.test.js
+          node --check test/readiness.test.js
+
+      - name: Verify server-side offer catalog
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const { OFFERS, SELLER_EMAIL } = require('./paypal-orders');
+          assert.equal(SELLER_EMAIL, 'anastaysia98@gmail.com');
+          assert.deepEqual(
+            Object.fromEntries(Object.entries(OFFERS).map(([slug, offer]) => [slug, [offer.price, offer.kind]])),
+            {
+              'cashh-starter': ['100.00', 'service'],
+              'cashh-expanded': ['200.00', 'service'],
+              'remote-career-diy': ['29.00', 'digital'],
+              'ai-project-handoff': ['19.00', 'digital'],
+              'lnc-expanded': ['39.00', 'digital']
+            }
+          );
+          NODE
+
+      - name: Verify PayPal, fulfillment and readiness contracts
+        run: npm test
+
+      - name: Start storefront
+        run: |
+          npm start > /tmp/four-offer-storefront.log 2>&1 &
+          echo $! > /tmp/four-offer-storefront.pid
+          for i in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:3000/health >/tmp/health.json; then
+              break
+            fi
+            sleep 0.25
+          done
+          cat /tmp/health.json
+          grep -q '"ok":true' /tmp/health.json
+          grep -q '"paypal_api_ready":false' /tmp/health.json
+
+      - name: Verify deployment readiness fails closed without secrets
+        run: |
+          status=$(curl --silent --output /tmp/ready.json --write-out '%{http_code}' http://127.0.0.1:3000/ready)
+          test "$status" = '503'
+          grep -q '"ready":false' /tmp/ready.json
+          grep -q 'PAYPAL_CLIENT_ID' /tmp/ready.json
+          grep -q 'PAYPAL_CLIENT_SECRET' /tmp/ready.json
+          grep -q 'PUBLIC_BASE_URL' /tmp/ready.json
+          grep -q 'SUPABASE_SECRET_KEY' /tmp/ready.json
+          grep -q 'DELIVERY_TOKEN_SECRET' /tmp/ready.json
+          ! grep -q 'secret-value' /tmp/ready.json
+
+      - name: Verify storefront content
+        run: |
+          curl --fail --silent http://127.0.0.1:3000/ >/tmp/storefront.html
+          grep -q 'Four Offer Launch' /tmp/storefront.html
+          grep -q 'Cashh Radar Opportunity Intelligence Brief' /tmp/storefront.html
+          grep -q 'Remote Career Command Center DIY' /tmp/storefront.html
+          grep -q 'AI Project Handoff Pack' /tmp/storefront.html
+          grep -q 'L.N.C.' /tmp/storefront.html
+          grep -q 'data-offer="cashh-starter"' /tmp/storefront.html
+          grep -q 'data-offer="cashh-expanded"' /tmp/storefront.html
+          grep -q "sessionStorage.getItem('fourOfferSession')" /tmp/storefront.html
+          grep -q "utm_content:q.get('utm_content')" /tmp/storefront.html
+
+      - name: Verify runtime configuration
+        run: |
+          curl --fail --silent http://127.0.0.1:3000/config.js >/tmp/config.js
+          grep -q 'anastaysia98@gmail.com' /tmp/config.js
+          grep -q 'four-offer-analytics' /tmp/config.js
+          grep -q 'four-offer-delivery' /tmp/config.js
+          grep -q 'paypalApiReady' /tmp/config.js
+          grep -q '/api/paypal/create-order' /tmp/config.js
+          grep -q 'utm_content' /tmp/config.js
+          grep -q 'sessionStorage' /tmp/config.js
+
+      - name: Verify unconfigured checkout fails closed
+        run: |
+          status=$(curl --silent --output /tmp/checkout.json --write-out '%{http_code}' \
+            -X POST http://127.0.0.1:3000/api/paypal/create-order \
+            -H 'Content-Type: application/json' \
+            --data '{"offer_slug":"remote-career-diy"}')
+          test "$status" = '503'
+          grep -q 'paypal_checkout_not_configured' /tmp/checkout.json
+
+      - name: Verify tracked campaign link builder
+        run: |
+          node tools/build-campaign-links.mjs https://example.test >/tmp/campaign-links.txt
+          grep -q 'utm_source=telegram_solofounders' /tmp/campaign-links.txt
+          grep -q 'utm_campaign=four_offer_launch_2026_09_16' /tmp/campaign-links.txt
+          grep -q 'utm_content=all_four_launch' /tmp/campaign-links.txt
+          grep -q 'utm_content=ai_handoff_wave2' /tmp/campaign-links.txt
+
+      - name: Stop storefront
+        if: always()
+        run: |
+          if [ -f /tmp/four-offer-storefront.pid ]; then
+            kill "$(cat /tmp/four-offer-storefront.pid)" || true
+          fi
+          cat /tmp/four-offer-storefront.log || true
