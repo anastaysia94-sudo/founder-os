@@ -66,6 +66,11 @@ function runtimeConfig() {
   };
 }
 
+function configScript() {
+  const cfg = JSON.stringify(runtimeConfig());
+  return `window.FOUR_OFFER_CONFIG=${cfg};\n(function(){\n  document.addEventListener('click', async function(event){\n    const button = event.target.closest && event.target.closest('.buy');\n    const config = window.FOUR_OFFER_CONFIG || {};\n    if (!button || !config.paypalApiReady) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    const offer = button.dataset.offer;\n    const original = button.textContent;\n    button.textContent = 'Opening PayPal…';\n    button.classList.add('disabled');\n    try {\n      try {\n        const sid = localStorage.getItem('fourOfferSession') || (crypto.randomUUID ? crypto.randomUUID() : null);\n        fetch(config.analyticsUrl, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_type:'checkout_click',path:location.pathname,session_id:sid,offer_slug:offer}),keepalive:true}).catch(()=>{});\n      } catch (_) {}\n      const response = await fetch('/api/paypal/create-order', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({offer_slug:offer})});\n      const data = await response.json();\n      if (!response.ok || !data.approve_url) throw new Error(data.error || 'checkout_failed');\n      location.href = data.approve_url;\n    } catch (error) {\n      button.textContent = original;\n      button.classList.remove('disabled');\n      const notice = document.getElementById('checkoutNotice');\n      if (notice) { notice.textContent = 'PayPal checkout could not be opened. No payment was taken. Please try again or use the email contact on this page.'; notice.classList.add('show'); }\n    }\n  }, true);\n})();`;
+}
+
 async function readJson(req, maxBytes = 16384) {
   return new Promise((resolve, reject) => {
     let raw = '';
@@ -110,7 +115,7 @@ async function handle(req, res) {
   }
 
   if (url.pathname === '/config.js') {
-    return send(res, 200, `window.FOUR_OFFER_CONFIG=${JSON.stringify(runtimeConfig())};`, 'application/javascript; charset=utf-8');
+    return send(res, 200, configScript(), 'application/javascript; charset=utf-8');
   }
 
   if (url.pathname === '/api/paypal/create-order') {
@@ -136,25 +141,11 @@ async function handle(req, res) {
     const existing = await fulfillment.getPayment(orderId);
     let fulfilled;
     if (existing?.status === 'COMPLETED' && existing.offer_slug === offerSlug) {
-      fulfilled = await fulfillment.completePayment({
-        orderId,
-        captureId: existing.paypal_capture_id,
-        offerSlug,
-        amount: offer.price,
-        buyerEmail: existing.buyer_email,
-        digital: offer.kind === 'digital'
-      });
+      fulfilled = await fulfillment.completePayment({ orderId, captureId: existing.paypal_capture_id, offerSlug, amount: offer.price, buyerEmail: existing.buyer_email, digital: offer.kind === 'digital' });
     } else {
       const paid = await paypal.captureOrder(orderId, offerSlug);
       const buyerEmail = paid.order.payment_source?.paypal?.email_address || paid.order.payer?.email_address || null;
-      fulfilled = await fulfillment.completePayment({
-        orderId,
-        captureId: paid.capture.id,
-        offerSlug,
-        amount: offer.price,
-        buyerEmail,
-        digital: offer.kind === 'digital'
-      });
+      fulfilled = await fulfillment.completePayment({ orderId, captureId: paid.capture.id, offerSlug, amount: offer.price, buyerEmail, digital: offer.kind === 'digital' });
     }
 
     return send(res, 200, offer.kind === 'digital' ? completePage(offer, fulfilled.downloadUrl) : servicePage(offer, orderId), 'text/html; charset=utf-8');
