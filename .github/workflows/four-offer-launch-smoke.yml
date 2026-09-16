@@ -82,6 +82,10 @@ jobs:
           grep -q 'Remote Career Command Center DIY' /tmp/storefront.html
           grep -q 'AI Project Handoff Pack' /tmp/storefront.html
           grep -q 'L.N.C.' /tmp/storefront.html
+          grep -q 'data-offer="cashh-starter"' /tmp/storefront.html
+          grep -q 'data-offer="cashh-expanded"' /tmp/storefront.html
+          grep -q "sessionStorage.getItem('fourOfferSession')" /tmp/storefront.html
+          grep -q "utm_content:q.get('utm_content')" /tmp/storefront.html
 
       - name: Verify runtime configuration
         run: |
@@ -91,8 +95,8 @@ jobs:
           grep -q 'four-offer-delivery' /tmp/config.js
           grep -q 'paypalApiReady' /tmp/config.js
           grep -q '/api/paypal/create-order' /tmp/config.js
-          grep -q 'Pay $100 starter' /tmp/config.js
-          grep -q 'Pay $200 expanded' /tmp/config.js
+          grep -q 'utm_content' /tmp/config.js
+          grep -q 'sessionStorage' /tmp/config.js
 
       - name: Verify unconfigured checkout fails closed
         run: |
@@ -108,6 +112,8 @@ jobs:
           node tools/build-campaign-links.mjs https://example.test >/tmp/campaign-links.txt
           grep -q 'utm_source=telegram_solofounders' /tmp/campaign-links.txt
           grep -q 'utm_campaign=four_offer_launch_2026_09_16' /tmp/campaign-links.txt
+          grep -q 'utm_content=all_four_launch' /tmp/campaign-links.txt
+          grep -q 'utm_content=ai_handoff_wave2' /tmp/campaign-links.txt
 
       - name: Stop storefront
         if: always()
