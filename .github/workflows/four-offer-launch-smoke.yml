@@ -1,0 +1,69 @@
+name: Four Offer Launch Smoke
+
+on:
+  pull_request:
+    paths:
+      - 'four-offer-launch/**'
+      - '.github/workflows/four-offer-launch-smoke.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'four-offer-launch/**'
+      - '.github/workflows/four-offer-launch-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  storefront-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: four-offer-launch
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Start storefront
+        run: |
+          npm start > /tmp/four-offer-storefront.log 2>&1 &
+          echo $! > /tmp/four-offer-storefront.pid
+          for i in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:3000/health >/tmp/health.json; then
+              break
+            fi
+            sleep 0.25
+          done
+          cat /tmp/health.json
+          grep -q '"ok":true' /tmp/health.json
+
+      - name: Verify storefront content
+        run: |
+          curl --fail --silent http://127.0.0.1:3000/ >/tmp/storefront.html
+          grep -q 'Four Offer Launch' /tmp/storefront.html
+          grep -q 'Cashh Radar Opportunity Intelligence Brief' /tmp/storefront.html
+          grep -q 'Remote Career Command Center DIY' /tmp/storefront.html
+          grep -q 'AI Project Handoff Pack' /tmp/storefront.html
+          grep -q 'L.N.C.' /tmp/storefront.html
+
+      - name: Verify runtime configuration
+        run: |
+          curl --fail --silent http://127.0.0.1:3000/config.js >/tmp/config.js
+          grep -q 'anastaysia98@gmail.com' /tmp/config.js
+          grep -q 'four-offer-analytics' /tmp/config.js
+          grep -q 'four-offer-delivery' /tmp/config.js
+
+      - name: Stop storefront
+        if: always()
+        run: |
+          if [ -f /tmp/four-offer-storefront.pid ]; then
+            kill "$(cat /tmp/four-offer-storefront.pid)" || true
+          fi
+          cat /tmp/four-offer-storefront.log || true
