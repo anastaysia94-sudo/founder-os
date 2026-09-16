@@ -141,17 +141,17 @@ Important behavior:
 
 ## CI state
 
-Current web revision:
+Current accepted web revision:
 
-`9bc3056b300e6760aa421945bf1323399c3360df`
+`9ae56202470e75040c76a08a25b6f074d5808577`
 
 Commit:
 
-`fix(web): report actual Railway git revision in health`
+`chore(web): align TypeScript config with Next 16`
 
 GitHub Actions on 2026-09-16:
-- `Founder OS Standalone Web` run `35071863534`: **SUCCESS**
-- `PHP Lint` run `35071863641`: **SUCCESS**
+- `Founder OS Standalone Web` run `35072232659`: **SUCCESS**
+- `PHP Lint` run `35072232717`: **SUCCESS**
 
 The standalone workflow checks:
 - dependency vulnerability gate
@@ -171,7 +171,9 @@ The standalone workflow checks:
 - production diagnostics / noindex contract
 - health endpoint revision/cache behavior
 
-## Production runtime — current main is live
+The Next.js 16 TypeScript defaults are now committed in `web/tsconfig.json` (`jsx: react-jsx` plus `.next/dev/types/**/*.ts`), so production builds no longer need to rewrite the TypeScript configuration inside the build container.
+
+## Production runtime — accepted current web revision is live
 
 Railway service:
 - service: `founder-dynasty-os-web`
@@ -180,15 +182,15 @@ Railway service:
 
 Current deployment:
 
-`7928de6b-8c24-499a-ad4c-640e765837a7`
+`d7fa868c-e074-46d9-abe2-77f3f3adcf38`
 
-Current deployed source:
+Current deployed web source:
 
-`9bc3056b300e6760aa421945bf1323399c3360df`
+`9ae56202470e75040c76a08a25b6f074d5808577`
 
 Railway status: **SUCCESS**.
 
-The stale-source problem from 2026-09-13 is resolved. A production variable update forced Railway to fetch the linked `main` branch again, and Railway identified the resulting deployment as the exact current web commit above rather than reusing stale commit `284c496...`.
+The stale-source problem from 2026-09-13 is resolved. Railway fetched the linked `main` branch and identified the current deployment as the exact accepted web commit above rather than reusing stale commit `284c496...`.
 
 Build/runtime evidence for the current deployment:
 - repository: `anastaysia94-sudo/founder-os`
@@ -198,6 +200,7 @@ Build/runtime evidence for the current deployment:
 - Next.js 16.3.4 production compilation succeeded
 - TypeScript succeeded
 - all 13 generated/dynamic routes completed build generation
+- committed TypeScript config required no Next.js rewrite during this build
 - production container started successfully
 - configured healthcheck remains `/api/health`
 - deployment reached `SUCCESS`
@@ -217,7 +220,7 @@ Current production route set includes:
 - `/strategy`
 - `/workbench`
 
-The health endpoint now prefers Railway's automatically injected `RAILWAY_GIT_COMMIT_SHA` over the legacy manually managed `FDOS_DEPLOY_REV`, so future production provenance reflects the code actually running.
+The health endpoint prefers Railway's automatically injected `RAILWAY_GIT_COMMIT_SHA` over the legacy manually managed `FDOS_DEPLOY_REV`, so production provenance reflects the code actually running.
 
 ## Completion state
 
@@ -248,8 +251,9 @@ The health endpoint now prefers Railway's automatically injected `RAILWAY_GIT_CO
 - website Evidence capture/review architecture
 - 19-table RLS-protected FDOS persistence
 - relationship-aware Evidence links
-- current-main Railway deployment
+- current-web Railway deployment
 - health/provenance diagnostics
+- deterministic Next.js 16 TypeScript config
 - Sales OS correctly nested under Customers & Growth
 
 ### STILL REQUIRES GENUINE HUMAN / PRODUCTION-USER PROOF
