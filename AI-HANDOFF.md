@@ -1,96 +1,159 @@
-# FDOS Multi-AI Continuation Handoff
+# Founder Dynasty OS 10.0 — Multi-AI Continuation Handoff
 
-Use this document when opening Founder Dynasty OS in ChatGPT, Grok, Perplexity, or another AI assistant. `AGENTS.md` remains the canonical technical/project instruction file in this repository.
+Use this document when continuing Founder Dynasty OS in ChatGPT, Codex, GitHub Copilot, Grok, Perplexity, or another capable assistant. `AGENTS.md` is the canonical repository-wide operating instruction file. `PRODUCT-VISION.md` is the canonical product-direction document. `PROJECT-STATUS.md` and `PRODUCTION-USER-VALIDATION.md` define the current verification boundary.
 
 Repository: `anastaysia94-sudo/founder-os`
 
-## Shared context for every assistant
+## Product identity every assistant must preserve
 
-Founder Dynasty OS 10.0 (FDOS), under SmartPickShop Holdings, is a Business Outcome Operating System centered on evidence-grounded business diagnosis and measurable experiments. The current repository is the v1.0.1 WordPress launch candidate. Preserve all existing completed work and the E1–E8 Research & Evidence Integrity Layer.
+Founder Dynasty OS 10.0 (FDOS), under **SMARTPICKSHOP HOLDINGS**, is the operating intelligence of a business from a raw idea through validation, building, launch, operations, customers, finance, growth, systemization, scaling, portfolio management, enterprise value, and succession.
 
-The highest-value unfinished milestone is **real production deployment and external verification**, not another arbitrary module. A public HTTPS WordPress endpoint is required to execute the real P1/P2/public scanner/P3 launch path. Never fabricate deployment, customers, revenue, conversions, ROI, product-market fit, or external validation.
+It is **not**:
+- a Sales OS with extra tabs;
+- a CRM with a founder-themed skin;
+- a generic dashboard;
+- merely a WordPress plugin;
+- a project manager pretending to understand the business.
 
-Before working, read:
+The Same-Day Customer Growth Pack / Sales OS is one important module under:
+
+`Founder Dynasty OS → Customers & Growth → Sales OS`
+
+Sales does not own the whole damn city.
+
+## Canonical operating loop
+
+`UNDERSTAND → FIND THE HIGHEST-VALUE PROBLEM / OPPORTUNITY → SEPARATE EVIDENCE FROM ASSUMPTIONS → CHOOSE AN ACTION → EXECUTE → MEASURE → LEARN → KEEP / REVISE / REVERT → UPDATE BUSINESS MEMORY / MODEL → CHOOSE THE NEXT ACTION`
+
+## Permanent Evidence model
+
+Preserve E1–E8 everywhere:
+
+- E1 Verified Fact
+- E2 Current External Evidence
+- E3 Customer-Derived Evidence
+- E4 Internal Observation
+- E5 Strategic Hypothesis
+- E6 Financial Model Assumption
+- E7 Forecast
+- E8 Illustrative Example
+
+Never fabricate or silently upgrade evidence. Do not invent customers, replies, outreach, payments, revenue, ROI, adoption, product-market fit, results, capabilities, partnerships, or validation.
+
+A price/offer field is not revenue. A sent email is not a customer. A green deployment is not human acceptance. A test transaction is not commercial evidence.
+
+## Current primary product track
+
+The primary standalone product is the Next.js / React / TypeScript application under `web/`, backed by Supabase.
+
+Current major surfaces:
+
+- `/` — Founder Command Center: Business Stage, Business DNA, Value Map, Opportunities, Decisions, Risks, Business Memory, Evidence Inbox, Missing Intelligence and the whole-OS map.
+- `/intelligence` — Idea Lab, Business X-Ray, What Am I Missing?, Value Sprints and KEEP / REVISE / REVERT.
+- `/workbench` — Finance Center, Product & Offer Lab, Operations & Execution.
+- `/strategy` — Business Model Lab, Customer Intelligence, Marketing & Distribution, Asset Map, Founder Attention, Scenario Lab, Portfolio / Dynasty Mode.
+- `/glossary` — searchable plain-English definitions for business, Evidence and technical terms.
+- `/acceptance` — read-only noindex production acceptance diagnostics.
+- `/sales-engine-app` — bridge to the separately deployed Customers & Growth → Sales OS.
+
+The older WordPress/plugin implementation is legacy/compatibility work unless a task explicitly targets it. **Do not steer the primary product back toward WordPress because an old document said so.**
+
+## Shared Business Record
+
+All major modules must connect to the same authenticated, account-owned Business Record and, where appropriate, Evidence, a Decision, Risk, Opportunity, Value Sprint, Asset, measurable outcome, or Business Memory.
+
+Current production FDOS persistence spans 19 RLS-enabled tables across:
+- core Business Record + Evidence;
+- Value / Opportunities / Decisions / Risks / Memory;
+- Value Sprints;
+- Finance / Offers / Initiatives;
+- Business Model / Customer Intelligence / Distribution;
+- Assets / Scenarios / Portfolio / Founder Attention.
+
+Do not create a separate mini-database for a new module just because it is convenient. A business gets one reality, not seven feuding data kingdoms.
+
+## Current production state
+
+Read `PROJECT-STATUS.md` before changing code. At the 2026-09-16 checkpoint:
+
+- broad standalone source: **complete for the current planned scope**;
+- standalone web CI: **passing**;
+- production Railway runtime: **verified**;
+- live production backend acceptance: **verified** with ephemeral data, RLS visibility checks, Evidence capture, Proposal approve/reject and zero synthetic rows left behind;
+- global auth/privacy boundary: **implemented and deployed** so local unsaved drafts are cleared across sign-out/account switches;
+- genuine production-user/browser acceptance: **still incomplete**;
+- commercial evidence: must remain separate.
+
+Accepted privacy-hardened web code revision:
+
+`8cf11db3c798f5a90d19e892c217ab88d79232e6`
+
+Railway deployment recorded in `PROJECT-STATUS.md`:
+
+`7c04e794-081c-4268-89da-7a8ccca94941`
+
+Do not assume those identifiers remain current forever. Verify `main`, CI and Railway before making a current-status claim.
+
+## Highest-value unfinished milestone
+
+**Genuine production-user acceptance, not another department.**
+
+The remaining proof loop is:
+
+`open current production → real sign in → create/load Business Record → save Business DNA → exercise core Value / Decision / Risk / Opportunity / Memory flows → Idea Lab / X-Ray → run a real Value Sprint → /acceptance → sign out → confirm private state + drafts clear → fresh sign in → verify restore → browser Evidence capture → approve + reject → Workbench writes → Strategy/Dynasty writes → second genuine account isolation → mobile + desktop visual acceptance → KEEP / REVISE / REVERT`
+
+Do not mark those steps complete merely because source code, SQL or CI suggests they should work.
+
+## Read before changing anything
 
 1. `AGENTS.md`
-2. `README.md`
-3. `LAUNCH-TODAY.md`
-4. `LAUNCH-RUNBOOK.md`
-5. `SECURITY.md`
-6. GitHub Issue #1
+2. `PRODUCT-VISION.md`
+3. `PROJECT-STATUS.md`
+4. `PRODUCTION-USER-VALIDATION.md`
+5. `FDOS-PRODUCTION-BACKEND-ACCEPTANCE-2026-09-16.md`
+6. `README.md`
+7. task-relevant source files
 
-Then inspect the code relevant to the task before changing anything.
-
----
-
-## Prompt for ChatGPT / Codex
-
-> Continue Founder Dynasty OS 10.0 from the repository `anastaysia94-sudo/founder-os`. Read `AGENTS.md` first and treat it as the canonical handoff, then read the launch/security docs and Issue #1. Inspect the actual repository before proposing work. Preserve everything already implemented and preserve the E1–E8 Research & Evidence Integrity Layer. Do not invent deployment, users, customers, revenue, results, ROI, causation, product-market fit, or capabilities. Choose the highest-value unfinished milestone and execute as much as your available tools permit. Prioritize real WordPress production deployment, P1/P2 runtime proof, public scanner validation, Shopify HMAC webhook proof, P3 verification, and the first genuine external Value Sprint over new speculative modules. Make code changes directly in GitHub when authorized, keep secrets out of source control, run/inspect tests and CI, update documentation when behavior changes, and report exactly what changed, what was actually tested, what remains externally blocked, and what evidence closes the blocker.
-
-### ChatGPT/Codex working style
-
-Use connected GitHub tools when available rather than asking the user to manually copy files. Use web research for current WordPress/Shopify facts when needed and prefer official documentation. If production/browser/hosting access is unavailable, improve only the pieces that genuinely reduce the deployment gap; do not call the project live.
+Use `LAUNCH-*`, legacy WordPress docs, or historical issue material only when the task actually targets those legacy surfaces.
 
 ---
 
-## Prompt for GitHub Copilot
+## ChatGPT / Codex continuation prompt
 
-Copilot should automatically receive `.github/copilot-instructions.md` where supported. If a chat prompt is needed, use:
+> Continue Founder Dynasty OS 10.0 from `anastaysia94-sudo/founder-os`. Read `AGENTS.md`, `PRODUCT-VISION.md`, `PROJECT-STATUS.md`, and `PRODUCTION-USER-VALIDATION.md` first. Treat the standalone `web/` product and shared Supabase Business Record as the primary product track. Preserve the E1–E8 Evidence model and the full any-business lifecycle. Keep Sales OS under Customers & Growth instead of centering the product around sales. Inspect the current repository, CI and production state before changing anything. Execute the highest-value unfinished milestone rather than inventing another generic module. Never fabricate users, customer evidence, outreach, replies, payments, revenue, ROI, PMF, or acceptance. Make authorized code changes directly, test them, deploy when appropriate, verify the exact deployed revision, and update the status/validation docs when the evidence boundary changes. Distinguish SOURCE COMPLETE, CI VERIFIED, PRODUCTION RUNTIME VERIFIED, LIVE BACKEND ACCEPTANCE VERIFIED, PRODUCTION USER VERIFIED, and COMMERCIAL EVIDENCE.
 
-> Work on `anastaysia94-sudo/founder-os`. Read `AGENTS.md` and `.github/copilot-instructions.md` before editing. Preserve the E1–E8 evidence model and existing FDOS behavior. Inspect before implementing; do not duplicate modules. Prioritize Issue #1 and launch-readiness work. Never commit secrets or production customer data. Keep PHP/WordPress compatibility, security, HMAC verification, deduplication, safe rendering, retention, and safe-uninstall boundaries intact. Run relevant validation and clearly separate actual test evidence from assumptions.
+## GitHub Copilot continuation prompt
 
----
+> Work on `anastaysia94-sudo/founder-os`. Read `AGENTS.md`, `PRODUCT-VISION.md`, `.github/copilot-instructions.md`, and `PROJECT-STATUS.md` before editing. The primary product is the standalone Next.js/Supabase Founder Dynasty OS, not the legacy WordPress plugin. Preserve E1–E8, account isolation, the shared Business Record, Business Memory, and the Sales OS neighborhood boundary. Inspect before adding files; avoid duplicate modules. Run relevant tests and never promote assumptions or test data into customer/revenue claims.
 
-## Prompt for Grok
+## Grok continuation prompt
 
-> Continue the Founder Dynasty OS 10.0 project from `anastaysia94-sudo/founder-os`. First read `AGENTS.md`, then `README.md`, `LAUNCH-TODAY.md`, `LAUNCH-RUNBOOK.md`, `SECURITY.md`, and Issue #1. Treat repository code and verified runtime evidence as authoritative over conversational assumptions. Preserve completed work and the E1–E8 Research & Evidence Integrity Layer. Do not fabricate commercial or technical results. Focus on the highest-value unfinished launch milestone: public HTTPS WordPress deployment → real P1 → real P2 → logged-out public scanner → verified evidence events → Shopify app-owned HMAC webhook → P3 `production_verified=true` → first genuine external Value Sprint. If you have GitHub write access, commit changes through a focused branch/PR or authorized direct update; if not, produce precise patches. Never expose credentials. For any current factual research, cite primary/official sources and distinguish external evidence from hypothesis. End each work cycle with actual changes/tests/blockers/evidence needed, not generic suggestions.
+> Continue Founder Dynasty OS 10.0 from `anastaysia94-sudo/founder-os`. Use `AGENTS.md`, `PRODUCT-VISION.md`, `PROJECT-STATUS.md`, and `PRODUCTION-USER-VALIDATION.md` as the current handoff. The primary product is the standalone web OS for any business stage. Keep Sales OS nested under Customers & Growth. Preserve E1–E8 and explicitly label outside research, hypotheses, forecasts and customer evidence. Focus current research or implementation on a real unresolved product/validation need rather than generic feature generation. Never infer payment, demand, ROI, PMF or success from internal tests or lead lists.
 
-### Grok research role
+## Perplexity continuation prompt
 
-Grok can be especially useful for broad current-market discovery, but external claims must still be source-attributed and mapped to the FDOS evidence boundary. Social/community observations are evidence inputs, not automatic facts about customer demand or willingness to pay.
+> Continue research/verification support for Founder Dynasty OS 10.0 using `anastaysia94-sudo/founder-os` as source of truth. Read the canonical vision/status/validation docs first. Prefer current primary sources for external facts and map each claim to E1–E8 with date, source, confidence and limitation. The standalone web OS is primary; legacy WordPress is not the product center. Do not convert market research, traffic, offer prices, pipeline status or internal tests into customer/revenue claims. Research should change a Decision, Risk, Opportunity, Business Model hypothesis, Scenario, Value Sprint or Business Memory entry, not merely create a decorative report.
 
----
+## Contribution protocol for any AI
 
-## Prompt for Perplexity
-
-> Continue research and launch support for Founder Dynasty OS 10.0 using `anastaysia94-sudo/founder-os` as the project source of truth. Read `AGENTS.md` plus the README, launch runbooks, security notes, and Issue #1 before recommending changes. Preserve the E1–E8 Research & Evidence Integrity Layer. Your priority is evidence-backed launch execution and commercial validation, not speculative feature generation. For WordPress, Shopify, security, APIs, regulations, market/competitor/pricing research, prefer current primary sources and provide source URLs/citations, publication/update dates when available, limitations, and the exact FDOS claim each source supports. Separate verified/current evidence from hypotheses, forecasts, assumptions, examples, and customer-derived evidence. Never infer revenue, ROI, causation, PMF, or customer success from traffic/order/KPI signals alone. When code changes are necessary and GitHub write access exists, inspect the existing implementation first and preserve compatibility/security; otherwise provide an implementation-ready patch and test plan. Always state what is verified, what remains uncertain, and what next evidence would change the decision.
-
-### Perplexity research output format
-
-For substantial research, return a compact evidence table with:
-
-- claim/question
-- evidence class
-- primary source
-- source date
-- confidence
-- limitation
-- product/strategy implication
-- recommended validation step.
-
-Do not turn a research summary into a claim that implementation or deployment occurred.
-
----
-
-## GitHub contribution protocol for any AI
-
-1. Confirm the repository and current branch/HEAD.
-2. Read `AGENTS.md` and task-relevant source files.
-3. Check existing issues/workflows before creating duplicates.
-4. For meaningful/risky work, prefer a focused branch + PR when tool access permits.
-5. Never commit secrets. Examples must contain obvious placeholders only.
-6. Keep commits scoped and messages descriptive.
-7. Run the relevant validation. For PHP changes, at minimum lint changed PHP and inspect GitHub CI.
-8. Do not merge or label production gates complete without the required evidence.
-9. Update docs/changelog/release metadata when behavior or deployment requirements change.
-10. Leave the repository in a state another assistant can continue from without relying on hidden chat history.
+1. Confirm repository, current `main`, and task-relevant deployed revision.
+2. Read canonical vision/status docs before editing.
+3. Inspect existing implementations before creating new modules.
+4. Preserve the shared Business Record and E1–E8 truth boundary.
+5. Keep secrets, credentials and private user/customer data out of source control and responses.
+6. Use focused commits with descriptive messages.
+7. Run relevant TypeScript/build/CI/database validation.
+8. Never mark browser/human acceptance complete without browser/human evidence.
+9. Never mark commercial outcomes complete without genuine external evidence.
+10. Update `PROJECT-STATUS.md` / `PRODUCTION-USER-VALIDATION.md` when behavior or proof materially changes.
+11. Leave the repo continuable without hidden chat history.
 
 ## Canonical continuation summary
 
-**Built:** FDOS v1.0.1 launch candidate and GitHub CI/build pipeline.
+**Built:** broad standalone Founder Dynasty OS around a shared Business Record, including Command Center, Business DNA/Stage, Value, Opportunities, Decisions, Risks, Memory, Idea Lab, X-Ray, Missing Intelligence, Value Sprints, Finance, Offers, Operations, Strategy, Customers, Distribution, Assets, Founder Attention, Scenarios, Portfolio/Dynasty, Glossary, Evidence review and Sales OS integration.
 
-**Not yet proven:** real public WordPress deployment, real production P1/P2, live public scanner runtime, real Shopify webhook receipt by production FDOS, P3 green, external Value Sprint, revenue/PMF.
+**Verified technically:** CI, production Railway runtime, 19-table production-policy backend persistence/RLS smoke test, website Evidence capture/approve/reject backend loop, cleanup, and auth/privacy source boundary.
 
-**Next milestone:** close GitHub Issue #1 with real deployment evidence.
+**Not yet genuinely proven:** full real browser workflow across session/device/account boundaries and external commercial outcomes.
 
-**Rule:** Build weird. Measure what works. Keep the receipts.
+**Next milestone:** complete production-user/browser acceptance of what already exists before adding another shiny organizational chart to the software.
