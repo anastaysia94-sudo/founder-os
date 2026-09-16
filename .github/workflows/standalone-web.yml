@@ -42,6 +42,10 @@ jobs:
         run: |
           grep -q 'Business Operating System' web/app/layout.tsx
           grep -q 'WebApplication' web/app/layout.tsx
+          grep -q 'AuthPrivacyGuard' web/app/layout.tsx
+          grep -q 'sessionStorage' web/app/auth-privacy-guard.tsx
+          grep -q 'window.location.reload' web/app/auth-privacy-guard.tsx
+          grep -q 'SIGNED_OUT\|onAuthStateChange\|signedOutFromAccount' web/app/auth-privacy-guard.tsx
           grep -q 'Idea' web/app/page.tsx
           grep -q 'Business DNA' web/app/page.tsx
           grep -q 'Value Map' web/app/page.tsx
@@ -70,6 +74,8 @@ jobs:
           grep -q 'RLS · Row Level Security' web/lib/glossary.ts
           grep -q '/glossary' web/app/layout.tsx
           grep -q '/glossary' web/app/sitemap.ts
+          grep -q '/answers' web/app/sitemap.ts
+          grep -q 'NEXT_PUBLIC_SITE_URL' web/app/sitemap.ts
           grep -q 'getBusinessXRay' web/lib/fdos.ts
           grep -q 'getMissingIntelligence' web/lib/fdos.ts
           grep -q 'addValueSprint' web/lib/business-store.ts
@@ -103,6 +109,7 @@ jobs:
           test -f web/app/sitemap.ts
           test -f web/app/manifest.ts
           test -f web/app/answers/page.tsx
+          test -f web/app/auth-privacy-guard.tsx
           test -f web/app/intelligence/page.tsx
           test -f web/app/intelligence/intelligence.module.css
           test -f web/app/workbench/page.tsx
@@ -115,4 +122,4 @@ jobs:
           test -f web/app/acceptance/page.tsx
           test -f web/app/acceptance/layout.tsx
           test -f web/app/api/health/route.ts
-          echo 'Founder Dynasty OS broad shell, intelligence, build/run workbench, strategy/dynasty layer, plain-English glossary, evidence integrity, relationship-aware RLS, FK coverage, evidence-class constraints, and production-testability contract verified.'
+          echo 'Founder Dynasty OS broad shell, intelligence, build/run workbench, strategy/dynasty layer, plain-English glossary, evidence integrity, auth privacy, public discovery, relationship-aware RLS, FK coverage, evidence-class constraints, and production-testability contract verified.'
