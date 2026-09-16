@@ -68,7 +68,7 @@ function runtimeConfig() {
 
 function configScript() {
   const cfg = JSON.stringify(runtimeConfig());
-  return `window.FOUR_OFFER_CONFIG=${cfg};\n(function(){\n  const starter = document.querySelector('.buy[data-offer="cashh-starter"]');\n  if (starter && !document.querySelector('.buy[data-offer="cashh-expanded"]')) {\n    starter.textContent = 'Pay $100 starter';\n    const expanded = starter.cloneNode(true);\n    expanded.dataset.offer = 'cashh-expanded';\n    expanded.dataset.price = '200';\n    expanded.textContent = 'Pay $200 expanded';\n    expanded.setAttribute('aria-label', 'Pay for Cashh Radar Expanded with PayPal');\n    starter.after(expanded);\n  }\n  document.addEventListener('click', async function(event){\n    const button = event.target.closest && event.target.closest('.buy');\n    const config = window.FOUR_OFFER_CONFIG || {};\n    if (!button || !config.paypalApiReady) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    const offer = button.dataset.offer;\n    const original = button.textContent;\n    button.textContent = 'Opening PayPal…';\n    button.classList.add('disabled');\n    try {\n      try {\n        const sid = localStorage.getItem('fourOfferSession') || (crypto.randomUUID ? crypto.randomUUID() : null);\n        fetch(config.analyticsUrl, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_type:'checkout_click',path:location.pathname,session_id:sid,offer_slug:offer}),keepalive:true}).catch(()=>{});\n      } catch (_) {}\n      const response = await fetch('/api/paypal/create-order', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({offer_slug:offer})});\n      const data = await response.json();\n      if (!response.ok || !data.approve_url) throw new Error(data.error || 'checkout_failed');\n      location.href = data.approve_url;\n    } catch (error) {\n      button.textContent = original;\n      button.classList.remove('disabled');\n      const notice = document.getElementById('checkoutNotice');\n      if (notice) { notice.textContent = 'PayPal checkout could not be opened. No payment was taken. Please try again or use the email contact on this page.'; notice.classList.add('show'); }\n    }\n  }, true);\n})();`;
+  return `window.FOUR_OFFER_CONFIG=${cfg};\n(function(){\n  document.addEventListener('click', async function(event){\n    const button = event.target.closest && event.target.closest('.buy');\n    const config = window.FOUR_OFFER_CONFIG || {};\n    if (!button || !config.paypalApiReady) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    const offer = button.dataset.offer;\n    const original = button.textContent;\n    button.textContent = 'Opening PayPal…';\n    button.classList.add('disabled');\n    try {\n      try {\n        let sid = sessionStorage.getItem('fourOfferSession');\n        if (!sid && crypto.randomUUID) { sid = crypto.randomUUID(); sessionStorage.setItem('fourOfferSession', sid); }\n        const q = new URLSearchParams(location.search);\n        const attribution = {\n          utm_source:q.get('utm_source'),\n          utm_medium:q.get('utm_medium'),\n          utm_campaign:q.get('utm_campaign'),\n          utm_content:q.get('utm_content')\n        };\n        const referrer_host = document.referrer ? new URL(document.referrer).hostname : null;\n        fetch(config.analyticsUrl, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_type:'checkout_click',path:location.pathname,session_id:sid,referrer_host,offer_slug:offer,...attribution}),keepalive:true}).catch(()=>{});\n      } catch (_) {}\n      const response = await fetch('/api/paypal/create-order', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({offer_slug:offer})});\n      const data = await response.json();\n      if (!response.ok || !data.approve_url) throw new Error(data.error || 'checkout_failed');\n      location.href = data.approve_url;\n    } catch (error) {\n      button.textContent = original;\n      button.classList.remove('disabled');\n      const notice = document.getElementById('checkoutNotice');\n      if (notice) { notice.textContent = 'PayPal checkout could not be opened. No payment was taken. Please try again or use the email contact on this page.'; notice.classList.add('show'); }\n    }\n  }, true);\n})();`;
 }
 
 async function readJson(req, maxBytes = 16384) {
@@ -88,8 +88,13 @@ async function readJson(req, maxBytes = 16384) {
 
 function sameOrigin(req) {
   const origin = req.headers.origin;
-  const expected = String(process.env.PUBLIC_BASE_URL || '').replace(/\/$/, '');
-  return !origin || !expected || origin === expected;
+  if (!origin) return true;
+  try {
+    const expected = new URL(String(process.env.PUBLIC_BASE_URL || '')).origin;
+    return origin === expected;
+  } catch {
+    return false;
+  }
 }
 
 function completePage(offer, downloadUrl) {
