@@ -33,11 +33,9 @@ jobs:
 
       - name: Check server syntax
         run: |
-          node --check server.js
-          node --check paypal-orders.js
-          node --check fulfillment.js
-          node --check tools/build-campaign-links.mjs
+          npm run check
           node --check test/paypal-orders.test.js
+          node --check test/fulfillment.test.js
 
       - name: Verify server-side offer catalog
         run: |
@@ -57,8 +55,8 @@ jobs:
           );
           NODE
 
-      - name: Verify PayPal Orders contract
-        run: node --test test/paypal-orders.test.js
+      - name: Verify PayPal and fulfillment contracts
+        run: npm test
 
       - name: Start storefront
         run: |
