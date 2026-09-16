@@ -2,30 +2,47 @@
 
 Target: **50 recorded visits in the first two hours** after the public storefront is live.
 
-This is a target, not a guaranteed result. The storefront analytics endpoint records the actual result, including UTM source/campaign fields, so the next launch decision can use evidence instead of vibes wearing a business hat.
+This is a target, not a guaranteed result. The storefront analytics endpoint records the actual result, including UTM source, medium, campaign, and content fields, so the next launch decision can use evidence instead of vibes wearing a business hat.
 
 ## Launch rule
 
-Do not post the bare storefront URL everywhere. Use one tracked URL per route:
+Do not post the bare storefront URL everywhere. Use one tracked URL per route **and creative wave**:
 
 ```text
-{STOREFRONT_URL}/?utm_source={SOURCE}&utm_medium={MEDIUM}&utm_campaign=four_offer_launch_2026_09_16
+{STOREFRONT_URL}/?utm_source={SOURCE}&utm_medium={MEDIUM}&utm_campaign=four_offer_launch_2026_09_16&utm_content={CREATIVE}
+```
+
+Primary launch creative:
+
+```text
+utm_content=all_four_launch
+```
+
+Second-wave AI Handoff creative:
+
+```text
+utm_content=ai_handoff_wave2
 ```
 
 Examples:
 
 ```text
-{STOREFRONT_URL}/?utm_source=telegram_solofounders&utm_medium=community&utm_campaign=four_offer_launch_2026_09_16
-{STOREFRONT_URL}/?utm_source=telegram_fusion42&utm_medium=community&utm_campaign=four_offer_launch_2026_09_16
-{STOREFRONT_URL}/?utm_source=facebook_profile&utm_medium=social&utm_campaign=four_offer_launch_2026_09_16
-{STOREFRONT_URL}/?utm_source=instagram_story&utm_medium=social&utm_campaign=four_offer_launch_2026_09_16
-{STOREFRONT_URL}/?utm_source=tiktok_profile&utm_medium=social&utm_campaign=four_offer_launch_2026_09_16
-{STOREFRONT_URL}/?utm_source=whatsapp_status&utm_medium=messaging&utm_campaign=four_offer_launch_2026_09_16
+{STOREFRONT_URL}/?utm_source=telegram_solofounders&utm_medium=community&utm_campaign=four_offer_launch_2026_09_16&utm_content=all_four_launch
+{STOREFRONT_URL}/?utm_source=telegram_fusion42&utm_medium=community&utm_campaign=four_offer_launch_2026_09_16&utm_content=all_four_launch
+{STOREFRONT_URL}/?utm_source=facebook_profile&utm_medium=social&utm_campaign=four_offer_launch_2026_09_16&utm_content=all_four_launch
+{STOREFRONT_URL}/?utm_source=instagram_story&utm_medium=social&utm_campaign=four_offer_launch_2026_09_16&utm_content=all_four_launch
+{STOREFRONT_URL}/?utm_source=facebook_profile&utm_medium=social&utm_campaign=four_offer_launch_2026_09_16&utm_content=ai_handoff_wave2
+```
+
+Generate the full set after deployment with:
+
+```bash
+npm run campaign-links -- https://YOUR-PUBLIC-STOREFRONT
 ```
 
 ## 0:00–0:20 — Owned surfaces first
 
-Publish one clean launch message on every account you already control. Use the same core claim, but do not paste an identical wall of text everywhere.
+Publish one clean launch message on every account you already control. Use the same core claim, but do not paste an identical wall of text everywhere. Use links whose `utm_content` is `all_four_launch`.
 
 ### Facebook profile / story
 
@@ -103,7 +120,7 @@ Replace the bracketed sentence with a real reason. If there is no real reason, t
 
 ## 1:20–1:40 — Second-wave content, not duplicate spam
 
-Make one short piece around the strongest individual offer instead of reposting the same launch announcement.
+Make one short piece around the strongest individual offer instead of reposting the same launch announcement. Use the generated links whose `utm_content` is `ai_handoff_wave2` so the second wave can be compared with the original creative.
 
 Recommended first angle: **AI Project Handoff Pack — $19**
 
@@ -128,12 +145,14 @@ Record:
 - intake clicks
 - downloads, if any verified fulfillment occurred
 - which UTM source produced the most traffic
-- which source produced checkout/intake activity rather than empty clicks
+- which `utm_content` creative produced the most traffic
+- which source/creative combination produced checkout or intake activity rather than empty clicks
 
 Decision rule:
 
-- If one route produces real clicks, spend the remaining launch window there.
+- If one route/creative combination produces real clicks, spend the remaining launch window there.
 - If a route produces views but no offer interaction, change its message before reposting elsewhere.
+- If the second-wave content beats the all-four message, keep promoting the single problem/offer rather than the catalog.
 - If a route produces nothing, stop feeding it time just because it was on the original plan.
 - Never fabricate the 50-visit target as achieved. The counter decides.
 
