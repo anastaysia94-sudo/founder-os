@@ -52,7 +52,7 @@ jobs:
         run: npm run check
       - name: Start Sales OS
         run: |
-          npm start > /tmp/sales-os.log 2>&1 &
+          node server.js > /tmp/sales-os.log 2>&1 &
           echo $! > /tmp/sales-os.pid
       - name: Wait for health
         run: |
@@ -97,7 +97,7 @@ jobs:
         run: |
           kill "$(cat /tmp/sales-os.pid)"
           sleep 1
-          npm start > /tmp/sales-os-restart.log 2>&1 &
+          node server.js > /tmp/sales-os-restart.log 2>&1 &
           echo $! > /tmp/sales-os.pid
           for i in {1..30}; do
             curl -fsS http://127.0.0.1:3000/api/health >/dev/null && break
