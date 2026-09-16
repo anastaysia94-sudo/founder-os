@@ -73,11 +73,16 @@ Implemented:
 - per-business opportunities, mapped assets, measured sprint loops and attention flags;
 - no synthetic “best business” ranking, valuation, revenue score, PMF grade or forecast.
 
+### Acceptance surfaces
+- `/acceptance` — read-only production diagnostics for the **actual active Business Record**, account Business Registry, per-business RLS reads, and browser/runtime state.
+- `/acceptance` can arm a browser-only Business A → Business B switch checkpoint in `sessionStorage`; after a real product switch/reload it can record that the browser moved between two owner-visible Business Records without writing synthetic business data.
+- `/acceptance/restore` — snapshots the **selected active Business Record**, observes a genuine signed-out state, then requires the same account, same active business, and matching module row counts after sign-in.
+
+These acceptance helpers still do not manufacture second-user isolation, visual acceptance, customer evidence, or a Value Sprint result.
+
 ### Other surfaces
 - `/glossary` — searchable plain-English glossary.
 - `/answers` — public answer-oriented search/AEO surface.
-- `/acceptance` — read-only production diagnostics.
-- `/acceptance/restore` — browser restore proof support.
 - `/sales-engine-app` — Customers & Growth → Sales OS bridge.
 
 ## Production data layer
@@ -113,7 +118,7 @@ Per-business child records remain scoped by authenticated user plus `business_id
 
 ## Multi-business creation RPC
 
-Production now includes:
+Production includes:
 
 `public.fdos_create_business(text, text)`
 
@@ -156,21 +161,21 @@ The root `AuthPrivacyGuard` forces a hard client boundary on sign-out or direct 
 
 The global Business Switcher also performs a hard page reload when changing the active Business Record. The selected business identifier is account-scoped in `sessionStorage` and revalidated against an owner-scoped database read before being trusted.
 
-This is source/CI/runtime verified. Genuine browser observation of sign-out, restore and business-switch behavior remains production-user acceptance.
+The acceptance helpers use browser-only `sessionStorage` checkpoints to observe real switch/restore boundaries without contaminating business records with synthetic acceptance rows.
 
 ## CI state
 
-Cross-Business Intelligence merge commit:
+Current accepted active-Business acceptance revision:
 
-`d9dcbcd46e46a65f1b23e17d40a679bd0a53ad66`
+`a16a2cf3e0f8e11b6601f43a20559ca2a4e19c2c`
 
 GitHub Actions on that merge:
-- `Founder OS Standalone Web` run `35089889819`: **SUCCESS**;
-- `PHP Lint` run `35089890062`: **SUCCESS**.
+- `Founder OS Standalone Web` run `35090557694`: **SUCCESS**;
+- `PHP Lint` run `35090557779`: **SUCCESS**.
 
-PR #5 also passed its pre-merge standalone web and PHP lint runs.
+PR #6 also passed both workflows before merge. TypeScript, Next.js production build, dependency vulnerability gate, and the broad/multi-business source contract all passed.
 
-The web workflow typechecks, builds the Next.js production app, performs dependency vulnerability checks and verifies the broad/multi-business contract. The production build generated **15 routes**, including `/portfolio` and `/acceptance/restore`.
+Earlier Cross-Business Intelligence merge `d9dcbcd46e46a65f1b23e17d40a679bd0a53ad66` also passed its standalone web and PHP workflows.
 
 ## Production runtime
 
@@ -183,24 +188,23 @@ Railway service:
 
 Current production deployment:
 
-`1eddfe30-e3ca-4954-b288-b0c5386fa91a`
+`7c9d22b8-5e20-45e7-a7c0-28472b88c473`
 
-Deployed repository revision:
+Current deployed repository revision:
 
-`7fe9c285fa677fa722d08675d01841bc0a9d2427`
-
-That revision contains the merged multi-business registry and Cross-Business Intelligence web code plus updated canonical handoff material. Later repository-only status/evidence documentation does not change the deployed `web/` code tree.
+`a16a2cf3e0f8e11b6601f43a20559ca2a4e19c2c`
 
 Railway status: **SUCCESS**.
 
-Observed production build/runtime evidence:
-- exact source commit identified by Railway: `7fe9c285...`;
+Observed production evidence:
+- exact source revision identified by Railway: `a16a2cf3...`;
 - Next.js production build succeeded;
 - TypeScript completed successfully;
-- production route generation completed for all 15 routes;
-- `/portfolio` is in the generated route set;
+- 15 production routes generated, including `/portfolio`, `/acceptance`, and `/acceptance/restore`;
 - production container reached `Ready`;
 - configured healthcheck completed and deployment reached `SUCCESS`.
+
+Later root-level documentation-only commits do not change the deployed `web/` code tree.
 
 ## Live backend acceptance
 
@@ -211,6 +215,8 @@ Observed production build/runtime evidence:
 - Evidence linkage + Business Memory preserved;
 - synthetic acceptance records cleaned back to **0** persistent FDOS rows;
 - multi-business creation RPC privilege state verified as authenticated-only.
+
+A fresh Supabase security-advisor pass after the multi-business migration did not list an FDOS table under `RLS enabled, no policy` and did not flag `fdos_create_business` as an exposed `SECURITY DEFINER` function. The project does have unrelated advisor findings plus a project-wide warning that leaked-password protection is disabled; those are separate from FDOS RLS correctness.
 
 ## Completion state
 
@@ -226,6 +232,7 @@ Current planned technical surface includes:
 - multi-business Business Registry;
 - global active-business switching;
 - first Cross-Business Intelligence layer;
+- active-business-aware switch/restore acceptance helpers;
 - searchable glossary and Answers surface;
 - website Evidence capture/review architecture;
 - 19-table RLS-protected persistence;
@@ -238,8 +245,9 @@ Still requires genuine human/browser evidence:
 - sign in on the exact deployed revision;
 - create/load the first real Business Record through the UI;
 - create a second intentional Business Record through `/portfolio`;
-- switch between businesses and verify no persisted or unsaved state bleed;
-- edit/save Business DNA and restore it after sign-out + fresh sign-in;
+- **run the new `/acceptance` Business A → Business B switch proof**;
+- verify no persisted/unsaved state bleed while switching;
+- edit/save Business DNA and run `/acceptance/restore` through sign-out + fresh sign-in;
 - use Value / Decision / Risk / Opportunity / Memory UI flows;
 - Idea Lab write-back;
 - run a real Value Sprint through observable result → KEEP / REVISE / REVERT;
@@ -253,11 +261,11 @@ There is currently only one genuine production auth user, so second-person brows
 
 ## Highest-value next milestone
 
-**Do not add another department. Complete genuine production-user acceptance of the broad multi-business system that now exists.**
+**Do not add another department. Use the deployed acceptance helpers to close genuine production-user evidence for the system that now exists.**
 
 Sequence:
 
-`open production → sign in → create/load Business A → save DNA + stage + core records → create Business B intentionally → switch A ↔ B and verify isolation → Intelligence + Value Sprint → /acceptance → sign out → verify private state clears → fresh sign in → verify restore → Evidence approve/reject → Workbench + Strategy writes → second genuine account → mobile + desktop visual pass → KEEP / REVISE / REVERT`
+`open production → sign in → create/load Business A → save DNA + stage + core records → create Business B intentionally → /acceptance: arm switch proof → switch A ↔ B → verify isolation → Intelligence + Value Sprint → /acceptance/restore: arm checkpoint → sign out → verify private state clears → fresh sign in → verify same active business restores → Evidence approve/reject → Workbench + Strategy writes → second genuine account → mobile + desktop visual pass → KEEP / REVISE / REVERT`
 
 ## Product guardrail
 
