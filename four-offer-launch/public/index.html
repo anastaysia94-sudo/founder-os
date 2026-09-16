@@ -40,15 +40,15 @@
 
   <main>
     <section id="offers"><div class="wrap">
-      <div class="sectionhead"><h2>Choose the problem you actually need solved.</h2><p>Each offer has a defined scope. Service offers require intake; digital products are designed for immediate delivery once the PayPal checkout link is connected.</p></div>
+      <div class="sectionhead"><h2>Choose the problem you actually need solved.</h2><p>Each offer has a defined scope. Service offers require intake; digital products are designed for immediate delivery once checkout is configured.</p></div>
       <div class="grid">
         <article class="card">
           <span class="badge">Research service</span><h3>Cashh Radar Opportunity Intelligence Brief</h3>
           <p>A focused, source-checked opportunity brief for a business, freelancer, or creator who needs useful leads without pretending every business listing is buying something.</p>
           <div class="price">$100 <small>starter</small></div>
           <ul class="features"><li>Up to 8 researched opportunities</li><li>Source links + evidence dates</li><li>Fit notes + 3 next actions</li><li>One reusable outreach template</li></ul>
-          <div class="actions"><a class="btn primary buy" data-offer="cashh-starter" data-price="100" href="#">Pay with PayPal</a><a class="btn secondary mini intake" data-offer="cashh-starter" href="mailto:anastaysia98@gmail.com?subject=Cashh%20Radar%20Starter%20Intake&body=Business%2Fservice%3A%0ACustomer%20type%3A%0AGeography%2Fremote%3A%0AMinimum%20project%20value%3A%0AContact%20method%3A%0AExclusions%3A%0ADeadline%3A">Send intake</a></div>
-          <div class="micro">Expanded research tier: $200 for up to 20 opportunities and additional tailored drafts.</div>
+          <div class="actions"><a class="btn primary buy" data-offer="cashh-starter" data-price="100" href="#">Pay $100 starter</a><a class="btn primary buy" data-offer="cashh-expanded" data-price="200" href="#">Pay $200 expanded</a><a class="btn secondary mini intake" data-offer="cashh-starter" href="mailto:anastaysia98@gmail.com?subject=Cashh%20Radar%20Starter%20Intake&body=Business%2Fservice%3A%0ACustomer%20type%3A%0AGeography%2Fremote%3A%0AMinimum%20project%20value%3A%0AContact%20method%3A%0AExclusions%3A%0ADeadline%3A">Send starter intake</a></div>
+          <div class="micro">Expanded research tier includes up to 20 opportunities and additional tailored drafts.</div>
         </article>
 
         <article class="card">
@@ -85,13 +85,13 @@
       <div class="sectionhead"><h2>How checkout and delivery work.</h2><p>The payment and delivery flow is intentionally boring. Boring is excellent when money and files are involved.</p></div>
       <div class="how">
         <div class="step"><b>01 • choose</b><h3>Pick one offer</h3><p>Use the defined scope instead of buying a vague bucket of “AI magic.”</p></div>
-        <div class="step"><b>02 • pay</b><h3>Complete PayPal checkout</h3><p>The live product link opens PayPal-hosted commercial checkout. Service orders include intake.</p></div>
+        <div class="step"><b>02 • pay</b><h3>Complete PayPal checkout</h3><p>The server creates the fixed-price order and PayPal hosts buyer approval. Service orders include intake.</p></div>
         <div class="step"><b>03 • receive</b><h3>Get the result</h3><p>Digital products use token-gated delivery. Custom services are delivered to the agreed email address after completion.</p></div>
       </div>
     </div></section>
 
     <section id="launch"><div class="wrap launchbox"><div class="launchgrid">
-      <div><div class="sectionhead"><h2>Traffic, measured instead of imagined.</h2><p>This page records page views, checkout clicks, download clicks, intake clicks, referral host, and UTM campaign fields. The public counter reports actual recorded events.</p></div><div class="sourcechips"><span class="chip">Facebook</span><span class="chip">Instagram</span><span class="chip">TikTok</span><span class="chip">Telegram</span><span class="chip">WhatsApp</span><span class="chip">Direct links</span></div></div>
+      <div><div class="sectionhead"><h2>Traffic, measured instead of imagined.</h2><p>This page records page views, checkout clicks, download clicks, intake clicks, referral host, and UTM source/medium/campaign/content fields. The public counter reports actual recorded events.</p></div><div class="sourcechips"><span class="chip">Facebook</span><span class="chip">Instagram</span><span class="chip">TikTok</span><span class="chip">Telegram</span><span class="chip">WhatsApp</span><span class="chip">Direct links</span></div></div>
       <div class="counter"><div class="stat"><strong id="visitors">—</strong><span>visitors</span></div><div class="stat"><strong id="views2h">—</strong><span>views / last 2h</span></div><div class="stat"><strong id="checkoutClicks">—</strong><span>checkout clicks</span></div><div class="stat"><strong id="intakeClicks">—</strong><span>intake clicks</span></div></div>
     </div></div></section>
 
@@ -108,17 +108,17 @@
     const links = cfg.paypalLinks || {};
     const notice = document.getElementById('checkoutNotice');
 
-    function sessionId(){let id=localStorage.getItem('fourOfferSession');if(!id){id=crypto.randomUUID();localStorage.setItem('fourOfferSession',id)}return id}
-    function campaign(){const q=new URLSearchParams(location.search);return {utm_source:q.get('utm_source'),utm_medium:q.get('utm_medium'),utm_campaign:q.get('utm_campaign')}}
+    function sessionId(){let id=sessionStorage.getItem('fourOfferSession');if(!id){id=crypto.randomUUID();sessionStorage.setItem('fourOfferSession',id)}return id}
+    function campaign(){const q=new URLSearchParams(location.search);return {utm_source:q.get('utm_source'),utm_medium:q.get('utm_medium'),utm_campaign:q.get('utm_campaign'),utm_content:q.get('utm_content')}}
     async function track(event_type, offer_slug=null){try{const c=campaign();await fetch(analyticsUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_type,path:location.pathname,session_id:sessionId(),referrer_host:document.referrer?new URL(document.referrer).hostname:null,offer_slug,...c}),keepalive:true})}catch(e){}}
     async function refreshStats(){try{const r=await fetch(analyticsUrl,{cache:'no-store'});if(!r.ok)return;const d=await r.json();document.getElementById('visitors').textContent=d.visitors??'—';document.getElementById('heroViews').textContent=d.page_views??'—';document.getElementById('views2h').textContent=d.page_views_last_2h??'—';document.getElementById('checkoutClicks').textContent=d.checkout_clicks??'—';document.getElementById('intakeClicks').textContent=d.intake_clicks??'—'}catch(e){}}
 
-    if(!localStorage.getItem('fourOfferVisitorRecorded')){track('visitor');localStorage.setItem('fourOfferVisitorRecorded','1')}
+    if(!sessionStorage.getItem('fourOfferVisitorRecorded')){track('visitor');sessionStorage.setItem('fourOfferVisitorRecorded','1')}
     track('page_view').then(()=>setTimeout(refreshStats,350));refreshStats();
 
     document.querySelectorAll('.buy').forEach(btn=>{
       const offer=btn.dataset.offer;const live=links[offer];
-      if(!live){btn.textContent='Request PayPal checkout';btn.classList.add('secondary');btn.classList.remove('primary')}
+      if(!live){btn.textContent=btn.dataset.price?`Request $${btn.dataset.price} PayPal checkout`:'Request PayPal checkout';btn.classList.add('secondary');btn.classList.remove('primary')}
       btn.addEventListener('click',async e=>{
         e.preventDefault();
         if(live){await track('checkout_click',offer);location.href=live;return}
