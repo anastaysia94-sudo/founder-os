@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
+import { getActiveBusinessId } from '@/lib/business-store';
 import { supabase } from '@/lib/supabase';
 
-const CHECKPOINT_KEY = 'fdos.acceptance.restore-checkpoint.v1';
+const CHECKPOINT_KEY = 'fdos.acceptance.restore-checkpoint.v2';
 
 const tables = [
   ['valueItems', 'fdos_value_items'],
@@ -33,10 +34,11 @@ type BusinessSnapshot = {
   name: string | null;
   stage: string | null;
   updatedAt: string | null;
+  selectionSource: 'stored-active' | 'first-owned-fallback';
   counts: Counts;
 };
 type RestoreCheckpoint = {
-  version: 1;
+  version: 2;
   armedAt: string;
   userId: string;
   business: BusinessSnapshot;
@@ -57,7 +59,7 @@ function readCheckpoint(): RestoreCheckpoint | null {
     const raw = window.sessionStorage.getItem(CHECKPOINT_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as RestoreCheckpoint;
-    return parsed?.version === 1 ? parsed : null;
+    return parsed?.version === 2 ? parsed : null;
   } catch {
     return null;
   }
@@ -77,16 +79,37 @@ function countsEqual(before: Counts, after: Counts) {
 }
 
 async function loadBusiness(user: User): Promise<BusinessSnapshot | null> {
-  const business = await supabase
-    .from('fdos_business_records')
-    .select('id,name,stage,updated_at')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: true })
-    .limit(1)
-    .maybeSingle();
+  const storedActiveId = getActiveBusinessId(user.id);
+  let businessData: any = null;
+  let selectionSource: BusinessSnapshot['selectionSource'] = 'first-owned-fallback';
 
-  if (business.error) throw business.error;
-  if (!business.data) return null;
+  if (storedActiveId) {
+    const selected = await supabase
+      .from('fdos_business_records')
+      .select('id,name,stage,updated_at')
+      .eq('user_id', user.id)
+      .eq('id', storedActiveId)
+      .maybeSingle();
+    if (selected.error) throw selected.error;
+    if (selected.data) {
+      businessData = selected.data;
+      selectionSource = 'stored-active';
+    }
+  }
+
+  if (!businessData) {
+    const first = await supabase
+      .from('fdos_business_records')
+      .select('id,name,stage,updated_at')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (first.error) throw first.error;
+    businessData = first.data;
+  }
+
+  if (!businessData) return null;
 
   const counts: Counts = {};
   for (const [key, table] of tables) {
@@ -94,16 +117,17 @@ async function loadBusiness(user: User): Promise<BusinessSnapshot | null> {
       .from(table)
       .select('id', { count: 'exact', head: true })
       .eq('user_id', user.id)
-      .eq('business_id', business.data.id);
+      .eq('business_id', businessData.id);
     if (query.error) throw query.error;
     counts[key] = query.count ?? 0;
   }
 
   return {
-    id: business.data.id,
-    name: business.data.name,
-    stage: business.data.stage,
-    updatedAt: business.data.updated_at,
+    id: businessData.id,
+    name: businessData.name,
+    stage: businessData.stage,
+    updatedAt: businessData.updated_at,
+    selectionSource,
     counts,
   };
 }
@@ -136,7 +160,7 @@ export default function RestoreAcceptancePage() {
           setCheckpoint(observed);
           setResult({
             state: 'waiting',
-            detail: 'Signed-out browser state observed. Sign back in with the same account, return here, and the verifier will compare the restored record graph.',
+            detail: 'Signed-out browser state observed. Sign back in with the same account, return here, and the verifier will compare the same active Business Record graph.',
           });
         } else {
           setCheckpoint(null);
@@ -155,7 +179,7 @@ export default function RestoreAcceptancePage() {
       }
 
       if (!stored) {
-        setResult({ state: 'waiting', detail: 'Current account and Business Record are readable. Arm a checkpoint to begin the restore test.' });
+        setResult({ state: 'waiting', detail: 'Current account and active Business Record are readable. Arm a checkpoint to begin the restore test.' });
         return;
       }
 
@@ -173,12 +197,12 @@ export default function RestoreAcceptancePage() {
         setCheckpoint(completed);
         setResult({
           state: 'pass',
-          detail: 'PASS: this browser observed sign-out, then the same authenticated user restored the same Business Record with matching account-owned module row counts.',
+          detail: 'PASS: this browser observed sign-out, then the same authenticated user restored the same active Business Record with matching account-owned module row counts.',
         });
       } else {
         const problems = [
           !sameUser ? 'the authenticated user changed' : null,
-          !sameBusiness ? 'the Business Record changed' : null,
+          !sameBusiness ? 'the active Business Record changed' : null,
           !sameCounts ? 'one or more module row counts changed or could not be read' : null,
         ].filter(Boolean).join('; ');
         setResult({ state: 'fail', detail: `FAIL: ${problems}. This verifier does not convert an inconsistent restore into a pass.` });
@@ -204,7 +228,7 @@ export default function RestoreAcceptancePage() {
   function armCheckpoint() {
     if (!user || !business) return;
     const next: RestoreCheckpoint = {
-      version: 1,
+      version: 2,
       armedAt: new Date().toISOString(),
       userId: user.id,
       business,
@@ -213,7 +237,7 @@ export default function RestoreAcceptancePage() {
     };
     writeCheckpoint(next);
     setCheckpoint(next);
-    setResult({ state: 'waiting', detail: 'Checkpoint armed. Sign out now. The browser will reload at the privacy boundary, then this page will record the signed-out state.' });
+    setResult({ state: 'waiting', detail: 'Checkpoint armed for the current active Business Record. Sign out now. The browser will reload at the privacy boundary, then this page will record the signed-out state.' });
   }
 
   async function signOutForTest() {
@@ -257,21 +281,22 @@ export default function RestoreAcceptancePage() {
     <main style={shell}>
       <p style={{ letterSpacing: '.12em', fontSize: 12, fontWeight: 800 }}>SMARTPICKSHOP HOLDINGS · FOUNDER DYNASTY OS 10.0</p>
       <h1 style={{ fontSize: 'clamp(2rem,6vw,4rem)', lineHeight: 1, marginBottom: 12 }}>Sign-out → sign-in restore proof</h1>
-      <p style={{ maxWidth: 780, fontSize: 18, lineHeight: 1.55 }}>
-        This verifier turns one remaining production acceptance step into observable browser evidence. It never writes synthetic business data. It snapshots the current account-owned record graph, observes an actual signed-out state, then requires the same user and Business Record to reappear with matching module row counts.
+      <p style={{ maxWidth: 800, fontSize: 18, lineHeight: 1.55 }}>
+        This verifier snapshots the <strong>currently active Business Record</strong>, observes a real signed-out browser state, then requires the same user and same active business to reappear with matching module row counts. It writes no synthetic business data.
       </p>
 
       <section style={card}>
         <div style={grid}>
           <div><small>Status</small><h2>{badge}</h2></div>
           <div><small>Browser account</small><h3>{user ? 'Signed in' : 'Signed out'}</h3></div>
-          <div><small>Business Record</small><h3>{business?.name || (user ? 'Not loaded' : 'Private')}</h3></div>
+          <div><small>Active Business Record</small><h3>{business?.name || (user ? 'Not loaded' : 'Private')}</h3></div>
+          <div><small>Selection source</small><h3>{business?.selectionSource === 'stored-active' ? 'Active selector' : business ? 'First owned fallback' : '—'}</h3></div>
           <div><small>Visible child rows</small><h3>{business ? totalRows : '—'}</h3></div>
         </div>
         <p>{result.detail}</p>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button type="button" onClick={() => void refresh()} disabled={busy}>{busy ? 'Checking…' : 'Refresh proof'}</button>
-          <button type="button" onClick={armCheckpoint} disabled={busy || !user || !business}>Arm checkpoint</button>
+          <button type="button" onClick={armCheckpoint} disabled={busy || !user || !business}>Arm active-Business checkpoint</button>
           <button type="button" onClick={() => void signOutForTest()} disabled={busy || !checkpoint || Boolean(checkpoint.signedOutObservedAt)}>Sign out for restore test</button>
           <button type="button" onClick={() => void copyEvidence()} disabled={busy || !checkpoint}>{copied ? 'Evidence copied' : 'Copy evidence JSON'}</button>
           <button type="button" onClick={resetTest} disabled={busy || !checkpoint}>Reset test</button>
@@ -281,11 +306,12 @@ export default function RestoreAcceptancePage() {
       <section style={card}>
         <h2>Exact sequence</h2>
         <ol style={{ lineHeight: 1.8 }}>
-          <li>While signed in, click <strong>Arm checkpoint</strong>.</li>
+          <li>Open the Business Record you actually want to verify using the global selector or <a href="/portfolio">Business Registry</a>.</li>
+          <li>While signed in, click <strong>Arm active-Business checkpoint</strong>.</li>
           <li>Click <strong>Sign out for restore test</strong>. The global privacy guard should reload the browser at the auth boundary.</li>
-          <li>On the signed-out page, this verifier records that the browser genuinely reached a private-state-free session.</li>
+          <li>On the signed-out page, this verifier records that the browser genuinely reached a signed-out session.</li>
           <li>Use <a href="/">Founder Command Center</a> to sign back in with the same account.</li>
-          <li>Return to <code>/acceptance/restore</code>. A PASS requires the same user, same Business Record, and matching readable module row counts.</li>
+          <li>Return to <code>/acceptance/restore</code>. A PASS requires the same user, same active Business Record, and matching readable module row counts.</li>
         </ol>
       </section>
 
@@ -296,6 +322,7 @@ export default function RestoreAcceptancePage() {
             <div><small>Armed</small><p>{checkpoint.armedAt}</p></div>
             <div><small>Signed-out state observed</small><p>{checkpoint.signedOutObservedAt || 'Not yet'}</p></div>
             <div><small>Restore verified</small><p>{checkpoint.restoredAt || 'Not yet'}</p></div>
+            <div><small>Business</small><p>{checkpoint.business.name || 'Untitled Business'}</p></div>
             <div><small>Business ID</small><p style={{ overflowWrap: 'anywhere' }}>{checkpoint.business.id}</p></div>
           </div>
         </section>
@@ -303,7 +330,7 @@ export default function RestoreAcceptancePage() {
 
       <section style={card}>
         <h2>Scope</h2>
-        <p>This can prove the same-account browser restore sequence and that the account-owned record graph remains readable after reauthentication. It does <strong>not</strong> pretend to prove second-user isolation, website Evidence review, a completed Value Sprint outcome, or human mobile/desktop visual acceptance. Those remain separate production checks.</p>
+        <p>This can prove the same-account browser restore sequence for the active Business Record and that its account-owned record graph remains readable after reauthentication. Use <a href="/acceptance">the main diagnostics</a> for a real Business A ↔ Business B switch checkpoint. Second-user isolation, Evidence review, a completed Value Sprint outcome, and mobile/desktop visual acceptance remain separate production checks.</p>
         <p><a href="/acceptance">Back to all production acceptance diagnostics</a> · <a href="/">Founder Command Center</a></p>
       </section>
     </main>
