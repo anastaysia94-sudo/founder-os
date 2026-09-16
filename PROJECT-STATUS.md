@@ -15,9 +15,11 @@ Canonical product statement:
 
 > **Founder Dynasty OS is the operating intelligence of the business.**
 
-## Current standalone product surface
+## Current standalone architecture
 
-The primary standalone `web/` application is organized around one authenticated, account-owned Business Record.
+The primary `web/` product supports **multiple private, account-owned Business Records**. One Business Record is active at a time. Command Center, Intelligence, Workbench and Strategy/Dynasty all operate on that selected business.
+
+A global Business Switcher and the private `/portfolio` registry let the founder create and move between independent businesses/ideas without combining their Business DNA, evidence, decisions, risks, opportunities, execution or memory.
 
 ### `/` — Founder Command Center
 - Business Stage + Business DNA
@@ -60,21 +62,23 @@ The primary standalone `web/` application is organized around one authenticated,
 - Scenario Lab
 - Portfolio / Dynasty Mode
 - strategy blind-spot questions
-- structural Dynasty readiness signal, explicitly not a valuation or success forecast
 
-### `/glossary`
-- searchable plain-English glossary
-- E1–E8 definitions
-- business + technical term definitions
-- global navigation access
+### `/portfolio` — Business Registry + Cross-Business Intelligence
+Implemented:
+- list account-owned Business Records;
+- create another independent business or raw idea;
+- choose starting Business Stage;
+- switch the active business across the OS;
+- descriptive account-wide totals for high risks, open decisions, blocked initiatives, pending Evidence review, running Value Sprints and planned Founder Attention;
+- per-business opportunities, mapped assets, measured sprint loops and attention flags;
+- no synthetic “best business” ranking, valuation, revenue score, PMF grade or forecast.
 
-### `/answers`
-- public answer-oriented content surface for search/AEO discovery
-
-### `/acceptance`
-Read-only production diagnostics for runtime revision, genuine browser session, owned Business Record, RLS-scoped module counts, viewport and browser state. It writes no synthetic acceptance data and does not auto-pass human steps.
-
-It remains `index: false`, `follow: false`, nocache, and absent from sitemap.
+### Other surfaces
+- `/glossary` — searchable plain-English glossary.
+- `/answers` — public answer-oriented search/AEO surface.
+- `/acceptance` — read-only production diagnostics.
+- `/acceptance/restore` — browser restore proof support.
+- `/sales-engine-app` — Customers & Growth → Sales OS bridge.
 
 ## Production data layer
 
@@ -105,7 +109,24 @@ The broad FDOS model has **19 RLS-enabled tables**:
 - `fdos_portfolio_theses`
 - `fdos_attention_blocks`
 
-The production migrations enforce RLS, account/business ownership, same-business Evidence relationships, E1–E8 constraints, and covering indexes for the expanded foreign keys.
+Per-business child records remain scoped by authenticated user plus `business_id`. Relationship-aware RLS/Evidence constraints remain in place.
+
+## Multi-business creation RPC
+
+Production now includes:
+
+`public.fdos_create_business(text, text)`
+
+Verified live properties:
+- `SECURITY INVOKER`;
+- owner derived from `auth.uid()`;
+- all 12 Business Stages validated;
+- independent Business Record created;
+- initial E4 `Workspace created` Business Memory event written;
+- `anon` execute: **false**;
+- `authenticated` execute: **true**.
+
+The first migration exposed an explicit `anon` execute grant that survived a `PUBLIC` revoke. A follow-up migration corrected it and the live privilege state was rechecked rather than assuming the SQL meant what we wished it meant.
 
 ## Evidence integrity
 
@@ -126,57 +147,32 @@ Rules preserved:
 - scenarios remain E7;
 - changing a UI status does not upgrade evidence class;
 - external website observations remain E2 and require founder review before canonical changes;
+- cross-business counts are descriptive records, not rankings/valuations;
 - Sales OS offer values are not revenue and `paid` remains zero unless a real payment is recorded.
 
-## Auth / privacy hardening
+## Auth / private-state boundaries
 
-The accepted source includes a global `AuthPrivacyGuard` mounted in the root layout.
+The root `AuthPrivacyGuard` forces a hard client boundary on sign-out or direct auth-account switching.
 
-It complements each workspace's account-scoped hydration guards by clearing **all unsaved React-local drafts** across the app on:
-- sign-out from an authenticated account; or
-- direct account switching.
+The global Business Switcher also performs a hard page reload when changing the active Business Record. The selected business identifier is account-scoped in `sessionStorage` and revalidated against an owner-scoped database read before being trusted.
 
-The guard stores only the prior account identifier in browser `sessionStorage`, updates/clears it before reload, and reloads once at the auth boundary so private drafts from `/intelligence`, `/workbench`, `/strategy`, and future modules cannot remain mounted across identities.
-
-Source, CI and production deployment are verified. Actual browser-observed sign-out/switch behavior remains genuine production-user acceptance.
-
-## Live production backend acceptance
-
-Detailed evidence:
-
-`FDOS-PRODUCTION-BACKEND-ACCEPTANCE-2026-09-16.md`
-
-Observed against production policies with ephemeral data:
-- **19 / 19** FDOS tables accepted an owner-scoped record graph;
-- `fdos_apply_evidence_proposal` approved one Proposal;
-- a foreign authenticated JWT identity saw **0** owner Business rows and **0** owner child rows through RLS;
-- website Evidence RPC captured **1 E2 Evidence** + **2 Proposals**;
-- **1 Proposal approved**, **1 rejected**;
-- approved Decision retained its E2 Evidence/source link;
-- capture created Business Memory;
-- cleanup returned persistent synthetic FDOS row count to **0**.
-
-This proves production backend behavior, not a second genuine person's browser session.
+This is source/CI/runtime verified. Genuine browser observation of sign-out, restore and business-switch behavior remains production-user acceptance.
 
 ## CI state
 
-Accepted **web code revision**:
+Cross-Business Intelligence merge commit:
 
-`8cf11db3c798f5a90d19e892c217ab88d79232e6`
+`d9dcbcd46e46a65f1b23e17d40a679bd0a53ad66`
 
-Commit:
+GitHub Actions on that merge:
+- `Founder OS Standalone Web` run `35089889819`: **SUCCESS**;
+- `PHP Lint` run `35089890062`: **SUCCESS**.
 
-`fix(web): enforce auth privacy boundary across modules`
+PR #5 also passed its pre-merge standalone web and PHP lint runs.
 
-GitHub Actions:
-- `Founder OS Standalone Web` run `35073170177`: **SUCCESS**
-- `PHP Lint` run `35073170169`: **SUCCESS**
+The web workflow typechecks, builds the Next.js production app, performs dependency vulnerability checks and verifies the broad/multi-business contract. The production build generated **15 routes**, including `/portfolio` and `/acceptance/restore`.
 
-The standalone workflow verifies dependency/vulnerability gates, TypeScript, Next.js production build, Command Center, Intelligence, Workbench, Strategy/Dynasty, Glossary, persistence contracts, RLS migrations, Evidence restrictions, diagnostics/noindex behavior, and health endpoint behavior.
-
-Next.js 16 TypeScript defaults are committed in `web/tsconfig.json`; the production build no longer depends on build-time mutation of that file.
-
-## Production runtime — accepted web code + current production configuration
+## Production runtime
 
 Railway service:
 - service: `founder-dynasty-os-web`
@@ -185,110 +181,84 @@ Railway service:
 - root directory: `/web`
 - healthcheck: `/api/health`
 
-Current deployment:
+Current production deployment:
 
-`6a976ff8-bc37-4c7c-864d-767bb3f5556b`
+`1eddfe30-e3ca-4954-b288-b0c5386fa91a`
 
 Deployed repository revision:
 
-`31ee76a27e3a825ba9efd9628b07990320c8d310`
+`7fe9c285fa677fa722d08675d01841bc0a9d2427`
 
-The deployed repository revision contains the same accepted `web/` code tree whose last web-changing commit is `8cf11db3...`, plus later documentation/handoff corrections.
+That revision contains the merged multi-business registry and Cross-Business Intelligence web code plus updated canonical handoff material. Later repository-only status/evidence documentation does not change the deployed `web/` code tree.
 
 Railway status: **SUCCESS**.
 
-Observed build/runtime evidence:
-- repository/branch: `anastaysia94-sudo/founder-os` / `main`;
-- Railway identified exact deployed repository revision `31ee76a27...`;
-- dependency install reported **0 vulnerabilities**;
-- Next.js 16.3.4 compiled successfully;
+Observed production build/runtime evidence:
+- exact source commit identified by Railway: `7fe9c285...`;
+- Next.js production build succeeded;
 - TypeScript completed successfully;
-- all 13 generated/dynamic routes completed build generation;
-- production container reached Ready;
-- configured `/api/health` healthcheck passed and deployment reached `SUCCESS`.
+- production route generation completed for all 15 routes;
+- `/portfolio` is in the generated route set;
+- production container reached `Ready`;
+- configured healthcheck completed and deployment reached `SUCCESS`.
 
-### Production canonical/sitemap configuration
+## Live backend acceptance
 
-`NEXT_PUBLIC_SITE_URL` is now set to the production HTTPS domain. That enables the existing metadata/sitemap code to emit the production canonical URL and public sitemap entries for:
-- `/`
-- `/answers`
-- `/glossary`
-
-`/acceptance` remains intentionally excluded from the sitemap.
-
-The health endpoint prefers Railway's injected `RAILWAY_GIT_COMMIT_SHA` over the legacy `FDOS_DEPLOY_REV`, so runtime provenance reflects the repository revision actually running.
-
-## AI handoff drift corrected
-
-The canonical continuation docs were audited after the web rebuild. Stale instructions that still described WordPress deployment as the primary milestone were corrected in:
-- `AGENTS.md`
-- `AI-HANDOFF.md`
-- `.github/copilot-instructions.md`
-
-Future assistants are now directed to the standalone broad OS, shared Business Record, current Evidence boundary, and genuine production-user acceptance instead of trying to drag the project backward into its historical WordPress launch path. Humanity has enough legacy instructions already.
+`FDOS-PRODUCTION-BACKEND-ACCEPTANCE-2026-09-16.md` records production-policy evidence including:
+- **19 / 19** FDOS tables exercised with an owner-scoped ephemeral record graph;
+- Evidence Proposal approve/reject flow;
+- foreign authenticated identity saw **0** owner Business rows and **0** owner child rows;
+- Evidence linkage + Business Memory preserved;
+- synthetic acceptance records cleaned back to **0** persistent FDOS rows;
+- multi-business creation RPC privilege state verified as authenticated-only.
 
 ## Completion state
 
 ### SOURCE COMPLETE / CI VERIFIED / PRODUCTION RUNTIME VERIFIED / LIVE BACKEND ACCEPTANCE VERIFIED
-- broad Founder Command Center
-- Business Stage + Business DNA
-- Value Map
-- Opportunity Engine
-- Decision Engine
-- Risk Center
-- Business Memory
-- Founder Intelligence Layer
-- Idea Lab
-- Business X-Ray
-- What Am I Missing?
-- Value Sprints + KEEP / REVISE / REVERT
-- Finance Center
-- Product & Offer Lab
-- Operations & Execution
-- Business Model Lab
-- Customer Intelligence
-- Marketing & Distribution
-- Asset Map
-- Founder Attention
-- Scenario Lab
-- Portfolio / Dynasty Mode
-- Plain-English Glossary
-- public Answers/AEO surface
-- website Evidence capture/review architecture
-- 19-table RLS-protected persistence
-- relationship-aware Evidence links
-- live backend owner-write + RLS smoke test
-- live Evidence capture/approve/reject backend smoke test
-- production source provenance
-- deterministic Next.js 16 TypeScript config
-- global auth/privacy draft boundary
-- production canonical URL + sitemap configuration
-- corrected multi-AI handoff instructions
-- Sales OS correctly nested under Customers & Growth
+Current planned technical surface includes:
+- broad Founder Command Center;
+- Business Stage + Business DNA;
+- Value Map / Opportunities / Decisions / Risks / Business Memory;
+- Idea Lab / Business X-Ray / Missing Intelligence / Value Sprints;
+- Finance / Offer / Operations;
+- Business Model / Customer Intelligence / Distribution;
+- Assets / Founder Attention / Scenarios / Portfolio theses;
+- multi-business Business Registry;
+- global active-business switching;
+- first Cross-Business Intelligence layer;
+- searchable glossary and Answers surface;
+- website Evidence capture/review architecture;
+- 19-table RLS-protected persistence;
+- authenticated-only atomic multi-business creation;
+- auth/account and business-switch private-state boundaries;
+- Sales OS correctly nested under Customers & Growth.
 
-### STILL REQUIRES GENUINE HUMAN / PRODUCTION-USER PROOF
-These cannot truthfully be manufactured by CI, SQL, or a deploy tool:
-- genuine browser sign-in on the current deployed revision;
-- first Business Record bootstrap/load through the browser UI;
-- save → sign out → fresh sign in → restore;
-- browser-observed clearing of private records **and unsaved drafts** on sign-out/account switch;
-- second genuine-account browser isolation;
-- real UI create/update flows across major modules;
+### PRODUCTION USER VERIFIED — NOT YET COMPLETE
+Still requires genuine human/browser evidence:
+- sign in on the exact deployed revision;
+- create/load the first real Business Record through the UI;
+- create a second intentional Business Record through `/portfolio`;
+- switch between businesses and verify no persisted or unsaved state bleed;
+- edit/save Business DNA and restore it after sign-out + fresh sign-in;
+- use Value / Decision / Risk / Opportunity / Memory UI flows;
+- Idea Lab write-back;
+- run a real Value Sprint through observable result → KEEP / REVISE / REVERT;
+- Workbench + Strategy/Dynasty writes;
 - browser website Evidence capture → approve → reject;
-- mobile visual/interaction acceptance;
-- desktop visual/interaction acceptance;
-- one real Value Sprint completed through an observable result → KEEP / REVISE / REVERT.
+- second genuine-account isolation;
+- Android/mobile visual and interaction pass;
+- desktop visual and interaction pass.
 
-There is currently only one authenticated production user, so genuine second-user acceptance cannot honestly be marked complete yet.
+There is currently only one genuine production auth user, so second-person browser isolation cannot truthfully be marked complete yet.
 
-## Highest-value remaining milestone
+## Highest-value next milestone
 
-**Do not build another department. Finish genuine production-user acceptance of the system that now exists.**
+**Do not add another department. Complete genuine production-user acceptance of the broad multi-business system that now exists.**
 
 Sequence:
 
-`open production → sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → Idea Lab/X-Ray → run one Value Sprint → /acceptance → sign out → verify all private state/drafts clear → sign back in → verify restore → browser Evidence capture → approve + reject → Workbench writes → Strategy/Dynasty writes → second genuine account → mobile + desktop visual pass → KEEP / REVISE / REVERT`
+`open production → sign in → create/load Business A → save DNA + stage + core records → create Business B intentionally → switch A ↔ B and verify isolation → Intelligence + Value Sprint → /acceptance → sign out → verify private state clears → fresh sign in → verify restore → Evidence approve/reject → Workbench + Strategy writes → second genuine account → mobile + desktop visual pass → KEEP / REVISE / REVERT`
 
 ## Product guardrail
 
-Every future module must connect to the shared Business Record, Evidence, measurable outcomes, a Decision, a Risk, an Asset, a Value Sprint, or Business Memory. If it cannot, reconsider whether it belongs in Founder Dynasty OS.
+Every future module must connect to a Business Record, Evidence, measurable outcome, Decision, Risk, Asset, Value Sprint, Business Memory, or an explainable cross-business relationship. Cross-business intelligence may compare businesses, but it may not erase the boundary between them.
