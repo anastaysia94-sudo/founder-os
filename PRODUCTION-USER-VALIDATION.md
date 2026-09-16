@@ -34,20 +34,20 @@ Public domain: `https://founder-dynasty-os-web-production.up.railway.app`
 
 Accepted current web revision:
 
-`9bc3056b300e6760aa421945bf1323399c3360df`
+`9ae56202470e75040c76a08a25b6f074d5808577`
 
 Commit:
 
-`fix(web): report actual Railway git revision in health`
+`chore(web): align TypeScript config with Next 16`
 
 Railway deployment:
 
-`7928de6b-8c24-499a-ad4c-640e765837a7`
+`d7fa868c-e074-46d9-abe2-77f3f3adcf38`
 
 Observed on 2026-09-16:
 
 - deployment status: `SUCCESS`;
-- Railway identifies exact source commit `9bc3056b300e6760aa421945bf1323399c3360df`;
+- Railway identifies exact source commit `9ae56202470e75040c76a08a25b6f074d5808577`;
 - repository: `anastaysia94-sudo/founder-os`;
 - branch: `main`;
 - root directory: `/web`;
@@ -55,7 +55,8 @@ Observed on 2026-09-16:
 - Next.js 16.3.4 compilation passed;
 - TypeScript passed;
 - static generation completed;
-- the production container started successfully and reported Ready;
+- the committed TypeScript config required no automatic Next.js rewrite during this build;
+- the production container started successfully;
 - configured healthcheck remains `/api/health`;
 - the deployment reached `SUCCESS`;
 - stale commit `284c496...` is no longer the active deployment.
@@ -78,16 +79,22 @@ Current production build route set:
 
 ### Source provenance hardening
 
-The health endpoint now prefers Railway's automatically injected `RAILWAY_GIT_COMMIT_SHA`, falling back to `FDOS_DEPLOY_REV` only when necessary.
+The health endpoint prefers Railway's automatically injected `RAILWAY_GIT_COMMIT_SHA`, falling back to `FDOS_DEPLOY_REV` only when necessary.
 
 This matters because an earlier normal Railway redeploy reused stale source even though GitHub `main` had moved. Production provenance should report the code actually running, not a manually typed aspiration with a green badge attached to it.
 
+### Build determinism hardening
+
+Next.js 16 had been rewriting the repository TypeScript configuration during production builds by adding `.next/dev/types/**/*.ts` and changing JSX mode to `react-jsx`.
+
+Those required values are now committed in `web/tsconfig.json`. The accepted `9ae562...` Railway build completed TypeScript and route generation without rewriting that config again. Build containers are now less inclined to perform surprise interior decorating.
+
 ### Current CI evidence
 
-For web revision `9bc3056b300e6760aa421945bf1323399c3360df`:
+For web revision `9ae56202470e75040c76a08a25b6f074d5808577`:
 
-- `Founder OS Standalone Web` run `35071863534`: **SUCCESS**;
-- `PHP Lint` run `35071863641`: **SUCCESS**.
+- `Founder OS Standalone Web` run `35072232659`: **SUCCESS**;
+- `PHP Lint` run `35072232717`: **SUCCESS**.
 
 The standalone workflow verifies:
 
@@ -173,7 +180,7 @@ Current source includes a searchable glossary for business, evidence and technic
 
 ## Production data layer
 
-The broad FDOS model now contains **19 RLS-enabled tables**.
+The broad FDOS model contains **19 RLS-enabled tables**.
 
 ### Core Business Record / Evidence
 
@@ -285,12 +292,13 @@ Sales remains a major operating module for prospecting, outreach, follow-up and 
 
 ### SOURCE COMPLETE / CI VERIFIED / CURRENT PRODUCTION RUNTIME VERIFIED
 
-- exact current web revision `9bc3056b300e6760aa421945bf1323399c3360df` deployed;
-- Railway deployment `7928de6b-8c24-499a-ad4c-640e765837a7` is `SUCCESS`;
+- exact accepted web revision `9ae56202470e75040c76a08a25b6f074d5808577` deployed;
+- Railway deployment `d7fa868c-e074-46d9-abe2-77f3f3adcf38` is `SUCCESS`;
 - stale Railway source issue is resolved for the current deployment;
 - GitHub standalone web CI passed;
 - PHP lint passed;
 - broad route set builds in production;
+- committed Next.js 16 TypeScript configuration no longer drifts during build;
 - Command Center, Intelligence, Workbench, Strategy/Dynasty and Glossary source are in the accepted production revision;
 - 19-table persistence model is represented by the current migration/source contract;
 - RLS/Evidence relationship hardening remains part of the verified source/database layer;
@@ -325,9 +333,9 @@ These are not paperwork leftovers. They are the final boundary between “the so
 
 ## Current decision
 
-**KEEP** the broad shared-Business-Record architecture, E1–E8 discipline, Founder Command Center, Intelligence Layer, Workbench, Strategy/Dynasty workspace, Plain-English Glossary, account-owned persistence, founder approval before evidence-derived canonical changes, production source provenance, `/api/health`, noindex `/acceptance`, atomic Business bootstrap, atomic Evidence persistence, relationship-aware RLS, privacy guards, and Sales OS nested under Customers & Growth.
+**KEEP** the broad shared-Business-Record architecture, E1–E8 discipline, Founder Command Center, Intelligence Layer, Workbench, Strategy/Dynasty workspace, Plain-English Glossary, account-owned persistence, founder approval before evidence-derived canonical changes, production source provenance, `/api/health`, noindex `/acceptance`, atomic Business bootstrap, atomic Evidence persistence, relationship-aware RLS, privacy guards, deterministic TypeScript config, and Sales OS nested under Customers & Growth.
 
-**REVISE** the deployment provenance mechanism by preferring Railway's injected Git commit SHA. That revision is now implemented and deployed.
+**REVISE** the deployment provenance mechanism by preferring Railway's injected Git commit SHA and keep build configuration committed rather than relying on build-time mutation. Both revisions are implemented and deployed.
 
 ## Highest-value remaining acceptance loop
 
