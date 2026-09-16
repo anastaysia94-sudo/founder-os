@@ -2,6 +2,7 @@ import './globals.css';
 import './review.css';
 import navStyles from './module-nav.module.css';
 import type { Metadata } from 'next';
+import AuthPrivacyGuard from './auth-privacy-guard';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 const salesUrl = process.env.NEXT_PUBLIC_SALES_OS_URL?.trim() || '/sales-engine-app/';
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
+        <AuthPrivacyGuard />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
         <nav className={navStyles.dock} aria-label="Founder Dynasty OS modules">
           <a className={navStyles.brand} href="/">FOUNDER DYNASTY OS</a>
