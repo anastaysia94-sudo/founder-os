@@ -15,41 +15,36 @@ Canonical product statement:
 
 > **Founder Dynasty OS is the operating intelligence of the business.**
 
-## Current standalone source architecture
+## Current standalone product surface
 
 The primary standalone `web/` application is organized around one authenticated, account-owned Business Record.
 
 ### `/` — Founder Command Center
-
-Implemented:
-- Business Stage
-- Business DNA
-- Founder Command Center signals
+- Business Stage + Business DNA
+- current goal and stage guidance
 - Value Map
 - Opportunity Engine
-- Risk Center
 - Decision Engine
+- Risk Center
 - Business Memory
 - E1–E8 evidence labels
-- website Evidence capture and founder approval queue
+- website Evidence capture + founder approval queue
+- What Am I Missing? summary
 - whole-OS neighborhood map
-- Customers & Growth → Sales OS placement
+- Sales OS correctly nested under Customers & Growth
 
 ### `/intelligence` — Founder Intelligence Layer
-
-Implemented:
 - Idea Lab
 - Business X-Ray
-- What Am I Missing?
+- detailed What Am I Missing? engine
 - Value Sprints
 - hypothesis → action → measure → result → KEEP / REVISE / REVERT
-- stage-aware and evidence-aware structural signals
+- top Opportunity → Sprint handoff
+- Business Memory learning loop
 
 ### `/workbench` — Build & Run Workbench
-
-Implemented:
 - Finance Center
-- E6 financial model assumptions with confidence
+- E6 financial model assumptions
 - Product & Offer Lab
 - Draft / Testing / Active / Retired offer states
 - Operations & Execution
@@ -57,8 +52,6 @@ Implemented:
 - shared Business Memory updates
 
 ### `/strategy` — Strategy / Dynasty Workspace
-
-Implemented:
 - Business Model Lab
 - Customer Intelligence
 - Marketing & Distribution experiments
@@ -69,27 +62,20 @@ Implemented:
 - strategy blind-spot questions
 - structural Dynasty readiness signal, explicitly not a valuation or success forecast
 
-### `/glossary` — Plain-English Glossary
-
-Implemented:
-- searchable business/technical glossary
+### `/glossary`
+- searchable plain-English glossary
 - E1–E8 definitions
-- plain-English definitions for product concepts and technical terms
+- business + technical term definitions
 - global navigation access
 
-### `/acceptance` — Read-only production diagnostics
+### `/acceptance`
+Read-only production diagnostics for runtime revision, genuine browser session, owned Business Record, RLS-scoped module counts, viewport and browser state. It writes no synthetic acceptance data and does not auto-pass human steps.
 
-The diagnostic surface reads runtime health, the genuine browser session, the owned Business Record, and RLS-scoped counts across the broad FDOS data model. It does not write fake test data and does not auto-pass human acceptance steps.
+It remains `index: false`, `follow: false`, nocache, and absent from sitemap.
 
-It remains:
-- `index: false`
-- `follow: false`
-- nocache
-- absent from sitemap
+## Production data layer
 
-## Current Supabase persistence
-
-The expanded FDOS model has **19 RLS-enabled tables**:
+The broad FDOS model has **19 RLS-enabled tables**:
 
 ### Core Business Record / Evidence
 - `fdos_business_records`
@@ -116,11 +102,11 @@ The expanded FDOS model has **19 RLS-enabled tables**:
 - `fdos_portfolio_theses`
 - `fdos_attention_blocks`
 
-The current migrations enforce RLS, account/business ownership, same-business Evidence relationships, E1–E8 evidence constraints, and covering indexes for the expanded FDOS foreign keys.
+The production migrations enforce RLS, account/business ownership, same-business Evidence relationships, E1–E8 constraints, and covering indexes for the expanded foreign keys.
 
 ## Evidence integrity
 
-Permanent evidence classes remain:
+Permanent classes:
 - E1 Verified Fact
 - E2 Current External Evidence
 - E3 Customer-Derived Evidence
@@ -130,101 +116,96 @@ Permanent evidence classes remain:
 - E7 Forecast
 - E8 Illustrative Example
 
-Important behavior:
+Rules preserved:
 - manual Customer Intelligence notes are E4 unless genuine customer evidence exists;
-- Business Model elements start as E5;
+- Business Model elements start E5;
 - financial assumptions remain E6;
 - scenarios remain E7;
-- moving a UI status does not upgrade its evidence class;
-- external website observations remain E2 and require founder review before proposed changes become canonical;
-- Sales OS offer values are not revenue and payment remains zero unless a real payment is recorded.
+- changing a UI status does not upgrade evidence class;
+- external website observations remain E2 and require founder review before canonical changes;
+- Sales OS offer values are not revenue and `paid` remains zero unless a real payment is recorded.
+
+## Auth / privacy hardening
+
+The accepted source now includes a global `AuthPrivacyGuard` mounted in the root layout.
+
+It complements each workspace's own account-scoped hydration guards by clearing **all unsaved React-local drafts** across the entire app on:
+- sign-out from an authenticated account; or
+- direct account switching.
+
+The guard records only the prior account identifier in browser `sessionStorage`, updates/clears it before reload, and reloads once at the auth boundary so drafts from `/intelligence`, `/workbench`, `/strategy`, and future modules cannot remain mounted across identities.
+
+This is source/CI/runtime verified. The actual browser-observed sign-out/switch behavior still belongs to genuine production-user acceptance.
+
+## Live production backend acceptance
+
+A live authenticated production-policy acceptance pass was performed with ephemeral data and then fully cleaned up. Detailed evidence is in:
+
+`FDOS-PRODUCTION-BACKEND-ACCEPTANCE-2026-09-16.md`
+
+Observed:
+- **19 / 19** FDOS tables accepted an owner-scoped ephemeral record graph;
+- `fdos_apply_evidence_proposal` successfully approved one Proposal;
+- switching the authenticated JWT identity to a foreign UUID exposed **0** owner Business rows and **0** owner child rows through RLS;
+- website Evidence RPC captured **1 E2 Evidence** + **2 Proposals**;
+- **1 Proposal approved**, **1 rejected**;
+- the approved Decision retained the E2 Evidence/source link;
+- capture created Business Memory;
+- cleanup returned persistent synthetic FDOS row count to **0**.
+
+This proves live backend behavior under production policies, not a second genuine person's browser session.
 
 ## CI state
 
-Current accepted web revision:
+Current accepted **web code revision**:
 
-`9ae56202470e75040c76a08a25b6f074d5808577`
+`8cf11db3c798f5a90d19e892c217ab88d79232e6`
 
 Commit:
 
-`chore(web): align TypeScript config with Next 16`
+`fix(web): enforce auth privacy boundary across modules`
 
-GitHub Actions on 2026-09-16:
-- `Founder OS Standalone Web` run `35072232659`: **SUCCESS**
-- `PHP Lint` run `35072232717`: **SUCCESS**
+GitHub Actions:
+- `Founder OS Standalone Web` run `35073170177`: **SUCCESS**
+- `PHP Lint` run `35073170169`: **SUCCESS**
 
-The standalone workflow checks:
-- dependency vulnerability gate
-- TypeScript
-- Next.js production build
-- broad Command Center contract
-- Intelligence Layer contract
-- Build & Run Workbench contract
-- Strategy / Dynasty workspace contract
-- Plain-English Glossary contract
-- Value Sprint persistence
-- operating-workbench persistence
-- strategy persistence
-- relationship-aware RLS migrations
-- expansion foreign-key index hardening
-- Evidence persistence / RPC restrictions
-- production diagnostics / noindex contract
-- health endpoint revision/cache behavior
+The standalone workflow verifies dependency/vulnerability gates, TypeScript, Next.js production build, broad Command Center contracts, Intelligence, Workbench, Strategy/Dynasty, Glossary, persistence contracts, RLS migrations, Evidence restrictions, diagnostics/noindex behavior, and health endpoint behavior.
 
-The Next.js 16 TypeScript defaults are now committed in `web/tsconfig.json` (`jsx: react-jsx` plus `.next/dev/types/**/*.ts`), so production builds no longer need to rewrite the TypeScript configuration inside the build container.
+Next.js 16 TypeScript defaults are committed in `web/tsconfig.json`, so production builds do not need to rewrite the config.
 
-## Production runtime — accepted current web revision is live
+## Production runtime — privacy-hardened web revision is live
 
 Railway service:
 - service: `founder-dynasty-os-web`
 - domain: `https://founder-dynasty-os-web-production.up.railway.app`
 - environment: `production`
+- root directory: `/web`
+- healthcheck: `/api/health`
 
 Current deployment:
 
-`d7fa868c-e074-46d9-abe2-77f3f3adcf38`
+`7c04e794-081c-4268-89da-7a8ccca94941`
 
 Current deployed web source:
 
-`9ae56202470e75040c76a08a25b6f074d5808577`
+`8cf11db3c798f5a90d19e892c217ab88d79232e6`
 
 Railway status: **SUCCESS**.
 
-The stale-source problem from 2026-09-13 is resolved. Railway fetched the linked `main` branch and identified the current deployment as the exact accepted web commit above rather than reusing stale commit `284c496...`.
+Observed build/runtime evidence:
+- exact repository/branch fetched: `anastaysia94-sudo/founder-os` / `main`;
+- exact commit identified by Railway: `8cf11db3...`;
+- TypeScript completed successfully;
+- all 13 generated/dynamic routes completed production build generation;
+- production container started;
+- Next.js 16.3.4 became Ready;
+- healthcheck completed and deployment reached `SUCCESS`.
 
-Build/runtime evidence for the current deployment:
-- repository: `anastaysia94-sudo/founder-os`
-- branch: `main`
-- root directory: `/web`
-- dependency install completed with 0 reported vulnerabilities
-- Next.js 16.3.4 production compilation succeeded
-- TypeScript succeeded
-- all 13 generated/dynamic routes completed build generation
-- committed TypeScript config required no Next.js rewrite during this build
-- production container started successfully
-- configured healthcheck remains `/api/health`
-- deployment reached `SUCCESS`
-
-Current production route set includes:
-- `/`
-- `/acceptance`
-- `/answers`
-- `/api/evidence/website`
-- `/api/health`
-- `/glossary`
-- `/intelligence`
-- `/manifest.webmanifest`
-- `/robots.txt`
-- `/sales-engine-app`
-- `/sitemap.xml`
-- `/strategy`
-- `/workbench`
-
-The health endpoint prefers Railway's automatically injected `RAILWAY_GIT_COMMIT_SHA` over the legacy manually managed `FDOS_DEPLOY_REV`, so production provenance reflects the code actually running.
+The health endpoint prefers Railway's injected `RAILWAY_GIT_COMMIT_SHA` over the legacy `FDOS_DEPLOY_REV`, so runtime provenance reports the code actually running.
 
 ## Completion state
 
-### SOURCE COMPLETE / CI VERIFIED / CURRENT PRODUCTION RUNTIME VERIFIED
+### SOURCE COMPLETE / CI VERIFIED / PRODUCTION RUNTIME VERIFIED / LIVE BACKEND ACCEPTANCE VERIFIED
 - broad Founder Command Center
 - Business Stage + Business DNA
 - Value Map
@@ -236,7 +217,7 @@ The health endpoint prefers Railway's automatically injected `RAILWAY_GIT_COMMIT
 - Idea Lab
 - Business X-Ray
 - What Am I Missing?
-- Value Sprints and KEEP / REVISE / REVERT
+- Value Sprints + KEEP / REVISE / REVERT
 - Finance Center
 - Product & Offer Lab
 - Operations & Execution
@@ -249,34 +230,38 @@ The health endpoint prefers Railway's automatically injected `RAILWAY_GIT_COMMIT
 - Portfolio / Dynasty Mode
 - Plain-English Glossary
 - website Evidence capture/review architecture
-- 19-table RLS-protected FDOS persistence
+- 19-table RLS-protected persistence
 - relationship-aware Evidence links
-- current-web Railway deployment
-- health/provenance diagnostics
+- live backend owner-write + RLS smoke test
+- live Evidence capture/approve/reject backend smoke test
+- production source provenance
 - deterministic Next.js 16 TypeScript config
+- global auth/privacy draft boundary
 - Sales OS correctly nested under Customers & Growth
 
 ### STILL REQUIRES GENUINE HUMAN / PRODUCTION-USER PROOF
-These cannot be converted into facts by CI, database inspection, or an assistant pretending very confidently:
-- genuine browser sign in against the current deployed revision
-- create/load the first Business Record through current production UI
-- save → sign out → fresh sign in → restore
-- verify private state disappears immediately on sign-out/account switch
-- second genuine-account read/write isolation
-- create/read/update flows across the major new modules
-- website Evidence capture → approve one proposal → reject one proposal
-- mobile visual/interaction acceptance
-- desktop visual/interaction acceptance
-- one real Value Sprint completed through observable result → KEEP / REVISE / REVERT
+These cannot truthfully be manufactured by CI or backend SQL:
+- genuine browser sign-in on the current deployed revision;
+- first Business Record bootstrap/load through the browser UI;
+- save → sign out → fresh sign in → restore;
+- browser-observed clearing of private records **and unsaved drafts** on sign-out/account switch;
+- second genuine-account browser isolation;
+- real UI create/update flows across major modules;
+- browser website Evidence capture → approve → reject;
+- mobile visual/interaction acceptance;
+- desktop visual/interaction acceptance;
+- one real Value Sprint completed through an observable result → KEEP / REVISE / REVERT.
 
-## Highest-value next milestone
+There is currently only one authenticated production user, so genuine second-user acceptance cannot be honestly marked complete yet.
 
-**Do not add another department yet. Complete genuine production-user acceptance of the system that now exists.**
+## Highest-value remaining milestone
+
+**Do not build another department. Finish genuine production-user acceptance of the system that now exists.**
 
 Sequence:
 
-`open current production → sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → use Idea Lab/X-Ray → plan and run one Value Sprint → open /acceptance → sign out → verify private-state clearing → sign back in → verify restore → website Evidence capture → approve one Proposal → reject one Proposal → second-user isolation → mobile + desktop visual pass → KEEP / REVISE / REVERT`
+`open production → sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → Idea Lab/X-Ray → run one Value Sprint → /acceptance → sign out → confirm all private state/drafts clear → sign back in → verify restore → browser Evidence capture → approve + reject → Workbench writes → Strategy/Dynasty writes → second genuine account → mobile + desktop visual pass → KEEP / REVISE / REVERT`
 
 ## Product guardrail
 
-Every new module must connect to the shared Business Record, Evidence, measurable outcomes, a decision, a risk, an asset, a Value Sprint, or Business Memory. If it cannot, reconsider whether it belongs in Founder Dynasty OS.
+Every future module must connect to the shared Business Record, Evidence, measurable outcomes, a Decision, a Risk, an Asset, a Value Sprint, or Business Memory. If it cannot, reconsider whether it belongs in Founder Dynasty OS.
