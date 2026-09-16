@@ -1,12 +1,79 @@
 import type { User } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import type { BusinessDNA, BusinessRecord, Decision, EvidenceProposal, MemoryEvent, Opportunity, Risk, ValueItem, ValueSprint } from './fdos';
+import type { BusinessDNA, BusinessRecord, BusinessStage, Decision, EvidenceProposal, MemoryEvent, Opportunity, Risk, ValueItem, ValueSprint } from './fdos';
 
-export async function ensureBusiness(_user: User): Promise<string> {
+export type BusinessSummary = {
+  id: string;
+  name: string;
+  stage: BusinessStage;
+  currentGoal: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+const activeBusinessKey = (userId: string) => `fdos.activeBusiness:${userId}`;
+
+export function getActiveBusinessId(userId: string) {
+  if (typeof window === 'undefined') return null;
+  return window.sessionStorage.getItem(activeBusinessKey(userId));
+}
+
+export function setActiveBusinessId(userId: string, businessId: string) {
+  if (typeof window === 'undefined') return;
+  window.sessionStorage.setItem(activeBusinessKey(userId), businessId);
+}
+
+export function clearActiveBusinessId(userId: string) {
+  if (typeof window === 'undefined') return;
+  window.sessionStorage.removeItem(activeBusinessKey(userId));
+}
+
+export async function listBusinesses(user: User): Promise<BusinessSummary[]> {
+  const q = await supabase
+    .from('fdos_business_records')
+    .select('id,name,stage,current_goal,created_at,updated_at')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: true });
+  if (q.error) throw q.error;
+  return (q.data || []).map((row: any) => ({
+    id: row.id,
+    name: row.name,
+    stage: row.stage,
+    currentGoal: row.current_goal,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  }));
+}
+
+export async function createBusiness(user: User, name: string, stage: BusinessStage = 'Idea') {
+  const q = await supabase.rpc('fdos_create_business', { p_name: name, p_stage: stage });
+  if (q.error) throw q.error;
+  if (!q.data) throw new Error('Could not create the business record.');
+  const businessId = q.data as string;
+  setActiveBusinessId(user.id, businessId);
+  return businessId;
+}
+
+export async function ensureBusiness(user: User): Promise<string> {
+  const selected = getActiveBusinessId(user.id);
+  if (selected) {
+    const existing = await supabase
+      .from('fdos_business_records')
+      .select('id')
+      .eq('id', selected)
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (existing.error) throw existing.error;
+    if (existing.data?.id) return existing.data.id;
+    clearActiveBusinessId(user.id);
+  }
+
   const q = await supabase.rpc('fdos_ensure_business');
   if (q.error) throw q.error;
   if (!q.data) throw new Error('Could not create or load the business record.');
-  return q.data as string;
+  const businessId = q.data as string;
+  setActiveBusinessId(user.id, businessId);
+  return businessId;
 }
 
 export async function loadBusinessRecord(user: User, businessId: string): Promise<BusinessRecord> {
