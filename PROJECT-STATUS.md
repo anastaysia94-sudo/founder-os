@@ -1,6 +1,6 @@
 # Founder Dynasty OS 10.0 — Project Status
 
-Updated: 2026-09-13
+Updated: 2026-09-16
 
 **Parent:** SmartPickShop Holdings  
 **Canonical repository:** `anastaysia94-sudo/founder-os`
@@ -69,9 +69,17 @@ Implemented:
 - strategy blind-spot questions
 - structural Dynasty readiness signal, explicitly not a valuation or success forecast
 
+### `/glossary` — Plain-English Glossary
+
+Implemented:
+- searchable business/technical glossary
+- E1–E8 definitions
+- plain-English definitions for product concepts and technical terms
+- global navigation access
+
 ### `/acceptance` — Read-only production diagnostics
 
-The diagnostic surface now reads runtime health, the genuine browser session, the owned Business Record, and RLS-scoped counts across the broad FDOS data model. It does not write fake test data and does not auto-pass human acceptance steps.
+The diagnostic surface reads runtime health, the genuine browser session, the owned Business Record, and RLS-scoped counts across the broad FDOS data model. It does not write fake test data and does not auto-pass human acceptance steps.
 
 It remains:
 - `index: false`
@@ -81,7 +89,7 @@ It remains:
 
 ## Current Supabase persistence
 
-The expanded FDOS model now has **19 RLS-enabled tables**:
+The expanded FDOS model has **19 RLS-enabled tables**:
 
 ### Core Business Record / Evidence
 - `fdos_business_records`
@@ -108,24 +116,7 @@ The expanded FDOS model now has **19 RLS-enabled tables**:
 - `fdos_portfolio_theses`
 - `fdos_attention_blocks`
 
-Direct database inspection confirms RLS is enabled on all 19 FDOS tables.
-
-## Relationship and performance hardening
-
-Current source + production migrations enforce account/business ownership across the FDOS child tables. Optional Evidence links in the expanded model are constrained so a linked Evidence row must belong to the same authenticated user and Business Record.
-
-After expanding Finance, Offer, Operations, Strategy, Assets and Dynasty, the Supabase performance advisor exposed missing covering indexes for the new `business_id` and `evidence_id` foreign keys. Those FDOS findings were remediated in:
-
-`db/migrations/20260913_harden_fdos_expansion_relationships_and_indexes.sql`
-
-A fresh advisor scan after the migration reports **no remaining FDOS entries under `unindexed_foreign_keys`**. Remaining findings belong to EGM4000/FSA/shared-project tables and are not silently altered as part of Founder OS work.
-
-Fresh security-advisor output likewise contains no FDOS missing-policy or authenticated SECURITY DEFINER findings. Shared-project warnings remain scoped to other products. Leaked-password protection is still reported by Supabase as disabled at the Auth project level; that is an account/security setting rather than a Founder OS table migration.
-
-Supabase remediation references:
-- Security/RLS lint guidance: https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy
-- Foreign-key index guidance: https://supabase.com/docs/guides/database/database-linter?lint=0001_unindexed_foreign_keys
-- Password protection guidance: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
+The current migrations enforce RLS, account/business ownership, same-business Evidence relationships, E1–E8 evidence constraints, and covering indexes for the expanded FDOS foreign keys.
 
 ## Evidence integrity
 
@@ -139,17 +130,30 @@ Permanent evidence classes remain:
 - E7 Forecast
 - E8 Illustrative Example
 
-Important current behavior:
+Important behavior:
 - manual Customer Intelligence notes are E4 unless genuine customer evidence exists;
 - Business Model elements start as E5;
 - financial assumptions remain E6;
 - scenarios remain E7;
-- moving a UI status does not magically upgrade its evidence class;
-- external website observations remain E2 and require founder review before proposed changes become canonical.
+- moving a UI status does not upgrade its evidence class;
+- external website observations remain E2 and require founder review before proposed changes become canonical;
+- Sales OS offer values are not revenue and payment remains zero unless a real payment is recorded.
 
 ## CI state
 
-The standalone workflow now checks:
+Current web revision:
+
+`9bc3056b300e6760aa421945bf1323399c3360df`
+
+Commit:
+
+`fix(web): report actual Railway git revision in health`
+
+GitHub Actions on 2026-09-16:
+- `Founder OS Standalone Web` run `35071863534`: **SUCCESS**
+- `PHP Lint` run `35071863641`: **SUCCESS**
+
+The standalone workflow checks:
 - dependency vulnerability gate
 - TypeScript
 - Next.js production build
@@ -157,6 +161,7 @@ The standalone workflow now checks:
 - Intelligence Layer contract
 - Build & Run Workbench contract
 - Strategy / Dynasty workspace contract
+- Plain-English Glossary contract
 - Value Sprint persistence
 - operating-workbench persistence
 - strategy persistence
@@ -166,32 +171,69 @@ The standalone workflow now checks:
 - production diagnostics / noindex contract
 - health endpoint revision/cache behavior
 
-Verified source revision `b7354d5419edc1545c585aca1e2465f057d22502` passed the full standalone build workflow (`34784596187`). Later commits include database hardening, CI contract expansion, and documentation; they do not change the product’s evidence boundary.
-
-## Production runtime boundary — important
+## Production runtime — current main is live
 
 Railway service:
 - service: `founder-dynasty-os-web`
 - domain: `https://founder-dynasty-os-web-production.up.railway.app`
+- environment: `production`
 
-The live Railway service is still consuming the older source snapshot:
+Current deployment:
 
-`284c496117247013e0bf46b75dce337b24fdb7d1`
+`7928de6b-8c24-499a-ad4c-640e765837a7`
 
-A manual Railway redeploy produced deployment:
+Current deployed source:
 
-`d55a6d83-7f67-4288-8efc-108ddf021e33`
+`9bc3056b300e6760aa421945bf1323399c3360df`
 
-with status `SUCCESS`, but Railway redeployed the same old source commit rather than pulling current `main`.
+Railway status: **SUCCESS**.
 
-Therefore it is **not valid** to claim that `/intelligence`, `/workbench`, `/strategy`, the 19-table acceptance diagnostics, or the latest UI are live merely because GitHub CI and Supabase migrations are current.
+The stale-source problem from 2026-09-13 is resolved. A production variable update forced Railway to fetch the linked `main` branch again, and Railway identified the resulting deployment as the exact current web commit above rather than reusing stale commit `284c496...`.
 
-Current accurate boundary:
+Build/runtime evidence for the current deployment:
+- repository: `anastaysia94-sudo/founder-os`
+- branch: `main`
+- root directory: `/web`
+- dependency install completed with 0 reported vulnerabilities
+- Next.js 16.3.4 production compilation succeeded
+- TypeScript succeeded
+- all 13 generated/dynamic routes completed build generation
+- production container started successfully
+- configured healthcheck remains `/api/health`
+- deployment reached `SUCCESS`
 
-### SOURCE COMPLETE / DATABASE APPLIED / CI VERIFIED
-- broad Command Center
+Current production route set includes:
+- `/`
+- `/acceptance`
+- `/answers`
+- `/api/evidence/website`
+- `/api/health`
+- `/glossary`
+- `/intelligence`
+- `/manifest.webmanifest`
+- `/robots.txt`
+- `/sales-engine-app`
+- `/sitemap.xml`
+- `/strategy`
+- `/workbench`
+
+The health endpoint now prefers Railway's automatically injected `RAILWAY_GIT_COMMIT_SHA` over the legacy manually managed `FDOS_DEPLOY_REV`, so future production provenance reflects the code actually running.
+
+## Completion state
+
+### SOURCE COMPLETE / CI VERIFIED / CURRENT PRODUCTION RUNTIME VERIFIED
+- broad Founder Command Center
+- Business Stage + Business DNA
+- Value Map
+- Opportunity Engine
+- Decision Engine
+- Risk Center
+- Business Memory
 - Founder Intelligence Layer
-- Value Sprints
+- Idea Lab
+- Business X-Ray
+- What Am I Missing?
+- Value Sprints and KEEP / REVISE / REVERT
 - Finance Center
 - Product & Offer Lab
 - Operations & Execution
@@ -202,37 +244,34 @@ Current accurate boundary:
 - Founder Attention
 - Scenario Lab
 - Portfolio / Dynasty Mode
+- Plain-English Glossary
+- website Evidence capture/review architecture
 - 19-table RLS-protected FDOS persistence
-- expanded relationship-aware Evidence links
-- current FDOS foreign-key coverage
-- broad read-only acceptance diagnostics
+- relationship-aware Evidence links
+- current-main Railway deployment
+- health/provenance diagnostics
+- Sales OS correctly nested under Customers & Growth
 
-### LIVE RAILWAY RUNTIME STILL STALE
-- Railway is healthy but is serving old revision `284c496...`.
-- normal redeploy reuses that stale source snapshot.
-- production deployment must be repaired or replaced before claiming current source is live.
-
-### STILL REQUIRES GENUINE HUMAN / PRODUCTION PROOF
-- current-main deployment on a public URL
-- sign in and first Business Record bootstrap through that deployed revision
+### STILL REQUIRES GENUINE HUMAN / PRODUCTION-USER PROOF
+These cannot be converted into facts by CI, database inspection, or an assistant pretending very confidently:
+- genuine browser sign in against the current deployed revision
+- create/load the first Business Record through current production UI
 - save → sign out → fresh sign in → restore
-- old private state disappears immediately on sign-out/account switch
+- verify private state disappears immediately on sign-out/account switch
 - second genuine-account read/write isolation
 - create/read/update flows across the major new modules
 - website Evidence capture → approve one proposal → reject one proposal
-- mobile visual acceptance
-- desktop visual acceptance
-- KEEP / REVISE / REVERT after actual use
+- mobile visual/interaction acceptance
+- desktop visual/interaction acceptance
+- one real Value Sprint completed through observable result → KEEP / REVISE / REVERT
 
 ## Highest-value next milestone
 
-**Stop adding broad modules temporarily. Prove the broad OS end to end.**
+**Do not add another department yet. Complete genuine production-user acceptance of the system that now exists.**
 
-Next sequence:
+Sequence:
 
-`repair/replace stale Railway source → deploy current main → verify /api/health sourceRevision → open /, /intelligence, /workbench, /strategy, /acceptance → genuine sign-in → create/update real records → sign out → verify private-state clearing → sign back in → verify restore → second-user isolation → Evidence capture/review → mobile + desktop visual pass → KEEP / REVISE / REVERT`
-
-That is now more valuable than giving the OS yet another shiny department before an actual production browser has walked through the building.
+`open current production → sign in → create/load Business Record → edit Business DNA → change stage → add Value + Decision + Risk + Opportunity + Memory → use Idea Lab/X-Ray → plan and run one Value Sprint → open /acceptance → sign out → verify private-state clearing → sign back in → verify restore → website Evidence capture → approve one Proposal → reject one Proposal → second-user isolation → mobile + desktop visual pass → KEEP / REVISE / REVERT`
 
 ## Product guardrail
 
