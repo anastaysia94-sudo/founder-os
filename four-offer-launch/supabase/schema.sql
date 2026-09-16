@@ -13,11 +13,15 @@ create table if not exists public.four_offer_events (
   utm_source text,
   utm_medium text,
   utm_campaign text,
-  utm_content text check (utm_content is null or char_length(utm_content) <= 120),
+  utm_content text,
   offer_slug text
 );
 
 alter table public.four_offer_events add column if not exists utm_content text;
+alter table public.four_offer_events
+  drop constraint if exists four_offer_events_utm_content_length_check,
+  add constraint four_offer_events_utm_content_length_check
+    check (utm_content is null or char_length(utm_content) <= 120);
 
 create table if not exists public.four_offer_downloads (
   offer_slug text primary key,
