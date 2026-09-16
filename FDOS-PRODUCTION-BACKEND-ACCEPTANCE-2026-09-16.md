@@ -2,7 +2,7 @@
 
 Date: 2026-09-16
 
-This document records live Supabase backend acceptance evidence for the broad Founder Dynasty OS data model. The checks were intentionally ephemeral: they exercised the authenticated RLS surface using the existing production project, then deleted the temporary Business Record so no synthetic Founder Dynasty OS business data remained.
+This document records live Supabase backend acceptance evidence for the broad Founder Dynasty OS data model. The checks were intentionally ephemeral where writes were required: they exercised the authenticated RLS surface using the production project, then deleted temporary Business Records so synthetic Founder Dynasty OS business data was not left behind.
 
 This is **backend acceptance evidence**, not a substitute for genuine browser/user acceptance.
 
@@ -11,10 +11,10 @@ This is **backend acceptance evidence**, not a substitute for genuine browser/us
 - Supabase project: Founder Dynasty OS production data project
 - FDOS tables checked: **19**
 - RLS: enabled on all 19 FDOS tables
-- Authenticated FDOS RPCs checked: `fdos_ensure_business`, `fdos_store_website_evidence`, `fdos_apply_evidence_proposal`
-- All three RPCs are `SECURITY INVOKER`
-- anonymous execution is denied
-- authenticated execution is allowed
+- Authenticated FDOS RPCs checked: `fdos_ensure_business`, `fdos_store_website_evidence`, `fdos_apply_evidence_proposal`, `fdos_create_business`
+- checked RPCs use `SECURITY INVOKER`
+- anonymous execution is denied where exposed to the web client
+- authenticated execution is allowed where required
 
 ## Broad persistence + RLS smoke test
 
@@ -70,9 +70,28 @@ Observed result:
 | `External evidence captured` Business Memory events | at least 1 | **1** |
 | Business Records remaining after cleanup | 0 | **0** |
 
+## Multi-business RPC security verification
+
+The multi-business registry adds `public.fdos_create_business(text, text)` for authenticated creation of another independent Business Record.
+
+The migration was applied to the live production Supabase project. A post-migration privilege inspection found that revoking from `PUBLIC` alone did not remove an explicit `anon` execute grant. That was corrected with a follow-up migration rather than pretending the first permission statement had achieved more than it actually had. Humanity occasionally benefits from asking the database instead of admiring the SQL.
+
+Live privilege verification after the correction:
+
+| Check | Observed |
+|---|---:|
+| Function is `SECURITY DEFINER` | **false** |
+| Function therefore runs as `SECURITY INVOKER` | **true** |
+| `anon` has EXECUTE | **false** |
+| `authenticated` has EXECUTE | **true** |
+
+The function derives ownership from `auth.uid()`, validates the requested Business Stage, creates a separate `fdos_business_records` row, and writes the initial E4 `Workspace created` Business Memory event.
+
+This verifies live function definition/privileges. A genuine signed-in browser creating and switching between two real Business Records remains a separate production-user acceptance step.
+
 ## Cleanup verification
 
-After both acceptance transactions, the sum of persistent rows across all 19 `fdos_*` tables was checked again.
+After the earlier write-heavy acceptance transactions, the sum of persistent rows across all 19 `fdos_*` tables was checked again.
 
 **Persistent synthetic FDOS rows remaining: 0.**
 
@@ -80,9 +99,9 @@ No temporary acceptance row was left behind and no synthetic test outcome should
 
 ## Security/advisor observation
 
-The current Supabase security advisor produced no FDOS-specific RLS-without-policy finding and no FDOS `SECURITY DEFINER` RPC warning. Project-wide advisor findings exist for unrelated schemas/modules and Auth currently reports leaked-password protection disabled; those are separate project-security workstreams and should not be mislabeled as Founder Dynasty OS RLS failures.
+The current Supabase security advisor produced no FDOS-specific RLS-without-policy finding and no FDOS `SECURITY DEFINER` RPC warning in the earlier broad acceptance pass. Project-wide advisor findings can exist for unrelated schemas/modules and should not be mislabeled as Founder Dynasty OS RLS failures.
 
-The performance advisor currently marks many new FDOS indexes as unused. That is expected while the production FDOS tables contain no genuine user records; unused-index telemetry before real workload exists is not evidence that the indexes should be removed.
+The performance advisor may mark new FDOS indexes as unused while genuine workload is still sparse. Unused-index telemetry before a representative workload exists is not evidence that the indexes should be removed.
 
 ## Acceptance boundary
 
@@ -91,17 +110,20 @@ The performance advisor currently marks many new FDOS indexes as unused. That is
 - broad 19-table schema is live;
 - all 19 FDOS tables have RLS enabled;
 - authenticated owner can create/read the broad record graph under production policies;
-- a foreign authenticated identity sees zero ephemeral owner rows in the tested graph;
-- Business deletion cascades the ephemeral graph cleanly;
+- a foreign authenticated identity saw zero ephemeral owner rows in the tested graph;
+- Business deletion cascaded the ephemeral graph cleanly;
 - Evidence capture creates E2 Evidence + review Proposals + Business Memory atomically;
 - approving an Evidence Proposal creates an Evidence-linked canonical record;
 - rejecting a Proposal leaves it rejected rather than applying it;
-- cleanup returns production FDOS data to zero synthetic rows.
+- multi-business creation RPC is live, `SECURITY INVOKER`, authenticated-only, and stage-validating;
+- cleanup returned production FDOS synthetic acceptance data to zero rows.
 
 ### Still requires genuine browser/user evidence
 
 - real production-page sign in;
 - Business Record bootstrap through the deployed browser client;
+- create a second intentional Business Record through `/portfolio`;
+- switch between Business Records and verify no private drafts/data bleed;
 - real save → sign out → fresh sign in → restore;
 - actual private-state clearing on sign-out/account switch;
 - second genuine account isolation in separate browser sessions;
