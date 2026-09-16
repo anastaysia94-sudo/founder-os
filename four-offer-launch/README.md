@@ -22,16 +22,17 @@ PayPal transactions are commercial checkout transactions for products/services, 
 - PayPal-hosted buyer approval followed by server-side capture verification.
 - Exact currency, amount, offer reference, and capture-status verification before fulfillment.
 - Private Supabase payment ledger.
-- Visitor/page-view/checkout/intake analytics with UTM attribution.
+- Visitor/page-view/checkout/intake analytics with UTM source, medium, campaign, and content attribution.
 - Browser clients cannot submit `download_click`; genuine download events are written by the delivery backend.
-- One visitor event per valid session UUID enforced in Postgres.
+- One visitor event per valid session UUID enforced in Postgres; browser session IDs live in `sessionStorage`.
 - Private Supabase digital-download vault.
 - Token-gated downloads with expiration and maximum-download controls.
 - Content SHA-256 headers and stored-file size validation.
 - Deterministic, hashed delivery grants derived server-side after a verified payment.
-- Safe fail-closed behavior: if PayPal/Supabase secrets are absent, API checkout is disabled and no payment is attempted.
-- Zero-dollar two-hour traffic sprint and tracked campaign-link generator.
-- CI smoke tests for server syntax, storefront boot, runtime config, fail-closed checkout, and campaign links.
+- Safe fail-closed behavior: if PayPal/Supabase secrets are absent or structurally invalid, API checkout is disabled and no payment is attempted.
+- `/health` liveness endpoint plus `/ready` payment/delivery readiness endpoint.
+- Zero-dollar two-hour traffic sprint and creative-level tracked campaign-link generator.
+- CI tests for PayPal Orders, fulfillment token privacy/idempotency, readiness diagnostics, storefront boot, session analytics, fail-closed checkout, and campaign links.
 
 ## Supabase backend
 
@@ -63,7 +64,9 @@ SUPABASE_SECRET_KEY=
 DELIVERY_TOKEN_SECRET=
 ```
 
-`PAYPAL_ENV` stays `sandbox` until sandbox checkout and fulfillment have passed. `PUBLIC_BASE_URL` must be the final HTTPS storefront origin because it is used for PayPal return/cancel URLs and same-origin checkout validation.
+`PAYPAL_ENV` stays `sandbox` until sandbox checkout and fulfillment have passed. `PUBLIC_BASE_URL` must be the final HTTPS storefront origin because it is used for PayPal return/cancel URLs and same-origin checkout validation. Localhost HTTP is accepted only for local development.
+
+`DELIVERY_TOKEN_SECRET` must be at least 32 bytes. The readiness endpoint reports an invalid variable name when that requirement is not met, without exposing the secret itself.
 
 Do not commit any of these values. Use the deployment platform's secret-variable store.
 
@@ -101,33 +104,52 @@ Cashh Radar service orders stop at the paid-intake page instead of creating a do
 
 ```bash
 cd four-offer-launch
+npm run check
+npm test
 npm start
 ```
 
 The server listens on `PORT` when provided, otherwise port `3000`.
 
-## Health check
+## Liveness vs readiness
 
-```text
-GET /health
-```
+`GET /health` answers whether the application process is alive. It intentionally stays healthy when payment credentials are missing so deployment/runtime failures are not confused with account configuration.
 
-With no credentials installed, expected shape is:
+With no credentials installed, the health response includes:
 
 ```json
 {"ok":true,"paypal_api_ready":false,"paypal_environment":"sandbox"}
 ```
 
-That is intentional: missing payment credentials disable checkout rather than silently degrading into an unverified payment flow.
+`GET /ready` answers whether the required payment/delivery settings are present and structurally valid. With no secrets installed it returns HTTP `503` and a payload like:
+
+```json
+{
+  "ready": false,
+  "paypal_environment": "sandbox",
+  "missing": [
+    "PAYPAL_CLIENT_ID",
+    "PAYPAL_CLIENT_SECRET",
+    "PUBLIC_BASE_URL",
+    "SUPABASE_SECRET_KEY",
+    "DELIVERY_TOKEN_SECRET"
+  ],
+  "invalid": []
+}
+```
+
+The readiness endpoint returns variable names only. It never returns credential or secret values. Once the required settings are present and valid, `/ready` returns HTTP `200` with `ready: true`.
 
 ## Current release gate
 
-Repository code, private file delivery, analytics, and payment-ledger infrastructure are implemented. Remaining production gates are external/account-bound:
+Repository code, private file delivery, analytics, payment-ledger infrastructure, readiness diagnostics, and automated tests are implemented. Remaining production gates are external/account-bound:
 
 1. install the real PayPal REST app credentials and deployment secrets;
 2. deploy the storefront only after explicit production deployment authorization;
-3. run a complete PayPal sandbox purchase through capture and automatic delivery;
-4. switch to live credentials only after sandbox acceptance;
-5. run one controlled live purchase and verify the payment ledger, delivery grant, file checksum, and analytics event.
+3. require `/ready` to return HTTP 200 before sandbox checkout testing;
+4. run a complete PayPal sandbox purchase through capture and automatic delivery;
+5. switch to live credentials only after sandbox acceptance;
+6. run one controlled live purchase and verify the payment ledger, delivery grant, file checksum, and analytics event;
+7. start the tracked zero-dollar traffic sprint against the verified public URL.
 
 No sale, buyer, traffic target, or payment is considered real until the corresponding external evidence exists.
