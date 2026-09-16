@@ -20,12 +20,28 @@ const routes = [
   ['email_direct', 'email'],
 ];
 
+const waves = [
+  ['all_four_launch', routes],
+  ['ai_handoff_wave2', routes.filter(([source]) => [
+    'facebook_profile',
+    'facebook_story',
+    'instagram_story',
+    'whatsapp_status',
+    'telegram_solofounders',
+    'telegram_fusion42',
+    'email_direct'
+  ].includes(source))]
+];
+
 const cleanBase = base.replace(/\/$/, '');
 
-for (const [source, medium] of routes) {
-  const url = new URL(cleanBase + '/');
-  url.searchParams.set('utm_source', source);
-  url.searchParams.set('utm_medium', medium);
-  url.searchParams.set('utm_campaign', campaign);
-  console.log(`${source.padEnd(28)} ${url.toString()}`);
+for (const [content, waveRoutes] of waves) {
+  for (const [source, medium] of waveRoutes) {
+    const url = new URL(cleanBase + '/');
+    url.searchParams.set('utm_source', source);
+    url.searchParams.set('utm_medium', medium);
+    url.searchParams.set('utm_campaign', campaign);
+    url.searchParams.set('utm_content', content);
+    console.log(`${content.padEnd(20)} ${source.padEnd(28)} ${url.toString()}`);
+  }
 }
