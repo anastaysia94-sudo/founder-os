@@ -8,6 +8,12 @@ on:
       - 'web/**'
       - 'db/migrations/**'
       - '.github/workflows/standalone-web.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'db/migrations/**'
+      - '.github/workflows/standalone-web.yml'
 
 permissions:
   contents: read
@@ -43,9 +49,23 @@ jobs:
           grep -q 'Business Operating System' web/app/layout.tsx
           grep -q 'WebApplication' web/app/layout.tsx
           grep -q 'AuthPrivacyGuard' web/app/layout.tsx
+          grep -q 'BusinessSwitcher' web/app/layout.tsx
+          grep -q '/portfolio' web/app/layout.tsx
           grep -q 'sessionStorage' web/app/auth-privacy-guard.tsx
           grep -q 'window.location.reload' web/app/auth-privacy-guard.tsx
           grep -q 'SIGNED_OUT\|onAuthStateChange\|signedOutFromAccount' web/app/auth-privacy-guard.tsx
+          grep -q 'ACTIVE BUSINESS' web/app/business-switcher.tsx
+          grep -q 'fdos.activeBusiness' web/lib/business-store.ts
+          grep -q 'listBusinesses' web/lib/business-store.ts
+          grep -q 'createBusiness' web/lib/business-store.ts
+          grep -q 'fdos_create_business' web/lib/business-store.ts
+          grep -q 'PORTFOLIO / BUSINESS REGISTRY' web/app/portfolio/page.tsx
+          grep -q 'One founder' web/app/portfolio/page.tsx
+          grep -q 'index: false' web/app/portfolio/layout.tsx
+          grep -q 'follow: false' web/app/portfolio/layout.tsx
+          grep -q 'security invoker' db/migrations/20260916_add_fdos_multi_business_registry.sql
+          grep -q 'fdos_create_business' db/migrations/20260916_add_fdos_multi_business_registry.sql
+          grep -q 'grant execute' db/migrations/20260916_add_fdos_multi_business_registry.sql
           grep -q 'Idea' web/app/page.tsx
           grep -q 'Business DNA' web/app/page.tsx
           grep -q 'Value Map' web/app/page.tsx
@@ -110,6 +130,11 @@ jobs:
           test -f web/app/manifest.ts
           test -f web/app/answers/page.tsx
           test -f web/app/auth-privacy-guard.tsx
+          test -f web/app/business-switcher.tsx
+          test -f web/app/business-switcher.module.css
+          test -f web/app/portfolio/page.tsx
+          test -f web/app/portfolio/layout.tsx
+          test -f web/app/portfolio/portfolio.module.css
           test -f web/app/intelligence/page.tsx
           test -f web/app/intelligence/intelligence.module.css
           test -f web/app/workbench/page.tsx
@@ -122,4 +147,4 @@ jobs:
           test -f web/app/acceptance/page.tsx
           test -f web/app/acceptance/layout.tsx
           test -f web/app/api/health/route.ts
-          echo 'Founder Dynasty OS broad shell, intelligence, build/run workbench, strategy/dynasty layer, plain-English glossary, evidence integrity, auth privacy, public discovery, relationship-aware RLS, FK coverage, evidence-class constraints, and production-testability contract verified.'
+          echo 'Founder Dynasty OS broad shell, multi-business portfolio, intelligence, build/run workbench, strategy/dynasty layer, plain-English glossary, evidence integrity, auth privacy, public discovery, relationship-aware RLS, FK coverage, evidence-class constraints, and production-testability contract verified.'
