@@ -7,7 +7,8 @@
     "freshLeadCount": 10,
     "freshQueueRule": "Prioritize recently verified higher-ticket service businesses with direct contact paths and no recorded outreach; never infer pipeline activity from lead refreshes.",
     "workbookSyncRequested": "2026-09-18T11:20:00-07:00",
-    "workbookSyncMethod": "GitHub Actions preserves existing workbook and rebuilds Fresh Leads/Pipeline History from canonical JSON sources."
+    "workbookSyncMethod": "GitHub Actions preserves existing workbook and rebuilds Fresh Leads/Pipeline History from canonical JSON sources.",
+    "lastPipelineSync": "2026-09-18T16:24:00-07:00"
   },
   "leads": [
     {
@@ -24,7 +25,7 @@
       "initial": "Hi — I reviewed HB Design & Construction’s current consultation process and noticed you already offer a free on-site consultation, written estimate and usually same-day email reply. I’d turn that into a customer-ready pre-consultation campaign that helps homeowners organize scope, priorities and questions before you arrive. The $150 Same-Day Customer Growth Pack can include social/Google posts, FAQs, inquiry follow-ups and estimate-ready messaging built around your actual services. Want two HB-specific examples first?",
       "source": "https://hbdesignconstruction.com/contact",
       "verified": "2026-09-18",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 2,
@@ -40,7 +41,7 @@
       "initial": "Hi — I reviewed QualiBuild’s current project intake and noticed you already invite homeowners to send photos, video and rough dimensions before an on-site visit. I’d turn that into a simple visual project-readiness campaign with scope-prep posts, FAQs, inquiry follow-ups and estimate CTAs for kitchen, bath and ADU prospects. Same-Day Customer Growth Pack: $150 flat. Want two QualiBuild-specific examples first?",
       "source": "https://qualibuildca.com/",
       "verified": "2026-09-18",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 3,
@@ -56,7 +57,7 @@
       "initial": "Hi — I reviewed Redwood Roofing’s current estimate page and noticed you already give homeowners something valuable during a stressful roof decision: a free estimate with same-day or next-business-day response. I’d turn that into an urgency-without-pressure campaign covering inspection, repair-vs-replacement questions, inquiry follow-ups and estimate CTAs. Same-Day Customer Growth Pack: $150 flat. Want two Redwood-specific examples first?",
       "source": "https://redwoodroofing.com/contact-us/",
       "verified": "2026-09-18",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 4,
@@ -72,7 +73,7 @@
       "initial": "Hi — I reviewed Premier Roofing & Retro-Fit’s current Santa Clara contact page and noticed you already promote a free same-day roofing quote. I’d turn that speed promise into a customer-ready campaign showing homeowners what information to send, what to expect next and how to compare repair versus replacement. Same-Day Customer Growth Pack: $150 flat. Want two Premier-specific examples first?",
       "source": "https://premierroofingretrofit.com/contact-us/",
       "verified": "2026-09-18",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 5,
@@ -88,7 +89,7 @@
       "initial": "Hi — I reviewed Make It Simple Construction’s current contact page and the strongest marketing angle is already in your name: helping homeowners understand what their remodel actually needs without hidden-cost anxiety. I’d turn that into planning posts, scope FAQs, inquiry follow-ups and estimate-ready messaging for kitchens, bathrooms and full-home projects. Same-Day Customer Growth Pack: $150 flat. Want two company-specific examples first?",
       "source": "https://makeitsimpleinc.com/contact/",
       "verified": "2026-09-18",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 6,
@@ -104,7 +105,7 @@
       "initial": "Hi — I reviewed BLUECON’s current San Jose site and noticed you span home remodeling, ADUs and commercial renovation. I’d turn that breadth into a simple project-path campaign that helps prospects identify their project type, prepare the right details and move toward a free estimate. Same-Day Customer Growth Pack: $150 flat. Want two BLUECON-specific examples first?",
       "source": "https://blueconbuilders.net/",
       "verified": "2026-09-18",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 7,
@@ -120,7 +121,7 @@
       "initial": "Hi — I reviewed Blues Bros’ current San Jose contact page and noticed you combine free in-home estimates, a stated 24-hour response target and financing availability. I’d turn that into a remodel-readiness campaign covering scope questions, consultation prep, financing FAQs and estimate follow-ups. Same-Day Customer Growth Pack: $150 flat. Want two Blues Bros-specific examples first?",
       "source": "https://bluesbros.com/contact/",
       "verified": "2026-09-18",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 8,
@@ -136,7 +137,7 @@
       "initial": "Hi — I reviewed HQR’s current San Jose estimate flow and noticed you already ask homeowners for project type, financing interest and even plans or drawings. I’d turn that into a project-file-prep campaign that helps prospects arrive with better information before the on-site estimate. Same-Day Customer Growth Pack: $150 flat. Want two HQR-specific examples first?",
       "source": "https://www.homequalityremodeling.com/contact",
       "verified": "2026-09-18",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 9,
@@ -152,7 +153,7 @@
       "initial": "Hi — I reviewed Imperia’s current Santa Clara pages and noticed you cover far more than roofing: siding, stucco, painting and windows as well. I’d turn that into an exterior project-selector campaign that helps homeowners identify the right scope before requesting a free estimate, with FAQs and follow-up copy for cross-service opportunities. Same-Day Customer Growth Pack: $150 flat. Want two Imperia-specific examples first?",
       "source": "https://imperiare.com/tpo/santa-clara/",
       "verified": "2026-09-18",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 10,
@@ -168,7 +169,7 @@
       "initial": "Hi — I reviewed Silicon Valley Chimney Sweep’s current contact flow and noticed a strong customer-friendly combination: homeowners can email photos, receive a same-day reply and request a free written estimate. I’d turn that into a photo-first chimney triage campaign with symptom posts, FAQs, inquiry follow-ups and estimate CTAs. Same-Day Customer Growth Pack: $150 flat. Want two company-specific examples first?",
       "source": "https://svchimneysweep.com/contact-us/",
       "verified": "2026-09-18",
-      "status": "Contact Ready"
+      "status": "Contacted"
     }
   ]
 }
