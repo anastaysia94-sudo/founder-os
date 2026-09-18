@@ -8,7 +8,7 @@
     "freshQueueRule": "Prioritize recently verified higher-ticket service businesses with direct contact paths and no recorded outreach; never infer pipeline activity from lead refreshes.",
     "workbookSyncRequested": "2026-09-18T11:20:00-07:00",
     "workbookSyncMethod": "GitHub Actions preserves existing workbook and rebuilds Fresh Leads/Pipeline History from canonical JSON sources.",
-    "lastPipelineSync": "2026-09-18T16:24:00-07:00"
+    "lastPipelineSync": "2026-09-18T16:26:35-07:00"
   },
   "leads": [
     {
@@ -169,7 +169,8 @@
       "initial": "Hi — I reviewed Silicon Valley Chimney Sweep’s current contact flow and noticed a strong customer-friendly combination: homeowners can email photos, receive a same-day reply and request a free written estimate. I’d turn that into a photo-first chimney triage campaign with symptom posts, FAQs, inquiry follow-ups and estimate CTAs. Same-Day Customer Growth Pack: $150 flat. Want two company-specific examples first?",
       "source": "https://svchimneysweep.com/contact-us/",
       "verified": "2026-09-18",
-      "status": "Contacted"
+      "status": "Delivery Failed",
+      "emailStatus": "Hard bounce 2026-09-18; do not resend until reverified."
     }
   ]
 }
