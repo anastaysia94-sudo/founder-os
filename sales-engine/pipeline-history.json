@@ -575,7 +575,7 @@
       "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
     },
     "Silicon Valley Chimney Sweep": {
-      "stage": "Contacted",
+      "stage": "Delivery Failed",
       "firstTouch": "2026-09-18T16:24:00-07:00",
       "firstTouchChannel": "email",
       "firstTouchEvidence": "Gmail sent message 1a0b6d7d1bb96f3a",
@@ -583,7 +583,9 @@
       "quoted": 0,
       "offerValue": 150,
       "paid": 0,
-      "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
+      "nextAction": "Do not count as successfully contacted. Official site still publishes info@svchimneysweep.com, but Gmail returned a hard bounce. Reverify or use the official website inquiry route; do not resend to the bounced address.",
+      "deliveryFailure": "2026-09-18T16:26:35-07:00",
+      "deliveryFailureEvidence": "Gmail DSN message 1a0b6d7e0fd1a1d7; 550 5.1 address not found/unable to receive mail."
     }
   }
 }
