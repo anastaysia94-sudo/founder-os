@@ -5,7 +5,9 @@
     "sourceOfTruth": "Fresh official-site web verification + GitHub pipeline history",
     "updateRule": "Fresh lead discovery updates leads.json; real outreach/reply/payment history is preserved separately in sales-engine/pipeline-history.json.",
     "freshLeadCount": 10,
-    "freshQueueRule": "Prioritize recently verified higher-ticket service businesses with direct contact paths and no recorded outreach; never infer pipeline activity from lead refreshes."
+    "freshQueueRule": "Prioritize recently verified higher-ticket service businesses with direct contact paths and no recorded outreach; never infer pipeline activity from lead refreshes.",
+    "workbookSyncRequested": "2026-09-18T11:20:00-07:00",
+    "workbookSyncMethod": "GitHub Actions preserves existing workbook and rebuilds Fresh Leads/Pipeline History from canonical JSON sources."
   },
   "leads": [
     {
