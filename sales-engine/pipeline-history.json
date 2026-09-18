@@ -1,1 +1,589 @@
-{"updated":"2026-09-12","rule":"Only record real outreach, replies, quotes, payments, fulfillment, opt-outs, or other observed pipeline events. Prospect refreshes must not fabricate or advance these fields. offerValue is the standard package price, not booked revenue.","records":{"Leader Restoration":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.","archived":"2026-09-12"},"FloodDry Water Damage Restoration":{"stage":"Contacted","firstTouch":"2026-09-05T22:50:24-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a075449a2403271","fu1Due":"2026-09-08","fu1Sent":"2026-09-08T16:45:47-07:00","fu1Evidence":"Gmail sent message 1a08369d9f6b09c0","quoted":0,"offerValue":150,"paid":0,"nextAction":"Two verified outbound emails, no inbound reply found through 2026-09-12. Do not send another cold touch now."},"Therma Tech":{"stage":"Contacted","firstTouch":"2026-09-05T20:01:38-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a074aa18c4a15e5","fu1Due":"2026-09-07","fu1Sent":"2026-09-07T13:35:02-07:00","fu1Evidence":"Gmail sent message 1a07d94dc355abc7","fu2Due":"2026-09-07","fu2Sent":"2026-09-07T14:19:35-07:00","fu2Evidence":"Gmail sent message 1a07dbda8027b039","quoted":0,"offerValue":150,"paid":0,"nextAction":"Three verified outbound emails across two connected Gmail accounts; no inbound reply found through 2026-09-12. Stop cold follow-up unless they reply."},"CostLess Heating & Cooling":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-06"},"Los Gatos Roofing":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-06"},"Precision Heating & Cooling":{"stage":"Contacted","firstTouch":"2026-09-06T01:37:52-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a075ddee6716e8a","quoted":0,"offerValue":150,"paid":0,"nextAction":"Historical send discovered during Sep 12 audit; no reply found in connected Gmail search.","archived":"2026-09-06"},"Roofs By Reveille, Inc":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-06"},"A1 Restoration":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-06"},"911 Restoration of San Jose":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-06"},"Any Hour Water and Fire":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-07"},"IRBIS Air Plumbing Electrical":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"Use official web/phone route; no direct email re-verified 2026-09-09.","archived":"2026-09-10"},"California Water and Fire":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-07"},"Infinium Solar, Roofing and Electric":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-09"},"Lifetime Roofing & Renovation, Inc.":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-08"},"ROOF EXPRESS":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.","archived":"2026-09-12"},"South Bay Roofing CO":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-07"},"Eastman Roofing & Waterproofing, Inc.":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-07"},"The Roofer Bros":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"archived":"2026-09-09"},"Roof By Tom":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.","archived":"2026-09-12"},"FairPrice Heating & Cooling":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.","archived":"2026-09-12"},"Dansel Restoration":{"stage":"Contacted","firstTouch":"2026-09-05T22:49:58-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a075443349aa830","fu1Due":"2026-09-09","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no inbound reply found through 2026-09-12. One final respectful follow-up is permissible, then stop unless they reply."},"Galaxy Heating & Air Conditioning":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.","archived":"2026-09-12"},"Air & Plumbing Systems":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"Archived from active Top 10 on 2026-09-11; no outreach recorded.","archived":"2026-09-11"},"California First Roofing":{"stage":"Contacted","firstTouch":"2026-09-05T22:39:21-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a0753a7d53e5a5c","fu1Due":"2026-09-09","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no inbound reply found through 2026-09-12. One final respectful follow-up is permissible, then stop unless they reply."},"Top Tier Roofing":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.","archived":"2026-09-12"},"US Creative Restoration":{"stage":"Contacted","firstTouch":"2026-09-05T22:53:01-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a0754701539a56d","fu1Due":"2026-09-09","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."},"WJM Builders":{"stage":"Contacted","firstTouch":"2026-09-06T03:30:53-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a076456505c6304","fu1Due":"2026-09-10","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."},"Clean Roofing":{"stage":"Contacted","firstTouch":"2026-09-06T03:42:04-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a0764fa024df1f4","fu1Due":"2026-09-10","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."},"Solar Energy Consultants":{"stage":"Contacted","firstTouch":"2026-09-06T03:25:44-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a07640ae5a69379","fu1Due":"2026-09-10","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."},"Mayer's Construction":{"stage":"Contacted","firstTouch":"2026-09-06T03:31:58-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a0764664a2b1202","fu1Due":"2026-09-10","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."},"EVS Mechanical":{"stage":"Contacted","firstTouch":"2026-09-06T03:32:27-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a07646d6dbd3474","fu1Due":"2026-09-10","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."},"Dueling Trowels Concrete Solutions":{"stage":"Contacted","firstTouch":"2026-09-05T22:39:44-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a0753ad793984cf","fu1Due":"2026-09-09","fu1Sent":"2026-09-06T03:20:39-07:00","fu1Evidence":"Gmail sent message 1a0763c06f9e9dc5","quoted":0,"offerValue":150,"paid":0,"nextAction":"Two verified outbound emails; no reply found through 2026-09-12. Do not send another cold touch now."},"GBD Concrete":{"stage":"Contacted","firstTouch":"2026-09-05T22:54:30-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a075485ca2a3fef","fu1Due":"2026-09-09","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."},"John Molina Concrete":{"stage":"Contacted","firstTouch":"2026-09-05T22:46:13-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a07540c8b9fd4bc","fu1Due":"2026-09-09","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."},"Precision Concrete Inc":{"stage":"Contacted","firstTouch":"2026-09-05T22:40:53-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a0753be59b49989","fu1Due":"2026-09-09","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."},"One Day Complete Repipe":{"stage":"Contacted","firstTouch":"2026-09-05T22:35:59-07:00","firstTouchChannel":"email","firstTouchEvidence":"Gmail sent message 1a07537695be159d","fu1Due":"2026-09-09","quoted":0,"offerValue":150,"paid":0,"nextAction":"One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."},"Hertz Electric Inc":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"1-800 WATER DAMAGE of West San Jose & Sunnyvale":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Ozone Service":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Silicon Valley Building Service and Repair":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"South San Jose Electric":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"RoofCraft Inc":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"SERVPRO of Mountain View, Los Altos":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Courtesy Electric":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"408 Builders Inc":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"AYH Remodeling & Construction Inc":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Pylon Builders":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Home Pro Roofing and Solar":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Foundation Repair of California":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Bentson Window & Door":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Trio Roofers":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Foundation Strategies & Construction":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Jackson Electric":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Atlas Trillo":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Rooter Hero Plumbing & Air of San Jose":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."},"Home Additions San Jose":{"stage":"Contact Ready","quoted":0,"offerValue":150,"paid":0,"nextAction":"New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."}}}
+{
+  "updated": "2026-09-18",
+  "rule": "Only record real outreach, replies, quotes, payments, fulfillment, opt-outs, or other observed pipeline events. Prospect refreshes must not fabricate or advance these fields. offerValue is the standard package price, not booked revenue.",
+  "records": {
+    "Leader Restoration": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.",
+      "archived": "2026-09-12"
+    },
+    "FloodDry Water Damage Restoration": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-05T22:50:24-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a075449a2403271",
+      "fu1Due": "2026-09-08",
+      "fu1Sent": "2026-09-08T16:45:47-07:00",
+      "fu1Evidence": "Gmail sent message 1a08369d9f6b09c0",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Two verified outbound emails, no inbound reply found through 2026-09-12. Do not send another cold touch now."
+    },
+    "Therma Tech": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-05T20:01:38-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a074aa18c4a15e5",
+      "fu1Due": "2026-09-07",
+      "fu1Sent": "2026-09-07T13:35:02-07:00",
+      "fu1Evidence": "Gmail sent message 1a07d94dc355abc7",
+      "fu2Due": "2026-09-07",
+      "fu2Sent": "2026-09-07T14:19:35-07:00",
+      "fu2Evidence": "Gmail sent message 1a07dbda8027b039",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Three verified outbound emails across two connected Gmail accounts; no inbound reply found through 2026-09-12. Stop cold follow-up unless they reply."
+    },
+    "CostLess Heating & Cooling": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-06"
+    },
+    "Los Gatos Roofing": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-06"
+    },
+    "Precision Heating & Cooling": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-06T01:37:52-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a075ddee6716e8a",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Historical send discovered during Sep 12 audit; no reply found in connected Gmail search.",
+      "archived": "2026-09-06"
+    },
+    "Roofs By Reveille, Inc": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-06"
+    },
+    "A1 Restoration": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-06"
+    },
+    "911 Restoration of San Jose": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-06"
+    },
+    "Any Hour Water and Fire": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-07"
+    },
+    "IRBIS Air Plumbing Electrical": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Use official web/phone route; no direct email re-verified 2026-09-09.",
+      "archived": "2026-09-10"
+    },
+    "California Water and Fire": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-07"
+    },
+    "Infinium Solar, Roofing and Electric": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-09"
+    },
+    "Lifetime Roofing & Renovation, Inc.": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-08"
+    },
+    "ROOF EXPRESS": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.",
+      "archived": "2026-09-12"
+    },
+    "South Bay Roofing CO": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-07"
+    },
+    "Eastman Roofing & Waterproofing, Inc.": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-07"
+    },
+    "The Roofer Bros": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "archived": "2026-09-09"
+    },
+    "Roof By Tom": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.",
+      "archived": "2026-09-12"
+    },
+    "FairPrice Heating & Cooling": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.",
+      "archived": "2026-09-12"
+    },
+    "Dansel Restoration": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-05T22:49:58-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a075443349aa830",
+      "fu1Due": "2026-09-09",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no inbound reply found through 2026-09-12. One final respectful follow-up is permissible, then stop unless they reply."
+    },
+    "Galaxy Heating & Air Conditioning": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.",
+      "archived": "2026-09-12"
+    },
+    "Air & Plumbing Systems": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Archived from active Top 10 on 2026-09-11; no outreach recorded.",
+      "archived": "2026-09-11"
+    },
+    "California First Roofing": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-05T22:39:21-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0753a7d53e5a5c",
+      "fu1Due": "2026-09-09",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no inbound reply found through 2026-09-12. One final respectful follow-up is permissible, then stop unless they reply."
+    },
+    "Top Tier Roofing": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Rotated out of fresh queue 2026-09-12; no outreach found in connected Gmail checks.",
+      "archived": "2026-09-12"
+    },
+    "US Creative Restoration": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-05T22:53:01-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0754701539a56d",
+      "fu1Due": "2026-09-09",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."
+    },
+    "WJM Builders": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-06T03:30:53-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a076456505c6304",
+      "fu1Due": "2026-09-10",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."
+    },
+    "Clean Roofing": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-06T03:42:04-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0764fa024df1f4",
+      "fu1Due": "2026-09-10",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."
+    },
+    "Solar Energy Consultants": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-06T03:25:44-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a07640ae5a69379",
+      "fu1Due": "2026-09-10",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."
+    },
+    "Mayer's Construction": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-06T03:31:58-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0764664a2b1202",
+      "fu1Due": "2026-09-10",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."
+    },
+    "EVS Mechanical": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-06T03:32:27-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a07646d6dbd3474",
+      "fu1Due": "2026-09-10",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."
+    },
+    "Dueling Trowels Concrete Solutions": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-05T22:39:44-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0753ad793984cf",
+      "fu1Due": "2026-09-09",
+      "fu1Sent": "2026-09-06T03:20:39-07:00",
+      "fu1Evidence": "Gmail sent message 1a0763c06f9e9dc5",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Two verified outbound emails; no reply found through 2026-09-12. Do not send another cold touch now."
+    },
+    "GBD Concrete": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-05T22:54:30-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a075485ca2a3fef",
+      "fu1Due": "2026-09-09",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."
+    },
+    "John Molina Concrete": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-05T22:46:13-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a07540c8b9fd4bc",
+      "fu1Due": "2026-09-09",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."
+    },
+    "Precision Concrete Inc": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-05T22:40:53-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0753be59b49989",
+      "fu1Due": "2026-09-09",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."
+    },
+    "One Day Complete Repipe": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-05T22:35:59-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a07537695be159d",
+      "fu1Due": "2026-09-09",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "One verified outbound email; no reply found through 2026-09-12. Eligible for at most one respectful follow-up."
+    },
+    "Hertz Electric Inc": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "1-800 WATER DAMAGE of West San Jose & Sunnyvale": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Ozone Service": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Silicon Valley Building Service and Repair": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "South San Jose Electric": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "RoofCraft Inc": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "SERVPRO of Mountain View, Los Altos": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Courtesy Electric": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "408 Builders Inc": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "AYH Remodeling & Construction Inc": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Pylon Builders": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Home Pro Roofing and Solar": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Foundation Repair of California": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Bentson Window & Door": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Trio Roofers": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Foundation Strategies & Construction": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Jackson Electric": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Atlas Trillo": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Rooter Hero Plumbing & Air of San Jose": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "Home Additions San Jose": {
+      "stage": "Contact Ready",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "New verified lead added 2026-09-12; no outreach recorded. Use individualized initial pitch."
+    },
+    "HB Design & Construction": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-18T16:24:00-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0b6d78c843ca6b",
+      "fu1Due": "2026-09-21",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
+    },
+    "QualiBuild LLC": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-18T16:24:00-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0b6d7943740cae",
+      "fu1Due": "2026-09-21",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
+    },
+    "Redwood Roofing": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-18T16:24:00-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0b6d79a6cdefdb",
+      "fu1Due": "2026-09-21",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
+    },
+    "Premier Roofing & Retro-Fit": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-18T16:24:00-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0b6d7a193869fd",
+      "fu1Due": "2026-09-21",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
+    },
+    "Make It Simple Construction, Inc.": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-18T16:24:00-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0b6d7a978557f8",
+      "fu1Due": "2026-09-21",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
+    },
+    "BLUECON": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-18T16:24:00-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0b6d7afc5b1de0",
+      "fu1Due": "2026-09-21",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
+    },
+    "Blues Bros": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-18T16:24:00-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0b6d7b4e0a0a3f",
+      "fu1Due": "2026-09-21",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
+    },
+    "Home Quality Remodeling": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-18T16:24:00-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0b6d7bd8a5e4c7",
+      "fu1Due": "2026-09-21",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
+    },
+    "Imperia Roofing & Exteriors": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-18T16:24:00-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0b6d7c520f4297",
+      "fu1Due": "2026-09-21",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
+    },
+    "Silicon Valley Chimney Sweep": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-18T16:24:00-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0b6d7d1bb96f3a",
+      "fu1Due": "2026-09-21",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "nextAction": "Wait for reply. If no reply, eligible for respectful S02 follow-up on/after 2026-09-21; stop sooner on decline or opt-out."
+    }
+  }
+}
