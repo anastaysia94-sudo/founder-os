@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "node --test test/*.test.js",
-    "check": "node --check server.js && node --check paypal-orders.js && node --check fulfillment.js && node --check readiness.js && node --check tools/build-campaign-links.mjs",
+    "check": "node --check server.js && node --check paypal-orders.js && node --check fulfillment.js && node --check readiness.js && node --check tools/build-campaign-links.mjs && node --check tools/verify-live-deployment.mjs && node --check tools/verify-sandbox-purchase.mjs",
     "campaign-links": "node tools/build-campaign-links.mjs"
   },
   "engines": {
