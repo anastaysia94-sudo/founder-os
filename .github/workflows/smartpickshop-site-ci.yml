@@ -1,0 +1,40 @@
+name: SmartPickShop Site CI
+
+on:
+  push:
+    paths:
+      - 'smartpickshop-site/**'
+      - '.github/workflows/smartpickshop-site-ci.yml'
+  pull_request:
+    paths:
+      - 'smartpickshop-site/**'
+      - '.github/workflows/smartpickshop-site-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: smartpickshop-site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm test
+      - name: Smoke boot
+        run: |
+          node server.mjs > /tmp/smartpickshop.log 2>&1 &
+          PID=$!
+          trap 'kill $PID || true' EXIT
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:8080/health >/tmp/health.json; then
+              break
+            fi
+            sleep 0.25
+          done
+          grep -q '"status":"ok"' /tmp/health.json
+          curl -fsS http://127.0.0.1:8080/ | grep -q 'SmartPickShop Holdings'
