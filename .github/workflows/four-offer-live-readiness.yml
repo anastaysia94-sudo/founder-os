@@ -1,0 +1,49 @@
+name: Four Offer Live Readiness Gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      storefront_url:
+        description: 'Deployed Four Offer storefront HTTPS origin'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  live-readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: four-offer-launch
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run repository checks
+        run: |
+          npm run check
+          npm test
+
+      - name: Verify live sandbox readiness
+        env:
+          STOREFRONT_URL: ${{ inputs.storefront_url }}
+        run: |
+          mkdir -p verification
+          node tools/verify-live-deployment.mjs "$STOREFRONT_URL" --output verification/live-readiness.json
+
+      - name: Upload readiness evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: four-offer-live-readiness
+          path: four-offer-launch/verification/live-readiness.json
+          if-no-files-found: warn
+          retention-days: 30
