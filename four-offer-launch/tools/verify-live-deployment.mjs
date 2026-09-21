@@ -1,6 +1,7 @@
 'use strict';
 
-const fs = require('fs');
+import fs from 'node:fs';
+import path from 'node:path';
 
 const baseArg = process.argv[2];
 const outputArgIndex = process.argv.indexOf('--output');
@@ -97,7 +98,7 @@ async function json(path) {
 
     const rendered = JSON.stringify(report, null, 2) + '\n';
     if (outputPath) {
-      fs.mkdirSync(require('path').dirname(outputPath), { recursive: true });
+      fs.mkdirSync(path.dirname(outputPath), { recursive: true });
       fs.writeFileSync(outputPath, rendered);
       console.log(`Evidence written to ${outputPath}`);
     } else {
@@ -118,7 +119,7 @@ async function json(path) {
       checks
     };
     if (outputPath) {
-      fs.mkdirSync(require('path').dirname(outputPath), { recursive: true });
+      fs.mkdirSync(path.dirname(outputPath), { recursive: true });
       fs.writeFileSync(outputPath, JSON.stringify(report, null, 2) + '\n');
     }
     console.error(`ERROR: ${report.error}`);

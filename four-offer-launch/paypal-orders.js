@@ -120,7 +120,7 @@ async function captureOrder(orderId, offerSlug) {
   if (!offer) throw new Error('invalid_offer');
   const { response, data } = await request(`/v2/checkout/orders/${encodeURIComponent(orderId)}/capture`, {
     method: 'POST',
-    headers: { 'PayPal-Request-Id': `capture-${orderId}` },
+    headers: { 'PayPal-Request-Id': `capture-${orderId}`, Prefer: 'return=representation' },
     body: '{}'
   });
   if (!response.ok) throw new Error(`paypal_capture_${response.status}`);
