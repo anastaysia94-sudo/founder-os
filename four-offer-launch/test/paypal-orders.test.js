@@ -56,8 +56,11 @@ test('createOrder keeps price server-side and uses current PayPal wallet experie
 });
 
 test('captureOrder accepts only the expected completed offer and amount', async () => {
-  global.fetch = async (url) => {
+  global.fetch = async (url, init = {}) => {
     if (String(url).includes('/v2/checkout/orders/ORDER123456789/capture')) {
+      if (init.headers.Prefer !== 'return=representation') {
+        return jsonResponse({ id: 'ORDER123456789', status: 'COMPLETED', links: [] }, 201);
+      }
       return jsonResponse({
         id: 'ORDER123456789',
         status: 'COMPLETED',

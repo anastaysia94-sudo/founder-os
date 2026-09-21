@@ -1,8 +1,8 @@
 'use strict';
 
-const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const SUPABASE_URL = 'https://nqcshihyfhthywpseilx.supabase.co';
 const DELIVERY_URL = `${SUPABASE_URL}/functions/v1/four-offer-delivery`;
