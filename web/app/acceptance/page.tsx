@@ -171,13 +171,20 @@ export default function ProductionAcceptancePage() {
     if (currentUser && activeBusiness && switchCheckpoint) {
       if (switchCheckpoint.userId !== currentUser.id) {
         checks.push({ id: 'business-switch-proof', label: 'A genuine active-Business switch has been observed in this browser', state: 'fail', detail: 'The stored switch checkpoint belongs to a different authenticated account. Reset it rather than carrying acceptance evidence across identities.' });
+      } else if (switchCheckpoint.completedAt && switchCheckpoint.endBusinessId) {
+        const startStillOwned = businesses.some((business) => business.id === switchCheckpoint?.startBusinessId);
+        const endStillOwned = businesses.some((business) => business.id === switchCheckpoint?.endBusinessId);
+        const crossedBusinesses = switchCheckpoint.startBusinessId !== switchCheckpoint.endBusinessId;
+        if (startStillOwned && endStillOwned && crossedBusinesses) {
+          checks.push({ id: 'business-switch-proof', label: 'A genuine active-Business switch has been observed in this browser', state: 'pass', detail: `PASS: this browser previously moved from “${switchCheckpoint.startBusinessName || switchCheckpoint.startBusinessId}” to “${switchCheckpoint.endBusinessName || switchCheckpoint.endBusinessId}”. Both records are still owner-visible; returning to either business does not erase the completed proof.` });
+        } else {
+          checks.push({ id: 'business-switch-proof', label: 'A genuine active-Business switch has been observed in this browser', state: 'fail', detail: 'The completed switch checkpoint is no longer valid because one of its Business Records is not owner-visible or the recorded start/end businesses are the same.' });
+        }
       } else if (switchCheckpoint.startBusinessId !== activeBusiness.id) {
         const startStillOwned = businesses.some((business) => business.id === switchCheckpoint?.startBusinessId);
         if (startStillOwned) {
-          const completed = switchCheckpoint.completedAt
-            ? switchCheckpoint
-            : { ...switchCheckpoint, completedAt: new Date().toISOString(), endBusinessId: activeBusiness.id, endBusinessName: activeBusiness.name };
-          if (!switchCheckpoint.completedAt) writeSwitchCheckpoint(completed);
+          const completed = { ...switchCheckpoint, completedAt: new Date().toISOString(), endBusinessId: activeBusiness.id, endBusinessName: activeBusiness.name };
+          writeSwitchCheckpoint(completed);
           switchCheckpoint = completed;
           checks.push({ id: 'business-switch-proof', label: 'A genuine active-Business switch has been observed in this browser', state: 'pass', detail: `PASS: this browser moved from “${completed.startBusinessName || completed.startBusinessId}” to “${activeBusiness.name || activeBusiness.id}”, and both records are owner-visible.` });
         } else {
