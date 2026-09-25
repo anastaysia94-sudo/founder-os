@@ -165,17 +165,19 @@ The acceptance helpers use browser-only `sessionStorage` checkpoints to observe 
 
 ## CI state
 
-Current accepted active-Business acceptance revision:
+Current accepted acceptance-proof stability revision:
 
-`a16a2cf3e0f8e11b6601f43a20559ca2a4e19c2c`
+`b3dc7a3c4a6ce97375b832bdab52cba93f1df342`
 
 GitHub Actions on that merge:
-- `Founder OS Standalone Web` run `35090557694`: **SUCCESS**;
-- `PHP Lint` run `35090557779`: **SUCCESS**.
+- `Founder OS Standalone Web` run `36133874028`: **SUCCESS**;
+- `PHP Lint` run `36133873831`: **SUCCESS**.
 
-PR #6 also passed both workflows before merge. TypeScript, Next.js production build, dependency vulnerability gate, and the broad/multi-business source contract all passed.
+PR #17 also passed both workflows before merge. TypeScript, Next.js production build, dependency vulnerability gate, and the broad/multi-business source contract all passed.
 
-Earlier Cross-Business Intelligence merge `d9dcbcd46e46a65f1b23e17d40a679bd0a53ad66` also passed its standalone web and PHP workflows.
+This revision fixes one real acceptance-helper defect: once a genuine Business A → Business B browser switch has been recorded, later navigation back to Business A no longer downgrades the completed proof to WAITING. The helper still requires both recorded Business Records to remain owner-visible and distinct.
+
+Earlier active-Business acceptance merge `a16a2cf3e0f8e11b6601f43a20559ca2a4e19c2c` and Cross-Business Intelligence merge `d9dcbcd46e46a65f1b23e17d40a679bd0a53ad66` also passed their standalone web and PHP workflows.
 
 ## Production runtime
 
@@ -188,23 +190,32 @@ Railway service:
 
 Current production deployment:
 
-`7c9d22b8-5e20-45e7-a7c0-28472b88c473`
+`bbf70c93-62be-40d0-a533-ed8ea56e26b8`
 
 Current deployed repository revision:
 
-`a16a2cf3e0f8e11b6601f43a20559ca2a4e19c2c`
+`84bdefefb9bf070f98f3adb28dc23d329bbbb366`
+
+Accepted web fix revision contained in that deployment:
+
+`b3dc7a3c4a6ce97375b832bdab52cba93f1df342`
 
 Railway status: **SUCCESS**.
 
-Observed production evidence:
-- exact source revision identified by Railway: `a16a2cf3...`;
-- Next.js production build succeeded;
-- TypeScript completed successfully;
-- 15 production routes generated, including `/portfolio`, `/acceptance`, and `/acceptance/restore`;
-- production container reached `Ready`;
-- configured healthcheck completed and deployment reached `SUCCESS`.
+Why the repository revision is later than the web-fix commit: a verified Sales lead-refresh commit landed on `main` before the forced Railway rebuild started. The deployed revision was inspected directly and contains the acceptance-proof stability fix.
 
-Later root-level documentation-only commits do not change the deployed `web/` code tree.
+Observed production evidence on 2026-09-25:
+- Railway build reported **0 vulnerabilities**;
+- Next.js 16.3.4 production build succeeded;
+- TypeScript completed successfully;
+- the generated route set includes `/portfolio`, `/acceptance`, `/acceptance/restore`, `/api/health`, and `/api/holdings-health`;
+- production container reached `Ready`;
+- deployment reached `SUCCESS`;
+- a fresh public production fetch returned the main Founder Dynasty OS shell successfully;
+- `/acceptance` returned the owner-facing diagnostics shell with `noindex, nofollow, nocache`;
+- `/api/health` returned `ok: true`, `sourceRevision: 84bdefefb9bf070f98f3adb28dc23d329bbbb366`, `deploymentId: bbf70c93-62be-40d0-a533-ed8ea56e26b8`, `environment: production`, and all three configuration checks true.
+
+Railway watches `web/**`, so later Sales workbook/CRM-only commits on `main` do not by themselves invalidate this accepted deployed web tree.
 
 ## Live backend acceptance
 
