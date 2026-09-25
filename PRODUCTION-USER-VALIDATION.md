@@ -212,6 +212,46 @@ They do not convert unperformed browser actions into green checks. Both remain o
 
 ---
 
+## Evidence Loop 005 — Acceptance Proof Stability + Fresh Production Runtime
+
+On 2026-09-25, the Business A → Business B acceptance helper was corrected so a completed genuine browser switch remains a completed proof even if the founder later navigates back to the original Business Record.
+
+Merged fix revision:
+
+`b3dc7a3c4a6ce97375b832bdab52cba93f1df342`
+
+CI on that merge:
+- `Founder OS Standalone Web` run `36133874028`: **SUCCESS**;
+- `PHP Lint` run `36133873831`: **SUCCESS**.
+
+The revised helper still fails invalid evidence when:
+- the checkpoint belongs to another authenticated account;
+- either recorded Business Record is no longer owner-visible; or
+- the recorded start and end Business Records are the same.
+
+Fresh Railway deployment:
+
+`bbf70c93-62be-40d0-a533-ed8ea56e26b8`
+
+Fresh deployed repository revision:
+
+`84bdefefb9bf070f98f3adb28dc23d329bbbb366`
+
+The later repository revision contains the merged web fix; a Sales lead-refresh commit landed before the forced rebuild selected its source revision.
+
+Fresh public runtime checks observed:
+- root Founder Dynasty OS page delivered successfully;
+- `/acceptance` delivered the production diagnostics shell and remained `noindex, nofollow, nocache`;
+- `/api/health` returned `ok: true`;
+- health reported `sourceRevision: 84bdefefb9bf070f98f3adb28dc23d329bbbb366`;
+- health reported `deploymentId: bbf70c93-62be-40d0-a533-ed8ea56e26b8`;
+- health reported `environment: production`;
+- Supabase URL, publishable-key, and source-revision configuration checks were all true.
+
+This is production runtime evidence. It still does **not** convert the unperformed authenticated Business A ↔ B sequence into a human PASS.
+
+---
+
 ## Current verification state
 
 ### SOURCE COMPLETE — current planned technical scope
