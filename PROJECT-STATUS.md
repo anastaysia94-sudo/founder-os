@@ -165,19 +165,21 @@ The acceptance helpers use browser-only `sessionStorage` checkpoints to observe 
 
 ## CI state
 
-Current accepted acceptance-proof stability revision:
+Current accepted second-account acceptance-helper revision:
 
-`b3dc7a3c4a6ce97375b832bdab52cba93f1df342`
+`4d3da5bf2ea989b8aee37c2b4c911ed5f11eb0bd`
 
 GitHub Actions on that merge:
-- `Founder OS Standalone Web` run `36133874028`: **SUCCESS**;
-- `PHP Lint` run `36133873831`: **SUCCESS**.
+- `Founder OS Standalone Web` run `36134679298`: **SUCCESS**;
+- `PHP Lint` run `36134679441`: **SUCCESS**.
 
-PR #17 also passed both workflows before merge. TypeScript, Next.js production build, dependency vulnerability gate, and the broad/multi-business source contract all passed.
+PR #18 also passed both workflows before merge. TypeScript, Next.js production build, dependency vulnerability gate, and the broad/multi-business source contract all passed.
 
-This revision fixes one real acceptance-helper defect: once a genuine Business A → Business B browser switch has been recorded, later navigation back to Business A no longer downgrades the completed proof to WAITING. The helper still requires both recorded Business Records to remain owner-visible and distinct.
+This revision adds `/acceptance/account-isolation`, a no-write browser verifier that can prove a different genuine authenticated account sees zero Account A Business rows and zero Account A child rows across the FDOS module tables. The helper stores only temporary opaque IDs in `sessionStorage` while armed, then redacts those raw IDs after verification.
 
-Earlier active-Business acceptance merge `a16a2cf3e0f8e11b6601f43a20559ca2a4e19c2c` and Cross-Business Intelligence merge `d9dcbcd46e46a65f1b23e17d40a679bd0a53ad66` also passed their standalone web and PHP workflows.
+It does **not** mark second-user isolation complete until a different real browser account actually performs the test.
+
+Earlier acceptance-proof stability revision `b3dc7a3c4a6ce97375b832bdab52cba93f1df342`, active-Business acceptance merge `a16a2cf3e0f8e11b6601f43a20559ca2a4e19c2c`, and Cross-Business Intelligence merge `d9dcbcd46e46a65f1b23e17d40a679bd0a53ad66` also passed their standalone web and PHP workflows.
 
 ## Production runtime
 
@@ -187,35 +189,30 @@ Railway service:
 - environment: `production`
 - root directory: `/web`
 - healthcheck: `/api/health`
+- watch pattern: `web/**`
 
 Current production deployment:
 
-`bbf70c93-62be-40d0-a533-ed8ea56e26b8`
+`17d3a3ef-3fbf-40d2-8721-2d4167eff749`
 
 Current deployed repository revision:
 
-`84bdefefb9bf070f98f3adb28dc23d329bbbb366`
-
-Accepted web fix revision contained in that deployment:
-
-`b3dc7a3c4a6ce97375b832bdab52cba93f1df342`
+`4d3da5bf2ea989b8aee37c2b4c911ed5f11eb0bd`
 
 Railway status: **SUCCESS**.
 
-Why the repository revision is later than the web-fix commit: a verified Sales lead-refresh commit landed on `main` before the forced Railway rebuild started. The deployed revision was inspected directly and contains the acceptance-proof stability fix.
-
-Observed production evidence on 2026-09-25:
-- Railway build reported **0 vulnerabilities**;
-- Next.js 16.3.4 production build succeeded;
-- TypeScript completed successfully;
-- the generated route set includes `/portfolio`, `/acceptance`, `/acceptance/restore`, `/api/health`, and `/api/holdings-health`;
-- production container reached `Ready`;
+Observed production/deployment evidence on 2026-09-25:
+- the exact second-account isolation revision was selected by Railway;
+- production container started successfully with Next.js 16.3.4;
+- container reached `Ready` in 73 ms;
+- configured healthcheck remained `/api/health`;
 - deployment reached `SUCCESS`;
-- a fresh public production fetch returned the main Founder Dynasty OS shell successfully;
-- `/acceptance` returned the owner-facing diagnostics shell with `noindex, nofollow, nocache`;
-- `/api/health` returned `ok: true`, `sourceRevision: 84bdefefb9bf070f98f3adb28dc23d329bbbb366`, `deploymentId: bbf70c93-62be-40d0-a533-ed8ea56e26b8`, `environment: production`, and all three configuration checks true.
+- the main-branch CI for the exact revision passed TypeScript, production build, dependency vulnerability gate, and source-contract checks;
+- `/acceptance/account-isolation` is included in the accepted source and protected by the standalone CI contract.
 
-Railway watches `web/**`, so later Sales workbook/CRM-only commits on `main` do not by themselves invalidate this accepted deployed web tree.
+The previous deployment `bbf70c93-62be-40d0-a533-ed8ea56e26b8` proved the prior acceptance-stability web tree and public health provenance. It is superseded by the exact `4d3da5bf...` production deployment.
+
+A direct unauthenticated network fetch from the local execution container was unavailable because that environment could not resolve the public host. That DNS limitation is not counted as a production failure; Railway's deployment/health state and exact-revision CI are the current runtime evidence.
 
 ## Live backend acceptance
 
@@ -244,6 +241,7 @@ Current planned technical surface includes:
 - global active-business switching;
 - first Cross-Business Intelligence layer;
 - active-business-aware switch/restore acceptance helpers;
+- second-account isolation acceptance helper with post-verification ID redaction;
 - searchable glossary and Answers surface;
 - website Evidence capture/review architecture;
 - 19-table RLS-protected persistence;
@@ -264,7 +262,7 @@ Still requires genuine human/browser evidence:
 - run a real Value Sprint through observable result → KEEP / REVISE / REVERT;
 - Workbench + Strategy/Dynasty writes;
 - browser website Evidence capture → approve → reject;
-- second genuine-account isolation;
+- run `/acceptance/account-isolation` with a second genuine account and record a real zero-visibility PASS;
 - Android/mobile visual and interaction pass;
 - desktop visual and interaction pass.
 
@@ -276,7 +274,7 @@ There is currently only one genuine production auth user, so second-person brows
 
 Sequence:
 
-`open production → sign in → create/load Business A → save DNA + stage + core records → create Business B intentionally → /acceptance: arm switch proof → switch A ↔ B → verify isolation → Intelligence + Value Sprint → /acceptance/restore: arm checkpoint → sign out → verify private state clears → fresh sign in → verify same active business restores → Evidence approve/reject → Workbench + Strategy writes → second genuine account → mobile + desktop visual pass → KEEP / REVISE / REVERT`
+`open production → sign in → create/load Business A → save DNA + stage + core records → create Business B intentionally → /acceptance: arm switch proof → switch A ↔ B → verify isolation → Intelligence + Value Sprint → /acceptance/restore: arm checkpoint → sign out → verify private state clears → fresh sign in → verify same active business restores → Evidence approve/reject → Workbench + Strategy writes → /acceptance/account-isolation with genuine Account B → mobile + desktop visual pass → KEEP / REVISE / REVERT`
 
 ## Product guardrail
 
