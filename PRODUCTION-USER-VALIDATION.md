@@ -252,16 +252,54 @@ This is production runtime evidence. It still does **not** convert the unperform
 
 ---
 
+## Evidence Loop 006 — Second-Account Isolation Acceptance Helper
+
+Merged source revision:
+
+`4d3da5bf2ea989b8aee37c2b4c911ed5f11eb0bd`
+
+New private acceptance route:
+
+`/acceptance/account-isolation`
+
+The route is intentionally a browser evidence helper, not a synthetic database test. It can:
+
+- arm Account A using only its opaque authenticated user ID plus owned Business IDs in browser `sessionStorage`;
+- observe either an actual signed-out state or a direct switch to another genuine authenticated account;
+- under Account B, attempt owner-scoped reads against Account A Business IDs;
+- check Account A Business visibility plus child-row visibility across the FDOS module tables;
+- return PASS only when the different authenticated account sees **0 Business rows** and **0 child rows**;
+- automatically redact the temporary Account A raw IDs from the checkpoint after verification;
+- write **no synthetic Business, Evidence, customer, revenue, or acceptance records**.
+
+CI for the merged revision:
+- `Founder OS Standalone Web` run `36134679298`: **SUCCESS**;
+- `PHP Lint` run `36134679441`: **SUCCESS**.
+
+Production deployment:
+
+`17d3a3ef-3fbf-40d2-8721-2d4167eff749`
+
+Production repository revision:
+
+`4d3da5bf2ea989b8aee37c2b4c911ed5f11eb0bd`
+
+Railway reached **SUCCESS**, and the Next.js 16.3.4 container reached **Ready**.
+
+**Truth boundary:** the helper itself is source/CI/runtime verified. A real second-account PASS is still WAITING because it requires a different genuine authenticated browser account to perform the workflow. Building the thermometer is not the same thing as taking the temperature. Humanity remains committed to making this distinction necessary.
+
+---
+
 ## Current verification state
 
 ### SOURCE COMPLETE — current planned technical scope
 The broad shared-record OS, multi-business Business Registry and first Cross-Business Intelligence layer are implemented.
 
 ### CI VERIFIED
-The merged Cross-Business Intelligence revision passed standalone web CI and PHP lint on `main`.
+The current accepted second-account acceptance-helper revision `4d3da5bf2ea989b8aee37c2b4c911ed5f11eb0bd` passed standalone web CI and PHP lint on `main`.
 
 ### PRODUCTION RUNTIME VERIFIED
-The multi-business/Cross-Business Intelligence web tree is live in Railway deployment `1eddfe30-e3ca-4954-b288-b0c5386fa91a`, sourced from repository revision `7fe9c285fa677fa722d08675d01841bc0a9d2427`, and reached `SUCCESS`/`Ready` with all 15 routes generated.
+The current accepted web tree is live in Railway deployment `17d3a3ef-3fbf-40d2-8721-2d4167eff749`, sourced from exact repository revision `4d3da5bf2ea989b8aee37c2b4c911ed5f11eb0bd`, and reached `SUCCESS` with the production container `Ready`.
 
 ### LIVE BACKEND ACCEPTANCE VERIFIED
 The 19-table RLS graph, Evidence loop, foreign-identity visibility check, cleanup behavior and multi-business RPC privilege boundary have been exercised/inspected against production policies.
@@ -281,7 +319,7 @@ Still requires genuine browser/user actions:
 - Finance / Offer / Operations browser writes;
 - Strategy / Customer / Distribution / Asset / Attention / Scenario / Portfolio browser writes;
 - browser website Evidence capture → approve one Proposal → reject one Proposal;
-- second genuine account browser isolation;
+- run `/acceptance/account-isolation` with a second genuine account and obtain a real zero-visibility PASS;
 - Android/mobile visual/interaction acceptance;
 - desktop visual/interaction acceptance.
 
@@ -300,7 +338,7 @@ No technical acceptance event is a customer, sale, payment, revenue event, ROI r
 
 ## Highest-value remaining acceptance loop
 
-`open exact production → sign in → create/load Business A → save DNA/stage/core records → create Business B intentionally → switch A ↔ B and verify isolation → Intelligence/X-Ray → one real Value Sprint → /acceptance → sign out → verify private state clears → sign back in → verify restore → browser Evidence approve/reject → Workbench + Strategy writes → second genuine account → mobile + desktop visual pass → KEEP / REVISE / REVERT`
+`open exact production → sign in → create/load Business A → save DNA/stage/core records → create Business B intentionally → switch A ↔ B and verify isolation → Intelligence/X-Ray → one real Value Sprint → /acceptance → sign out → verify private state clears → sign back in → verify restore → browser Evidence approve/reject → Workbench + Strategy writes → /acceptance/account-isolation with genuine Account B → mobile + desktop visual pass → KEEP / REVISE / REVERT`
 
 ---
 
