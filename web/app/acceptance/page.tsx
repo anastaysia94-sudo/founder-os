@@ -277,6 +277,7 @@ export default function ProductionAcceptancePage() {
           <button type="button" disabled={running} onClick={() => void runChecks()}>{running ? 'Running checks…' : 'Run browser checks again'}</button>
           <button type="button" disabled={!snapshot} onClick={() => void copySnapshot()}>{copied ? 'Snapshot copied' : 'Copy diagnostic snapshot'}</button>
           <a href="/acceptance/restore">Run sign-out → sign-in restore proof</a>
+          <a href="/acceptance/account-isolation">Run second-account isolation proof</a>
           <a href="/">Return to Founder Dynasty OS</a>
         </div>
       </section>
