@@ -116,6 +116,7 @@ jobs:
           grep -q "'E1','E2','E3','E4','E5','E6','E7','E8'" db/migrations/20260913_constrain_fdos_expansion_evidence_classes.sql
           grep -q 'fdos_store_website_evidence' web/app/api/evidence/website/route.ts
           grep -q 'Production acceptance diagnostics' web/app/acceptance/page.tsx
+          grep -q 'returning to either business does not erase the completed proof' web/app/acceptance/page.tsx
           grep -q 'Copy diagnostic snapshot' web/app/acceptance/page.tsx
           grep -q 'index: false' web/app/acceptance/layout.tsx
           grep -q 'follow: false' web/app/acceptance/layout.tsx
