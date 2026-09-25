@@ -146,6 +146,9 @@ jobs:
           test -f web/app/glossary/glossary.module.css
           test -f PLAIN-ENGLISH-GLOSSARY.md
           test -f web/app/acceptance/page.tsx
+          test -f web/app/acceptance/account-isolation/page.tsx
+          grep -q 'Second-account isolation proof' web/app/acceptance/account-isolation/page.tsx
+          grep -q 'Temporary source IDs were redacted' web/app/acceptance/account-isolation/page.tsx
           test -f web/app/acceptance/layout.tsx
           test -f web/app/api/health/route.ts
           echo 'Founder Dynasty OS broad shell, multi-business portfolio, intelligence, build/run workbench, strategy/dynasty layer, plain-English glossary, evidence integrity, auth privacy, public discovery, relationship-aware RLS, FK coverage, evidence-class constraints, and production-testability contract verified.'
