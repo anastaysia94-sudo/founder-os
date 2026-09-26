@@ -70,6 +70,9 @@ jobs:
           grep -q 'grant execute' db/migrations/20260916_add_fdos_multi_business_registry.sql
           grep -q 'Idea' web/app/page.tsx
           grep -q 'Business DNA' web/app/page.tsx
+          grep -q 'resetPasswordForEmail' web/app/page.tsx
+          grep -q 'PASSWORD_RECOVERY' web/app/page.tsx
+          grep -q 'authStatus' web/app/page.tsx
           grep -q 'Value Map' web/app/page.tsx
           grep -q 'Decision' web/app/page.tsx
           grep -q 'Business Memory' web/app/page.tsx
