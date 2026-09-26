@@ -1,0 +1,34 @@
+name: Netlify Four-Offer checks
+on:
+  push:
+    branches: [migration-cloudflare-free]
+    paths:
+      - "four-offer-launch/netlify/**"
+      - "four-offer-launch/public/**"
+      - "four-offer-launch/product-src/**"
+      - "four-offer-launch/tools/build-products.sh"
+      - ".github/workflows/netlify-four-offer-check.yml"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: four-offer-launch/netlify
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: node --check netlify/functions/health.mjs
+      - run: node --check netlify/functions/ready.mjs
+      - run: node --check netlify/functions/analytics.mjs
+      - run: node --check netlify/functions/delivery.mjs
+      - run: npm run build
+      - run: test -f dist/index.html
+      - run: test -f dist/config.js
+      - run: test -f dist/preview-guard.js
+      - run: test ! -e dist/products/remote-career-diy.zip
+      - run: grep -q "checkout disabled" dist/preview-guard.js
