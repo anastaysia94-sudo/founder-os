@@ -18,3 +18,18 @@ CREATE TABLE IF NOT EXISTS four_offer_download_tokens (
   max_downloads INTEGER NOT NULL DEFAULT 3,
   download_count INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS four_offer_events (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  event_type TEXT NOT NULL,
+  path TEXT NOT NULL DEFAULT '/',
+  session_id TEXT,
+  referrer_host TEXT,
+  offer_slug TEXT,
+  utm_source TEXT,
+  utm_medium TEXT,
+  utm_campaign TEXT,
+  utm_content TEXT,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_four_offer_events_type_created ON four_offer_events(event_type, created_at);
