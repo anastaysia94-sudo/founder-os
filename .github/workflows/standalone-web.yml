@@ -151,6 +151,8 @@ jobs:
           test -f web/app/acceptance/account-isolation/page.tsx
           test -f web/e2e/business-isolation.spec.ts
           test -f web/playwright.config.ts
+          grep -q 'FDOS_E2E_EXECUTABLE_PATH' web/playwright.config.ts
+          grep -q 'FDOS_E2E_EXECUTABLE_PATH' web/scripts/capture-playwright-auth.mjs
           test -f web/tsconfig.e2e.json
           test -f web/scripts/capture-playwright-auth.mjs
           grep -q 'UNSAVED_A_ISOLATION_CHECK_DO_NOT_SAVE' web/e2e/business-isolation.spec.ts
