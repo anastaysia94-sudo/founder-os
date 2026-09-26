@@ -4,6 +4,9 @@ on:
     branches: [migration-cloudflare-free]
     paths:
       - "four-offer-launch/cloudflare/**"
+      - "four-offer-launch/product-src/**"
+      - "four-offer-launch/tools/build-products.sh"
+      - ".github/workflows/cloudflare-migration-check.yml"
   workflow_dispatch:
 jobs:
   verify:
