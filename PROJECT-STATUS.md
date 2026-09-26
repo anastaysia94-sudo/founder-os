@@ -268,6 +268,27 @@ Still requires genuine human/browser evidence:
 
 There is currently only one genuine production auth user, so second-person browser isolation cannot truthfully be marked complete yet.
 
+## Free local browser-acceptance harness
+
+A deterministic Playwright acceptance runner is now merged on `main` at:
+
+`bb7932b48271b2a86adac2f5177e1e7a6bf73f4a`
+
+The harness:
+- captures authenticated browser state locally without committing credentials;
+- creates/uses clearly labeled technical Business A and Business B acceptance workspaces;
+- writes distinct markers across Business DNA, Value, Opportunities, Risks, Decisions, Memory, Value Sprints, Finance, Offers, Operations, Business Model, Customer Intelligence, Distribution, Assets, Founder Attention, Scenarios and Portfolio/Dynasty;
+- creates an intentionally unsaved Business A draft and verifies it disappears at the hard business-switch boundary;
+- repeats A → B → A → B switching;
+- verifies saved A markers never appear in B and saved B markers never appear in A;
+- reloads and deep-navigates `/`, `/intelligence`, `/workbench`, `/strategy` and `/portfolio` while checking that the selected Business Record remains stable;
+- finishes on `/acceptance` and records the genuine browser switch checkpoint;
+- captures Playwright trace/video/screenshot evidence when a browser run fails.
+
+PR #19 and the post-merge `main` run both passed the production web typecheck/build contract plus the separate Playwright harness typecheck.
+
+**Execution state:** harness ready; genuine authenticated desktop/browser run still pending. A prepared test is not a PASS until it runs against production.
+
 ## Highest-value next milestone
 
 **Do not add another department. Use the deployed acceptance helpers to close genuine production-user evidence for the system that now exists.**
