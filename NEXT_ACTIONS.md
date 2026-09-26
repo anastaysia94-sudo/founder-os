@@ -1,9 +1,12 @@
 # NEXT ACTIONS
 
-Updated: 2026-09-25 23:12 America/Los_Angeles
+Updated: 2026-09-26 America/Los_Angeles
 
 ## Smallest next execution block
-1. Verify the current Supabase Four-Offer storefront/checkout path; do not restore the retired Railway deploy workflow.
-2. Prove one sandbox purchase/payment/delivery path without exposing secrets.
-3. Run Founder OS genuine-user acceptance: sign-in/recovery, Business A/B isolation, persistence/restore, and mobile.
-4. Record exact evidence, blocker details, and current deployment/source commit.
+1. Determine the currently active Founder OS and Four-Offer deployment URLs and their served source revisions.
+2. Check Founder OS `/api/ready`.
+3. Check the Four-Offer readiness endpoint and verify checkout config, PayPal sandbox/API connectivity, and required delivery assets.
+4. Confirm current Railway usage comes from the newer intended build/revision path, not the retired direct-deploy workflow.
+5. Complete one sandbox purchase → capture → payment ledger entry → digital delivery/checksum test.
+6. Run Founder OS sign-in/recovery, Business A/B isolation, persistence/restore, and mobile acceptance.
+7. Record exact URLs, revisions, responses, and test evidence in STATUS.md.
