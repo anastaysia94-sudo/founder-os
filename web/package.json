@@ -1,1 +1,26 @@
-{"name":"founder-os-web","version":"0.3.0","private":true,"scripts":{"dev":"next dev","build":"next build","start":"next start"},"dependencies":{"@supabase/supabase-js":"2.116.0","next":"16.3.4","react":"19.2.8","react-dom":"19.2.8"},"devDependencies":{"@types/node":"22.18.6","@types/react":"19.1.16","@types/react-dom":"19.1.9","typescript":"5.9.2"}}
+{
+  "name": "founder-os-web",
+  "version": "0.3.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "e2e:install": "playwright install chromium",
+    "e2e:auth": "node scripts/capture-playwright-auth.mjs",
+    "e2e:business-isolation": "playwright test e2e/business-isolation.spec.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.116.0",
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.6",
+    "@types/react": "19.1.16",
+    "@types/react-dom": "19.1.9",
+    "typescript": "5.9.2",
+    "@playwright/test": "^1.55.0"
+  }
+}
