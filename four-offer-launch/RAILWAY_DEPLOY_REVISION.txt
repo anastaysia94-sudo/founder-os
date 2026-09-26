@@ -1,0 +1,2 @@
+Railway deploy refresh marker.
+Purpose: force the linked sales-engine-app service to build the current main snapshot instead of redeploying the stale 528d593c snapshot.
