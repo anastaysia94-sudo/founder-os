@@ -22,3 +22,8 @@ wp-config.local.php
 # Test/runtime artifacts
 .phpunit.result.cache
 coverage/
+
+# Browser acceptance artifacts
+web/playwright/.auth/
+web/playwright-report/
+web/test-results/
