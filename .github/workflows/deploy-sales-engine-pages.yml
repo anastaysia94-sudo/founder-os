@@ -1,10 +1,11 @@
-name: Deploy Sales Engine PWA to GitHub Pages
+name: Deploy Sales Engine + WASTEBounty to GitHub Pages
 
 on:
   push:
     branches: [main]
     paths:
       - 'sales-engine-app/**'
+      - 'wastebounty-site/**'
       - '.github/workflows/deploy-sales-engine-pages.yml'
   workflow_dispatch:
 
@@ -52,11 +53,22 @@ jobs:
         if: steps.pages.outputs.enabled == 'true'
         uses: actions/configure-pages@v5
 
-      - name: Upload Sales Engine site
+      - name: Build Pages artifact
+        if: steps.pages.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _site
+          mkdir -p _site
+          cp -a sales-engine-app/. _site/
+          mkdir -p _site/wastebounty
+          cp -a wastebounty-site/public/. _site/wastebounty/
+
+      - name: Upload combined Pages site
         if: steps.pages.outputs.enabled == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: sales-engine-app
+          path: _site
 
       - name: Deploy to GitHub Pages
         if: steps.pages.outputs.enabled == 'true'
