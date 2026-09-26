@@ -505,3 +505,5 @@ button{box-shadow:0 0 0 1px rgba(197,138,50,.12)}
 .stageBadge{border-color:var(--sps-line);background:linear-gradient(145deg,#171b20,#090c10)}
 .stageBadge b,.signalGrid b,.op strong,.completionDial b{color:var(--sps-cyan);text-shadow:0 0 14px rgba(57,246,255,.25)}
 footer:before{content:"SMARTPICKSHOP HOLDINGS • IDEAS TODAY. EMPIRES TOMORROW.";display:block;color:var(--sps-brass);letter-spacing:.14em;margin-bottom:8px}
+
+/* deployment-sync: SmartPickShop branded Founder OS 2026-09-26 */
