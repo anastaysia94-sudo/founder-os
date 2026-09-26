@@ -77,9 +77,11 @@ async function delivery(req,env,u){
  const token=u.searchParams.get("token")||""; if(!token)return json({error:"missing_token"},400); const hash=await sha256(token);
  const row=await env.DB.prepare("SELECT offer_slug,expires_at,max_downloads,download_count FROM four_offer_download_tokens WHERE token_hash=?").bind(hash).first();
  if(!row)return json({error:"invalid_token"},404); if(Date.parse(row.expires_at)<=Date.now())return json({error:"expired_token"},410); if(row.download_count>=row.max_downloads)return json({error:"download_limit_reached"},410);
- const key="products/"+row.offer_slug+".zip"; const object=await env.PRODUCTS.get(key); if(!object)return json({error:"product_not_uploaded"},503);
+ const assetPath="/products/"+row.offer_slug+".zip";
+ const assetReq=new Request(new URL(assetPath,req.url),req);
+ const object=await env.ASSETS.fetch(assetReq); if(!object.ok)return json({error:"product_not_uploaded"},503);
  await env.DB.prepare("UPDATE four_offer_download_tokens SET download_count=download_count+1 WHERE token_hash=?").bind(hash).run();
- const h=new Headers(); object.writeHttpMetadata(h); h.set("content-disposition",'attachment; filename="'+row.offer_slug+'.zip"'); h.set("cache-control","private, no-store"); return new Response(object.body,{headers:h});
+ const h=new Headers(object.headers); h.set("content-disposition",'attachment; filename="'+row.offer_slug+'.zip"'); h.set("cache-control","private, no-store"); return new Response(object.body,{status:200,headers:h});
 }
 
 async function analytics(req,env){
