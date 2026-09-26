@@ -1,0 +1,11 @@
+{
+  "name":"smartpickshop-four-offer-netlify",
+  "private":true,
+  "type":"module",
+  "scripts":{
+    "build":"bash ../tools/build-products.sh && rm -rf dist && mkdir -p dist && cp -a ../public/. dist/ && cp -a ../public/products dist/products"
+  },
+  "dependencies":{
+    "@netlify/blobs":"latest"
+  }
+}
