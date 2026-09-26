@@ -2,8 +2,11 @@ FROM node:22-alpine AS build
 RUN apk add --no-cache git
 WORKDIR /app
 
-ARG TRENDLAB_COMMIT=8c859593e94c48307d3c972513bca98243cd9905
-RUN git clone --depth=1 --branch main https://github.com/anastaysia94-sudo/smartpickshop-trend-lab.git . \
+ARG TRENDLAB_COMMIT=06ac015fd39906813ac75d13ae1dd2a3971cfa2f
+RUN git init . \
+    && git remote add origin https://github.com/anastaysia94-sudo/smartpickshop-trend-lab.git \
+    && git fetch --depth=1 origin "$TRENDLAB_COMMIT" \
+    && git checkout --detach FETCH_HEAD \
     && test "$(git rev-parse HEAD)" = "$TRENDLAB_COMMIT" \
     && echo "TRENDLAB_COMMIT=$(git rev-parse HEAD)"
 
