@@ -489,3 +489,19 @@ footer { color: #77948c; text-align: center; padding-top: 28px; font: 12px ui-mo
   .areaTitle { display: block; }
   .areaTitle span { display: inline-block; margin-top: 8px; }
 }
+
+
+/* SmartPickShop Holdings • Steampunk Neon 2026 */
+:root{--sps-iron:#080b0f;--sps-coal:#11161c;--sps-brass:#c58a32;--sps-copper:#b65f35;--sps-cyan:#39f6ff;--sps-magenta:#ff3fd1;--sps-ivory:#f4ead7;--sps-line:rgba(197,138,50,.42)}
+body{color:var(--sps-ivory);background:radial-gradient(circle at 85% 0,rgba(57,246,255,.12),transparent 28%),radial-gradient(circle at 12% 12%,rgba(255,63,209,.08),transparent 24%),repeating-linear-gradient(90deg,rgba(197,138,50,.025) 0 1px,transparent 1px 46px),linear-gradient(180deg,var(--sps-iron),#0c1118 55%,#07090c)}
+a{color:var(--sps-cyan)}
+.eyebrow{color:var(--sps-brass)}
+button{box-shadow:0 0 0 1px rgba(197,138,50,.12)}
+
+.topbar{background:rgba(8,11,15,.92);border-bottom-color:var(--sps-line)}
+.hero h1 span{color:var(--sps-cyan);text-shadow:0 0 18px rgba(57,246,255,.28)}
+.focusCard,.panel,.signalGrid article,.stageIntelligence article,.commandSignals article,.dnaGrid article,.valueGrid article,.decisionGrid article,.miniCard,.areaCard{background:linear-gradient(145deg,rgba(24,29,34,.96),rgba(8,11,15,.94));border-color:var(--sps-line);box-shadow:inset 0 1px rgba(255,255,255,.035),0 14px 40px #0007}
+.focusCard button,.smallButton,.moduleLink,.authForm button,.evidenceForm button,.syncBar button,.reviewButtons button,.insideLink{background:linear-gradient(135deg,var(--sps-brass),#efbd5b);color:#160f07;border:1px solid #ffd477}
+.stageBadge{border-color:var(--sps-line);background:linear-gradient(145deg,#171b20,#090c10)}
+.stageBadge b,.signalGrid b,.op strong,.completionDial b{color:var(--sps-cyan);text-shadow:0 0 14px rgba(57,246,255,.25)}
+footer:before{content:"SMARTPICKSHOP HOLDINGS • IDEAS TODAY. EMPIRES TOMORROW.";display:block;color:var(--sps-brass);letter-spacing:.14em;margin-bottom:8px}
