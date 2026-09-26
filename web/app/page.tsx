@@ -151,6 +151,9 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [recovering, setRecovering] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [status, setStatus] = useState('Checking your workspace…');
   const [websiteUrl, setWebsiteUrl] = useState('');
   const [evidenceResult, setEvidenceResult] = useState<any>(null);
@@ -234,14 +237,16 @@ export default function Home() {
       }
     };
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       authEpoch += 1;
+      if (event === 'PASSWORD_RECOVERY') setRecovering(true);
       applySessionUser(session?.user || null, 'Signed out.');
     });
 
     const initialEpoch = authEpoch;
     void supabase.auth.getUser().then(({ data }) => {
       if (disposed || authEpoch !== initialEpoch) return;
+      if (data.user && new URLSearchParams(window.location.search).get('recovery') === '1') setRecovering(true);
       applySessionUser(data.user || null, 'Sign in to save this business across devices.');
     });
 
@@ -266,6 +271,53 @@ export default function Home() {
       if (authMode === 'signup' && !result.data.session) {
         setStatus('Account created. Check your email if confirmation is required.');
       }
+    } catch (error: any) {
+      setStatus(error.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function requestPasswordReset() {
+    if (!email.trim()) {
+      setStatus('Enter your account email first, then choose Send password reset email.');
+      return;
+    }
+    setBusy(true);
+    setStatus('Sending password reset email…');
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/?recovery=1`,
+      });
+      if (error) throw error;
+      setStatus('Password reset email sent. Open the recovery link, then set a new password here.');
+    } catch (error: any) {
+      setStatus(error.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function updateRecoveredPassword(event: React.FormEvent) {
+    event.preventDefault();
+    if (newPassword.length < 8) {
+      setStatus('Use at least 8 characters for the new password.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setStatus('The two new-password fields do not match.');
+      return;
+    }
+    setBusy(true);
+    setStatus('Updating password…');
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      setNewPassword('');
+      setConfirmPassword('');
+      setRecovering(false);
+      window.history.replaceState({}, '', window.location.pathname);
+      setStatus('Password updated. Your account is signed in.');
     } catch (error: any) {
       setStatus(error.message);
     } finally {
@@ -467,7 +519,21 @@ export default function Home() {
         </nav>
       </header>
 
-      {!user ? (
+      {recovering && user ? (
+        <section className="panel authPanel">
+          <div>
+            <p className="eyebrow">RECOVER YOUR PRIVATE WORKSPACE</p>
+            <h2>Set a new Founder Dynasty OS password.</h2>
+            <p className="plainIntro">The recovery link proved access to the account email. Choose a new password here, then the same account-owned business record remains attached to this user.</p>
+          </div>
+          <form className="authForm" onSubmit={updateRecoveredPassword}>
+            <label>New password<input type="password" required minLength={8} value={newPassword} onChange={(event) => setNewPassword(event.target.value)} /></label>
+            <label>Confirm new password<input type="password" required minLength={8} value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} /></label>
+            <button disabled={busy}>{busy ? 'Updating…' : 'Update password'}</button>
+            <p className="authStatus" role="status" aria-live="polite">{status}</p>
+          </form>
+        </section>
+      ) : !user ? (
         <section className="panel authPanel">
           <div>
             <p className="eyebrow">YOUR PRIVATE BUSINESS WORKSPACE</p>
@@ -477,12 +543,14 @@ export default function Home() {
             </p>
           </div>
           <form className="authForm" onSubmit={auth}>
-            <label>Email<input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} /></label>
-            <label>Password<input type="password" required minLength={6} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
-            <button disabled={busy}>{authMode === 'signin' ? 'Sign in' : 'Create account'}</button>
-            <button type="button" className="ghostButton" onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}>
+            <label>Email<input type="email" required autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
+            <label>Password<input type="password" required minLength={6} autoComplete={authMode === 'signin' ? 'current-password' : 'new-password'} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
+            <button disabled={busy}>{busy ? (authMode === 'signin' ? 'Signing in…' : 'Creating account…') : (authMode === 'signin' ? 'Sign in' : 'Create account')}</button>
+            {authMode === 'signin' && <button type="button" className="ghostButton" disabled={busy} onClick={() => void requestPasswordReset()}>Send password reset email</button>}
+            <button type="button" className="ghostButton" disabled={busy} onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}>
               {authMode === 'signin' ? 'Need an account? Create one' : 'Already have an account? Sign in'}
             </button>
+            <p className="authStatus" role="status" aria-live="polite">{status}</p>
           </form>
         </section>
       ) : (
