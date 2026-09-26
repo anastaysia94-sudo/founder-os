@@ -51,6 +51,37 @@ async function captureOrder(env,orderId,slug){
  return {offer,capture:cap,buyer};
 }
 
+
+function bytesToHex(buf){return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("")}
+async function hmacToken(secret,orderId,slug){
+ const key=await crypto.subtle.importKey("raw",new TextEncoder().encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
+ const sig=await crypto.subtle.sign("HMAC",key,new TextEncoder().encode("four-offer:"+orderId+":"+slug));
+ return btoa(String.fromCharCode(...new Uint8Array(sig))).replaceAll("+","-").replaceAll("/","_").replaceAll("=","");
+}
+async function sha256(value){return bytesToHex(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(value)))}
+async function issueDownload(env,orderId,slug){
+ const token=await hmacToken(env.DELIVERY_TOKEN_SECRET,orderId,slug),hash=await sha256(token),expires=new Date(Date.now()+7*86400000).toISOString();
+ await env.DB.prepare("INSERT OR IGNORE INTO four_offer_download_tokens(token_hash,offer_slug,payment_reference,expires_at,max_downloads,download_count) VALUES(?,?,?,?,3,0)").bind(hash,slug,orderId,expires).run();
+ await env.DB.prepare("UPDATE four_offer_payments SET delivery_token_hash=?,updated_at=CURRENT_TIMESTAMP WHERE paypal_order_id=?").bind(hash,orderId).run();
+ return token;
+}
+async function paypalReturn(env,u){
+ const slug=u.searchParams.get("offer")||"",orderId=u.searchParams.get("token")||"",offer=OFFERS[slug]; if(!offer||!orderId)return json({error:"invalid_return_parameters"},400);
+ let row=await env.DB.prepare("SELECT status,paypal_capture_id FROM four_offer_payments WHERE paypal_order_id=? AND offer_slug=?").bind(orderId,slug).first();
+ if(row?.status!=="COMPLETED")await captureOrder(env,orderId,slug);
+ if(offer.kind!=="digital")return new Response("<!doctype html><title>Payment verified</title><h1>Payment verified</h1><p>Your service order is recorded. Continue with the written intake by email.</p>",{headers:{"content-type":"text/html;charset=UTF-8"}});
+ const token=await issueDownload(env,orderId,slug);
+ return new Response("<!doctype html><title>Purchase complete</title><h1>Payment verified</h1><p>Your protected download is unlocked.</p><p><a href='/api/delivery?token="+encodeURIComponent(token)+"'>Download your file</a></p>",{headers:{"content-type":"text/html;charset=UTF-8"}});
+}
+async function delivery(req,env,u){
+ const token=u.searchParams.get("token")||""; if(!token)return json({error:"missing_token"},400); const hash=await sha256(token);
+ const row=await env.DB.prepare("SELECT offer_slug,expires_at,max_downloads,download_count FROM four_offer_download_tokens WHERE token_hash=?").bind(hash).first();
+ if(!row)return json({error:"invalid_token"},404); if(Date.parse(row.expires_at)<=Date.now())return json({error:"expired_token"},410); if(row.download_count>=row.max_downloads)return json({error:"download_limit_reached"},410);
+ const key="products/"+row.offer_slug+".zip"; const object=await env.PRODUCTS.get(key); if(!object)return json({error:"product_not_uploaded"},503);
+ await env.DB.prepare("UPDATE four_offer_download_tokens SET download_count=download_count+1 WHERE token_hash=?").bind(hash).run();
+ const h=new Headers(); object.writeHttpMetadata(h); h.set("content-disposition",'attachment; filename="'+row.offer_slug+'.zip"'); h.set("cache-control","private, no-store"); return new Response(object.body,{headers:h});
+}
+
 async function analytics(req,env){
  if(req.method==="GET"){
   const q=async(sql)=>Number((await env.DB.prepare(sql).first())?.n||0);
@@ -68,6 +99,8 @@ export default {async fetch(req,env){
  if(u.pathname==="/config.js")return new Response(config(env),{headers:{"content-type":"application/javascript;charset=UTF-8","cache-control":"no-store"}});
  if(u.pathname==="/api/analytics")return analytics(req,env);
  if(u.pathname==="/api/paypal/create-order")return createOrder(req,env);
- if(u.pathname==="/api/delivery")return json({error:"delivery_migration_pending"},503);
+ if(u.pathname==="/api/delivery")return delivery(req,env,u);
+ if(u.pathname==="/paypal/return")return paypalReturn(env,u);
+ if(u.pathname==="/paypal/cancel")return new Response("<!doctype html><title>Checkout cancelled</title><h1>Checkout cancelled</h1><p>No payment was captured.</p>",{headers:{"content-type":"text/html;charset=UTF-8"}});
  return env.ASSETS.fetch(req);
 }};
