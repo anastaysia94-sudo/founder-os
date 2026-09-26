@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 const baseURL = process.env.FDOS_E2E_BASE_URL || 'https://founder-dynasty-os-web-production.up.railway.app';
 const requestedState = process.env.FDOS_E2E_STORAGE_STATE || resolve(__dirname, 'playwright/.auth/user.json');
 const storageState = existsSync(requestedState) ? requestedState : undefined;
+const executablePath = process.env.FDOS_E2E_EXECUTABLE_PATH || undefined;
 
 export default defineConfig({
   testDir: './e2e',
@@ -17,6 +18,7 @@ export default defineConfig({
   use: {
     baseURL,
     storageState,
+    launchOptions: executablePath ? { executablePath } : undefined,
     trace: 'on',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
