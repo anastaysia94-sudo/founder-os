@@ -4,10 +4,11 @@ import { resolve, dirname } from 'node:path';
 
 const baseURL = process.env.FDOS_E2E_BASE_URL || 'https://founder-dynasty-os-web-production.up.railway.app';
 const statePath = process.env.FDOS_E2E_STORAGE_STATE || resolve('playwright/.auth/user.json');
+const executablePath = process.env.FDOS_E2E_EXECUTABLE_PATH || undefined;
 
 await mkdir(dirname(statePath), { recursive: true });
 
-const browser = await chromium.launch({ headless: false });
+const browser = await chromium.launch({ headless: false, ...(executablePath ? { executablePath } : {}) });
 const context = await browser.newContext();
 const page = await context.newPage();
 
