@@ -8,7 +8,8 @@
     "start": "next start",
     "e2e:install": "playwright install chromium",
     "e2e:auth": "node scripts/capture-playwright-auth.mjs",
-    "e2e:business-isolation": "playwright test e2e/business-isolation.spec.ts"
+    "e2e:business-isolation": "playwright test e2e/business-isolation.spec.ts",
+    "typecheck:e2e": "tsc -p tsconfig.e2e.json --noEmit"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.116.0",
