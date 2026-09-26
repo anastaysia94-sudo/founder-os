@@ -17,7 +17,7 @@ const ORIGIN_PATTERNS = [
 ];
 
 function originAllowed(origin: string | null) {
-  return !origin || ORIGIN_PATTERNS.some((re) => re.test(origin));
+  return !origin || origin === 'https://nqcshihyfhthywpseilx.supabase.co' || ORIGIN_PATTERNS.some((re) => re.test(origin));
 }
 
 function cors(origin: string | null) {
@@ -44,7 +44,10 @@ function json(body: unknown, status: number, origin: string | null) {
 }
 
 function adminHeaders(extra: Record<string, string> = {}) {
-  const headers: Record<string, string> = { apikey: SECRET_KEY, ...extra };
+  const headers: Record<string, string> = {
+    apikey: SECRET_KEY,
+    ...extra,
+  };
   if (USING_LEGACY) headers.Authorization = `Bearer ${SECRET_KEY}`;
   return headers;
 }
@@ -156,7 +159,7 @@ Deno.serve(async (req: Request) => {
         ...cors(origin),
         "Content-Type": file.mime_type || "application/octet-stream",
         "Content-Length": String(bytes.byteLength),
-        "Content-Disposition": `attachment; filename="${safeFilename(file.filename)}"`,
+        "Content-Disposition": `attachment; filename=\"${safeFilename(file.filename)}\"`,
         "Cache-Control": "private, no-store, max-age=0",
         "Pragma": "no-cache",
         "X-Content-Type-Options": "nosniff",
