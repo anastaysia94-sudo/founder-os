@@ -102,6 +102,7 @@ export default {async fetch(req,env){
  if(u.pathname==="/api/analytics")return analytics(req,env);
  if(u.pathname==="/api/paypal/create-order")return createOrder(req,env);
  if(u.pathname==="/api/delivery")return delivery(req,env,u);
+ if(u.pathname.startsWith("/products/"))return json({error:"not_found"},404);
  if(u.pathname==="/paypal/return")return paypalReturn(env,u);
  if(u.pathname==="/paypal/cancel")return new Response("<!doctype html><title>Checkout cancelled</title><h1>Checkout cancelled</h1><p>No payment was captured.</p>",{headers:{"content-type":"text/html;charset=UTF-8"}});
  return env.ASSETS.fetch(req);
