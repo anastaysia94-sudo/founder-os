@@ -12,3 +12,5 @@ Railway Free plan currently blocks provisioning an additional service. The legac
 
 Rollback:
 Change the Railway service root back to `/fdos-production-v8` and Dockerfile to `Dockerfile`, then redeploy the recorded V8 revision if needed.
+
+Railway host slot activated: 2026-09-25. Canonical Trend Lab remains the separate repository above.
