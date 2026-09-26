@@ -312,6 +312,7 @@ input:focus, textarea:focus, select:focus { border-color: #70e8c0; box-shadow: 0
 .authPanel { display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px; margin-top: 14px; }
 .authForm { display: grid; gap: 10px; }
 .authForm .ghostButton { background: transparent; color: #8ff4d1; border: 1px solid #285046; }
+.authStatus { margin: 2px 0 0; min-height: 1.5em; color: #d8e7e1; line-height: 1.45; }
 .syncBar {
   align-items: center;
   border: 1px solid #24473f;
