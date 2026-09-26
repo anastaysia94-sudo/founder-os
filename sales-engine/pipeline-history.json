@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-18",
+  "updated": "2026-09-25",
   "rule": "Only record real outreach, replies, quotes, payments, fulfillment, opt-outs, or other observed pipeline events. Prospect refreshes must not fabricate or advance these fields. offerValue is the standard package price, not booked revenue.",
   "records": {
     "Leader Restoration": {
@@ -586,6 +586,117 @@
       "nextAction": "Do not count as successfully contacted. Official site still publishes info@svchimneysweep.com, but Gmail returned a hard bounce. Reverify or use the official website inquiry route; do not resend to the bounced address.",
       "deliveryFailure": "2026-09-18T16:26:35-07:00",
       "deliveryFailureEvidence": "Gmail DSN message 1a0b6d7e0fd1a1d7; 550 5.1 address not found/unable to receive mail."
+    },
+    "JH Construction": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-25T05:28:57-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0d88a4fad08ed7",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "fu1Due": "2026-09-29",
+      "nextAction": "Wait for an actual reply. Check delivery failures and opt-outs before a single respectful follow-up on or after 2026-09-29."
+    },
+    "Valdivia Roofing": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-25T05:28:58-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0d88a4f2e3d368",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "fu1Due": "2026-09-29",
+      "nextAction": "Wait for an actual reply. Check delivery failures and opt-outs before a single respectful follow-up on or after 2026-09-29."
+    },
+    "Alderstone Remodeling & Exteriors": {
+      "stage": "Delivery Failed",
+      "firstTouch": "2026-09-25T05:28:58-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0d88a53a1c7431",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "deliveryFailure": "2026-09-25T05:29:00-07:00",
+      "deliveryFailureEvidence": "Gmail delivery failure 1a0d88a591a977c5: 554 5.7.1 Relay access denied (remote server misconfigured)",
+      "nextAction": "Do not resend to the bounced address. Find a verified alternative contact route; initial email did not deliver."
+    },
+    "Visionable Landscaping": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-25T05:28:59-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0d88a55fbcdab6",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "fu1Due": "2026-09-29",
+      "nextAction": "Wait for an actual reply. Check delivery failures and opt-outs before a single respectful follow-up on or after 2026-09-29."
+    },
+    "Seal Home Remodeling": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-25T05:28:59-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0d88a575f61927",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "fu1Due": "2026-09-29",
+      "nextAction": "Wait for an actual reply. Check delivery failures and opt-outs before a single respectful follow-up on or after 2026-09-29."
+    },
+    "ProMan California": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-25T05:29:00-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0d88a58e14836f",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "fu1Due": "2026-09-29",
+      "nextAction": "Wait for an actual reply. Check delivery failures and opt-outs before a single respectful follow-up on or after 2026-09-29."
+    },
+    "Green Hard Landscape Construction": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-25T05:29:01-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0d88a5c75c4bb9",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "fu1Due": "2026-09-29",
+      "nextAction": "Wait for an actual reply. Check delivery failures and opt-outs before a single respectful follow-up on or after 2026-09-29."
+    },
+    "Bay Stone Depot": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-25T05:29:02-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0d88a5f653c17b",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "fu1Due": "2026-09-29",
+      "nextAction": "Wait for an actual reply. Check delivery failures and opt-outs before a single respectful follow-up on or after 2026-09-29."
+    },
+    "Home Pro NW": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-25T05:29:02-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0d88a617a05989",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "fu1Due": "2026-09-29",
+      "nextAction": "Wait for an actual reply. Check delivery failures and opt-outs before a single respectful follow-up on or after 2026-09-29."
+    },
+    "Silicon Prime Painting Inc": {
+      "stage": "Contacted",
+      "firstTouch": "2026-09-25T05:29:03-07:00",
+      "firstTouchChannel": "email",
+      "firstTouchEvidence": "Gmail sent message 1a0d88a63f26b6c8",
+      "quoted": 0,
+      "offerValue": 150,
+      "paid": 0,
+      "fu1Due": "2026-09-29",
+      "nextAction": "Wait for an actual reply. Check delivery failures and opt-outs before a single respectful follow-up on or after 2026-09-29."
     }
   }
 }
