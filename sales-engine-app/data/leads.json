@@ -7,7 +7,8 @@
     "freshLeadCount": 10,
     "freshQueueRule": "Prioritize recently verified higher-ticket service businesses with direct contact paths and no fabricated pipeline activity; never infer outreach, replies, quotes, payments, customers, fulfillment, or revenue from lead refreshes.",
     "workbookSyncRequested": "2026-09-25T05:15:00-07:00",
-    "workbookSyncMethod": "GitHub Actions preserves existing workbook and rebuilds Fresh Leads/Pipeline History from canonical JSON sources."
+    "workbookSyncMethod": "GitHub Actions preserves existing workbook and rebuilds Fresh Leads/Pipeline History from canonical JSON sources.",
+    "pipelineSyncEvidence": "Gmail SENT message IDs verified; Alderstone delivery failed and excluded from contacted count."
   },
   "leads": [
     {
@@ -24,7 +25,7 @@
       "initial": "Hi — I reviewed JH Construction’s current Bay Area estimate flow and noticed you already offer free no-obligation estimates with a stated 24-hour response. I’d turn that into a project-readiness campaign that helps homeowners organize project type, scope, timeline, budget questions and permit concerns before the estimate. Same-Day Customer Growth Pack: $150 flat. Want two JH-specific examples first?",
       "source": "https://jhremodel.com/contact",
       "verified": "2026-09-25",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 2,
@@ -40,7 +41,7 @@
       "initial": "Hi — I reviewed Valdivia Roofing’s current Bay Area estimate flow and noticed you already offer free estimates, 24/7 emergency service and fast same-day callbacks. I’d turn that into a repair-versus-replacement readiness campaign that helps homeowners organize leak symptoms, roof age, urgency and inspection questions before the callback. Same-Day Customer Growth Pack: $150 flat. Want two Valdivia-specific examples first?",
       "source": "https://valdiviaroofing.com/services",
       "verified": "2026-09-25",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 3,
@@ -56,7 +57,7 @@
       "initial": "Hi — I reviewed Alderstone Remodeling & Exteriors’ current consultation flow and noticed you already offer free in-home consultations and usually respond the same business day. I’d turn that into a project-scoping campaign that helps homeowners organize interior versus exterior priorities, existing conditions, desired improvements and timeline before the visit. Same-Day Customer Growth Pack: $150 flat. Want two Alderstone-specific examples first?",
       "source": "https://alderstoneremodel.com/contact",
       "verified": "2026-09-25",
-      "status": "Contact Ready"
+      "status": "Delivery Failed"
     },
     {
       "rank": 4,
@@ -72,7 +73,7 @@
       "initial": "Hi — I reviewed Visionable Landscaping’s current Fremont consultation flow and noticed you already offer free consultations with 3D renderings and a stated 24-hour response. I’d turn that into a backyard-project preparation campaign that helps homeowners organize use cases, budget range, photos, desired features and priorities before the design visit. Same-Day Customer Growth Pack: $150 flat. Want two Visionable-specific examples first?",
       "source": "https://visionablelandscaping.com/contact",
       "verified": "2026-09-25",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 5,
@@ -88,7 +89,7 @@
       "initial": "Hi — I reviewed Seal Home Remodeling’s current Bay Area consultation flow and noticed you already offer free consultations and estimates with a stated 24-hour response. I’d turn that into a remodel decision-preparation campaign that helps homeowners organize room priorities, desired finishes, addition needs, timeline and proposal questions before consultation. Same-Day Customer Growth Pack: $150 flat. Want two Seal-specific examples first?",
       "source": "https://sealhomeremodeling.com/",
       "verified": "2026-09-25",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 6,
@@ -104,7 +105,7 @@
       "initial": "Hi — I reviewed ProMan California’s current booking flow and noticed you already offer free in-home estimates, callback-in-minutes positioning and a broad construction and home-services menu. I’d turn that into a service-routing campaign that helps prospects identify project category, urgency, property details and estimate needs before booking. Same-Day Customer Growth Pack: $150 flat. Want two ProMan-specific examples first?",
       "source": "https://promansiding.com/contact",
       "verified": "2026-09-25",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 7,
@@ -120,7 +121,7 @@
       "initial": "Hi — I reviewed Green Hard Landscape Construction’s current Bay Area estimate flow and noticed you already offer free on-site walkthroughs and a stated 24-hour response. I’d turn that into an outdoor-project preparation campaign that helps prospects organize service type, preferred timeline, property conditions, desired features and priorities before the visit. Same-Day Customer Growth Pack: $150 flat. Want two Green Hard-specific examples first?",
       "source": "https://www.greenhardconstruction.com/",
       "verified": "2026-09-25",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 8,
@@ -136,7 +137,7 @@
       "initial": "Hi — I reviewed Bay Stone Depot’s current San Jose quote flow and noticed you already offer free consultations and personalized quotes within 24 hours. I’d turn that into a premium-surface selection campaign that helps prospects organize project type, approximate budget, material preferences and measurements before consultation. Same-Day Customer Growth Pack: $150 flat. Want two Bay Stone-specific examples first?",
       "source": "https://baystonedepot.com/contact",
       "verified": "2026-09-25",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 9,
@@ -152,7 +153,7 @@
       "initial": "Hi — I reviewed Home Pro NW’s current consultation flow and noticed you already focus on projects starting at $50,000, offer complimentary consultations and respond within 24 hours. I’d turn that into a high-ticket project-readiness campaign that helps prospects organize plans, inspiration, project type, budget and timeline before the call. Same-Day Customer Growth Pack: $150 flat. Want two Home Pro NW-specific examples first?",
       "source": "https://homepronw.com/",
       "verified": "2026-09-25",
-      "status": "Contact Ready"
+      "status": "Contacted"
     },
     {
       "rank": 10,
@@ -168,7 +169,7 @@
       "initial": "Hi — I reviewed Silicon Prime Painting’s current Bay Area estimate flow and noticed you already offer free written estimates across residential, commercial, cabinet and drywall work. I’d turn that into a painting-project selector that helps prospects organize surface type, rooms or exterior areas, repair needs, color decisions and scheduling requirements before quoting. Same-Day Customer Growth Pack: $150 flat. Want two Silicon Prime-specific examples first?",
       "source": "https://siliconprimepaintinginc.com/",
       "verified": "2026-09-25",
-      "status": "Contact Ready"
+      "status": "Contacted"
     }
   ]
 }
