@@ -47,7 +47,7 @@ const markers = {
   },
 } as const;
 
-type MarkerSet = typeof markers.A;
+type MarkerSet = { [K in keyof typeof markers.A]: string };
 
 async function waitForCloud(page: Page) {
   await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible({ timeout: 30_000 });
