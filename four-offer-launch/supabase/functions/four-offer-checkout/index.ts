@@ -72,6 +72,78 @@ async function paypalToken(cfg: Config) {
   oauthCache = { value: data.access_token, expires: Date.now() + Number(data.expires_in || 300) * 1000 };
   return oauthCache.value;
 }
+
+async function readinessState() {
+  const checks = {
+    checkout_config: false,
+    paypal_api: false,
+    delivery_assets: false,
+  };
+
+  let cfg: Config;
+  try {
+    cfg = await getConfig();
+    checks.checkout_config = true;
+  } catch {
+    return {
+      status: 503,
+      body: { ready: false, paypal_environment: null, checks, issue: 'checkout_config_unavailable' },
+    };
+  }
+
+  try {
+    await paypalToken(cfg);
+    checks.paypal_api = true;
+  } catch {
+    return {
+      status: 503,
+      body: { ready: false, paypal_environment: cfg.paypal_env, checks, issue: 'paypal_api_unavailable' },
+    };
+  }
+
+  try {
+    const assets = await sql<{ offer_slug: string; active: boolean; size_bytes: number; stored_size: number }[]>`
+      select offer_slug, active, size_bytes, octet_length(file_bytes)::int as stored_size
+      from public.four_offer_downloads
+      where offer_slug in ('remote-career-diy','ai-project-handoff','lnc-expanded')
+    `;
+    const required = new Set(['remote-career-diy', 'ai-project-handoff', 'lnc-expanded']);
+    for (const asset of assets) {
+      if (asset.active && Number(asset.size_bytes) > 0 && Number(asset.stored_size) === Number(asset.size_bytes)) {
+        required.delete(asset.offer_slug);
+      }
+    }
+    checks.delivery_assets = required.size === 0;
+    if (!checks.delivery_assets) {
+      return {
+        status: 503,
+        body: {
+          ready: false,
+          paypal_environment: cfg.paypal_env,
+          checks,
+          issue: 'delivery_assets_unavailable',
+          missing_delivery_assets: [...required].sort(),
+        },
+      };
+    }
+  } catch {
+    return {
+      status: 503,
+      body: { ready: false, paypal_environment: cfg.paypal_env, checks, issue: 'delivery_assets_check_failed' },
+    };
+  }
+
+  return {
+    status: 200,
+    body: {
+      ready: true,
+      paypal_environment: cfg.paypal_env,
+      checks,
+      required_digital_offers: 3,
+    },
+  };
+}
+
 async function paypalRequest(cfg: Config, endpoint: string, init: RequestInit) {
   const token = await paypalToken(cfg);
   const r = await fetch(`${apiBase(cfg)}${endpoint}`, { ...init, headers: { Authorization: `Bearer ${token}`, Accept: 'application/json', 'Content-Type': 'application/json', ...(init.headers || {}) } });
@@ -156,6 +228,11 @@ Deno.serve(async (req: Request) => {
     if (action === 'health') {
       const cfg = await getConfig();
       return json({ ok: true, paypal_environment: cfg.paypal_env, configured: true }, 200, origin);
+    }
+    if (action === 'ready') {
+      if (req.method !== 'GET') return json({ error: 'method_not_allowed' }, 405, origin);
+      const state = await readinessState();
+      return json(state.body, state.status, origin);
     }
     if (action === 'create-order') {
       if (req.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, origin);
