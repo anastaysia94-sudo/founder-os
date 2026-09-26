@@ -4,6 +4,5 @@
   "main": "src/worker.js",
   "compatibility_date": "2026-09-26",
   "assets": { "directory": "../public", "binding": "ASSETS" },
-  "d1_databases": [{ "binding": "DB", "database_name": "smartpickshop-four-offer" }],
-  "r2_buckets": [{ "binding": "PRODUCTS", "bucket_name": "smartpickshop-four-offer-products" }]
+  "d1_databases": [{ "binding": "DB", "database_name": "smartpickshop-four-offer" }]
 }
