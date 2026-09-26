@@ -290,6 +290,38 @@ Railway reached **SUCCESS**, and the Next.js 16.3.4 container reached **Ready**.
 
 ---
 
+## Evidence Loop 007 — Free Playwright Business A/B Acceptance Harness
+
+Merged harness revision:
+
+`bb7932b48271b2a86adac2f5177e1e7a6bf73f4a`
+
+The production acceptance harness lives at:
+
+- `web/e2e/business-isolation.spec.ts`
+- `web/playwright.config.ts`
+- `web/scripts/capture-playwright-auth.mjs`
+
+It is designed to run from an authorized local desktop without a paid TinyFish browser session.
+
+The harness creates clearly labeled **technical acceptance workspaces**, not commercial evidence, and exercises:
+
+`Business A populate → create B → arm /acceptance switch proof → unsaved A draft → A→B hard switch → zero-leak assertions → populate B → B→A → A-only assertions → A→B → B-only assertions → reload/deep-route persistence → final /acceptance PASS checkpoint`
+
+The record markers span the major business-scoped surfaces: Business DNA, Value, Opportunity, Risk, Decision, Memory, Value Sprint, Finance, Offer, Operations, Business Model, Customer Intelligence, Distribution, Asset, Founder Attention, Scenario and Portfolio/Dynasty.
+
+CI status:
+- pre-merge PR #19 standalone web: **SUCCESS** after correcting the marker-set typing defect;
+- pre-merge PHP lint: **SUCCESS**;
+- post-merge `main` standalone web: **SUCCESS**;
+- post-merge PHP lint: **SUCCESS**.
+
+The standalone workflow now typechecks production application code and the Playwright harness separately so browser-test dependencies do not become a hidden production-build requirement.
+
+**Truth boundary:** browser execution remains WAITING until the harness runs from a genuine authenticated production session. No PASS is inferred from source code or CI.
+
+---
+
 ## Current verification state
 
 ### SOURCE COMPLETE — current planned technical scope
