@@ -1,0 +1,2 @@
+Four-Offer Railway deployment refresh requested 2026-09-25 PT.
+Purpose: force the existing watched-path Railway service to rebuild from current main without changing any other service.
