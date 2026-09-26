@@ -2,10 +2,13 @@ name: Deploy Sales Engine + WASTEBounty to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, migration-cloudflare-free]
     paths:
       - 'sales-engine-app/**'
       - 'wastebounty-site/**'
+      - 'four-offer-launch/public/**'
+      - 'four-offer-launch/product-src/**'
+      - 'four-offer-launch/tools/build-products.sh'
       - '.github/workflows/deploy-sales-engine-pages.yml'
   workflow_dispatch:
 
@@ -63,6 +66,27 @@ jobs:
           cp -a sales-engine-app/. _site/
           mkdir -p _site/wastebounty
           cp -a wastebounty-site/public/. _site/wastebounty/
+
+          # Four-Offer safe preview: static storefront only; checkout intentionally disabled.
+          mkdir -p _site/four-offer-preview
+          cp -a four-offer-launch/public/. _site/four-offer-preview/
+          cat > _site/four-offer-preview/config.js <<'EOF'
+          window.FOUR_OFFER_CONFIG={sellerEmail:'',analyticsUrl:'./analytics-disabled.json',deliveryUrl:'',paypalApiReady:false,paypalEnvironment:'disabled',paypalLinks:{}};
+          EOF
+          cat > _site/four-offer-preview/analytics-disabled.json <<'EOF'
+          {"visitors":0,"page_views":0,"page_views_last_2h":0,"checkout_clicks":0,"intake_clicks":0}
+          EOF
+          cat > _site/four-offer-preview/preview-guard.js <<'EOF'
+          document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.buy').forEach(btn=>{const clone=btn.cloneNode(true);clone.textContent='Preview only — checkout disabled';clone.removeAttribute('href');clone.classList.add('disabled');clone.classList.remove('primary');btn.replaceWith(clone);});});
+          EOF
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('_site/four-offer-preview/index.html')
+          s=p.read_text()
+          s=s.replace('src="/config.js"','src="./config.js"')
+          s=s.replace('</body>','<script src="./preview-guard.js"></script></body>')
+          p.write_text(s)
+          PY
 
       - name: Upload combined Pages site
         if: steps.pages.outputs.enabled == 'true'
