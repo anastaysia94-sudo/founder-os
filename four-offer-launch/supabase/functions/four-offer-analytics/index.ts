@@ -19,7 +19,7 @@ const ORIGIN_PATTERNS = [
 ];
 
 function allowedOrigin(origin: string | null) {
-  return !origin || ORIGIN_PATTERNS.some((re) => re.test(origin));
+  return !origin || origin === 'https://nqcshihyfhthywpseilx.supabase.co' || ORIGIN_PATTERNS.some((re) => re.test(origin));
 }
 
 function cors(origin: string | null) {
