@@ -8,12 +8,18 @@ on:
       - 'web/**'
       - 'db/migrations/**'
       - '.github/workflows/standalone-web.yml'
+      - 'PRODUCT-VISION.md'
+      - 'README.md'
+      - 'scripts/check-product-ideology.mjs'
   pull_request:
     branches: [main]
     paths:
       - 'web/**'
       - 'db/migrations/**'
       - '.github/workflows/standalone-web.yml'
+      - 'PRODUCT-VISION.md'
+      - 'README.md'
+      - 'scripts/check-product-ideology.mjs'
 
 permissions:
   contents: read
@@ -45,6 +51,9 @@ jobs:
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-public-placeholder-key
           FDOS_DEPLOY_REV: ci-${{ github.sha }}
         run: npm run build
+      - name: Guard Founder Dynasty OS product ideology
+        working-directory: .
+        run: node scripts/check-product-ideology.mjs
       - name: Verify implemented standalone and production-testability contract
         working-directory: .
         run: |
