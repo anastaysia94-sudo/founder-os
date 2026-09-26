@@ -147,6 +147,11 @@ jobs:
           test -f PLAIN-ENGLISH-GLOSSARY.md
           test -f web/app/acceptance/page.tsx
           test -f web/app/acceptance/account-isolation/page.tsx
+          test -f web/e2e/business-isolation.spec.ts
+          test -f web/playwright.config.ts
+          test -f web/scripts/capture-playwright-auth.mjs
+          grep -q 'UNSAVED_A_ISOLATION_CHECK_DO_NOT_SAVE' web/e2e/business-isolation.spec.ts
+          grep -q 'fdos.acceptance.business-switch.v1' web/e2e/business-isolation.spec.ts
           grep -q 'Second-account isolation proof' web/app/acceptance/account-isolation/page.tsx
           grep -q 'Temporary source IDs were redacted' web/app/acceptance/account-isolation/page.tsx
           test -f web/app/acceptance/layout.tsx
