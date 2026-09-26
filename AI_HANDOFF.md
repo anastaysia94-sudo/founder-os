@@ -1,6 +1,6 @@
 # AI Handoff — Founder Dynasty OS
 
-Updated: 2026-09-25
+Updated: 2026-09-25 23:12 America/Los_Angeles
 
 ## Identity
 
@@ -31,4 +31,4 @@ Business operating system plus the current Four-Offer Launch source path.
 
 ## Smallest next execution block
 
-Verify one business assessment → decision → saved action workflow, then the current Four-Offer end-to-end purchase/delivery proof.
+Verify the current Supabase Four-Offer purchase/delivery path, then complete Founder OS genuine-user acceptance for auth/recovery, Business A/B isolation, persistence/restore, and mobile.
