@@ -18,4 +18,8 @@ jobs:
           node-version: 22
       - run: npm install
       - run: node --check src/worker.js
+      - run: bash ../tools/build-products.sh
+      - run: test -s ../public/products/remote-career-diy.zip
+      - run: test -s ../public/products/ai-project-handoff.zip
+      - run: test -s ../public/products/lnc-expanded.zip
       - run: npx wrangler deploy --dry-run --config wrangler.jsonc
