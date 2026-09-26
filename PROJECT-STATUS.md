@@ -249,19 +249,23 @@ Current planned technical surface includes:
 - auth/account and business-switch private-state boundaries;
 - Sales OS correctly nested under Customers & Growth.
 
-### PRODUCTION USER VERIFIED — NOT YET COMPLETE
-Still requires genuine human/browser evidence:
-- sign in on the exact deployed revision;
-- create/load the first real Business Record through the UI;
+### PRODUCTION USER VERIFIED — PARTIALLY COMPLETE
+Live 2026-09-26 production evidence now proves:
+- production signup, email confirmation, and password sign-in complete successfully;
+- a genuine authenticated QA account can read/write the production FDOS graph;
+- Business A Business DNA and core records persist after later reads/reloads;
+- Value, Opportunity, Risk, Decision, Memory, Value Sprint, Finance, Offer, Initiative, Business Model, and Customer Intelligence writes have been observed in production.
+
+Still requires genuine browser evidence:
 - create a second intentional Business Record through `/portfolio`;
-- **run the new `/acceptance` Business A → Business B switch proof**;
+- create a second intentional Business Record through `/portfolio`;
+- **run the `/acceptance` Business A → Business B switch proof with the genuine QA account**;
 - verify no persisted/unsaved state bleed while switching;
-- edit/save Business DNA and run `/acceptance/restore` through sign-out + fresh sign-in;
-- use Value / Decision / Risk / Opportunity / Memory UI flows;
+- run `/acceptance/restore` through a genuine sign-out + fresh sign-in boundary;
+- complete browser Evidence capture → approve → reject;
 - Idea Lab write-back;
 - run a real Value Sprint through observable result → KEEP / REVISE / REVERT;
 - Workbench + Strategy/Dynasty writes;
-- browser website Evidence capture → approve → reject;
 - run `/acceptance/account-isolation` with a second genuine account and record a real zero-visibility PASS;
 - Android/mobile visual and interaction pass;
 - desktop visual and interaction pass.
@@ -300,3 +304,12 @@ Sequence:
 ## Product guardrail
 
 Every future module must connect to a Business Record, Evidence, measurable outcome, Decision, Risk, Asset, Value Sprint, Business Memory, or an explainable cross-business relationship. Cross-business intelligence may compare businesses, but it may not erase the boundary between them.
+
+
+## 2026-09-26 live auth / acceptance correction
+
+The earlier report that production signup was stuck on “Creating account…” was a QA-harness false negative. Live Supabase logs show signup HTTP 200, confirmation verification, password-token sign-in HTTP 200, and later authenticated user requests HTTP 200. The confirmed QA user then created/updated a real production Business Record and persisted cross-module technical acceptance markers.
+
+Detailed evidence: `docs/PRODUCTION-AUTH-AND-ACCEPTANCE-CHECKPOINT-2026-09-26.md`.
+
+Do not re-open authentication architecture without new failing production evidence. The remaining gate is browser acceptance for Business A/B switching, sign-out/restore, and full desktop/mobile interaction evidence.
