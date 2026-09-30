@@ -21,14 +21,21 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Verify preinstalled Android SDK
+      - name: Provision Android API 36 from preinstalled SDK
         shell: bash
         run: |
+          set -euo pipefail
           echo "ANDROID_HOME=$ANDROID_HOME"
-          command -v sdkmanager
-          sdkmanager --version
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -perm -111 | sort -V | tail -n 1)"
+          fi
+          test -n "$SDKMANAGER"
+          test -x "$SDKMANAGER"
+          echo "SDKMANAGER=$SDKMANAGER"
+          "$SDKMANAGER" --version
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
       - name: Set up Gradle 9.6.0
         uses: gradle/actions/setup-gradle@v4
@@ -38,6 +45,7 @@ jobs:
       - name: Decode DoubleTap RC2 source
         shell: bash
         run: |
+          set -euo pipefail
           rm -rf /tmp/doubletap-rc2
           mkdir -p /tmp/doubletap-rc2
           base64 -d .ci-doubletap/DoubleTap-Rewards-1.0-RC2-source.zip.b64.txt > /tmp/doubletap-rc2/source.zip
@@ -55,6 +63,7 @@ jobs:
       - name: Stage build outputs
         shell: bash
         run: |
+          set -euo pipefail
           mkdir -p .ci-doubletap/out
           cp /tmp/doubletap-rc2/doubletap-rewards/app/build/outputs/apk/debug/app-debug.apk .ci-doubletap/out/DoubleTap-Rewards-1.0-RC2-debug.apk
           cp /tmp/doubletap-rc2/doubletap-rewards/app/build/outputs/bundle/release/app-release.aab .ci-doubletap/out/DoubleTap-Rewards-1.0-RC2-release-unsigned.aab
