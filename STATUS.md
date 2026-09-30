@@ -49,3 +49,10 @@ Verify the actual live deployment topology first, then readiness, embedded Trend
 ### Current truth boundary
 Deployments, source matches, readiness, and sandbox-order creation are verified. No new real customer revenue is claimed. The remaining transaction gate is sandbox-only and the remaining Founder gates require genuine authenticated browser interaction.
 
+### 2026-09-30 exact remaining human/security gates
+- Fresh sandbox order `00965671D6122732R` was rechecked in production: status remains `CREATED`; capture ID, buyer email, delivery-token hash and completion timestamp are still absent. This confirms buyer approval has not occurred.
+- Founder Browser Acceptance workflow `36772352555` stopped at the credential-presence guard before launching Chromium because repository secrets `FDOS_E2E_EMAIL` and `FDOS_E2E_PASSWORD` are absent.
+- Opera Browser Connector is not connected.
+- Authorized Windows endpoint `DESKTOP-GIN0LBB` is currently offline.
+- Therefore Business A↔B, sign-out→sign-in restore and mobile/desktop browser acceptance remain genuine human/session gates, not application-code failures.
+
