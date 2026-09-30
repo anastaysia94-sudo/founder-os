@@ -1,4 +1,4 @@
-name: DoubleTap RC3 Android CI
+name: DoubleTap RC4 Android CI
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Provision Android API 36 from preinstalled SDK
+      - name: Provision Android API 37 from preinstalled SDK
         shell: bash
         run: |
           set -euo pipefail
@@ -33,29 +33,29 @@ jobs:
           test -x "$SDKMANAGER"
           "$SDKMANAGER" --version
           yes | "$SDKMANAGER" --licenses >/dev/null || true
-          "$SDKMANAGER" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+          "$SDKMANAGER" "platform-tools" "platforms;android-37" "build-tools;36.0.0"
 
       - name: Set up Gradle 9.6.0
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "9.6.0"
 
-      - name: Decode DoubleTap RC3 source
+      - name: Decode DoubleTap RC4 source
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf /tmp/doubletap-rc3
-          mkdir -p /tmp/doubletap-rc3
-          base64 -d .ci-doubletap/DoubleTap-Rewards-1.0-RC3-source.zip.b64.txt > /tmp/doubletap-rc3/source.zip
-          echo "5ace526e76f3d56a4c31a7578c949ee18a910d9187ea9b633dc09694cc2d6d5b  /tmp/doubletap-rc3/source.zip" | sha256sum -c -
-          unzip -q /tmp/doubletap-rc3/source.zip -d /tmp/doubletap-rc3
+          rm -rf /tmp/doubletap-rc4
+          mkdir -p /tmp/doubletap-rc4
+          base64 -d .ci-doubletap/DoubleTap-Rewards-1.0-RC4-source.zip.b64.txt > /tmp/doubletap-rc4/source.zip
+          echo "a1462e17c177eb933124223861173964af34613194e59a111da17df0df29e8e9  /tmp/doubletap-rc4/source.zip" | sha256sum -c -
+          unzip -q /tmp/doubletap-rc4/source.zip -d /tmp/doubletap-rc4
 
       - name: Static release checks
-        working-directory: /tmp/doubletap-rc3/doubletap-rewards
+        working-directory: /tmp/doubletap-rc4/doubletap-rewards
         run: python3 scripts/static_release_checks.py
 
       - name: Lint, test, APK and AAB
-        working-directory: /tmp/doubletap-rc3/doubletap-rewards
+        working-directory: /tmp/doubletap-rc4/doubletap-rewards
         run: gradle --no-daemon --non-interactive --stacktrace :app:lint :app:testDebugUnitTest :app:assembleDebug :app:bundleRelease
 
       - name: Stage build outputs
@@ -63,13 +63,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .ci-doubletap/out
-          cp /tmp/doubletap-rc3/doubletap-rewards/app/build/outputs/apk/debug/app-debug.apk .ci-doubletap/out/DoubleTap-Rewards-1.0-RC3-debug.apk
-          cp /tmp/doubletap-rc3/doubletap-rewards/app/build/outputs/bundle/release/app-release.aab .ci-doubletap/out/DoubleTap-Rewards-1.0-RC3-release-unsigned.aab
+          cp /tmp/doubletap-rc4/doubletap-rewards/app/build/outputs/apk/debug/app-debug.apk .ci-doubletap/out/DoubleTap-Rewards-1.0-RC4-debug.apk
+          cp /tmp/doubletap-rc4/doubletap-rewards/app/build/outputs/bundle/release/app-release.aab .ci-doubletap/out/DoubleTap-Rewards-1.0-RC4-release-unsigned.aab
           sha256sum .ci-doubletap/out/* > .ci-doubletap/out/SHA256SUMS.txt
 
       - name: Upload APK and AAB
         uses: actions/upload-artifact@v4
         with:
-          name: doubletap-rewards-1.0-rc3-build
+          name: doubletap-rewards-1.0-rc4-build
           path: .ci-doubletap/out/
           if-no-files-found: error
