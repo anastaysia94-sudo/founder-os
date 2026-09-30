@@ -11,3 +11,27 @@ Updated: 2026-09-26 America/Los_Angeles
 6. Complete one sandbox purchase → capture → payment ledger entry → digital delivery/checksum test.
 7. Run Founder OS sign-in/recovery, Business A/B isolation, persistence/restore, and mobile acceptance.
 8. Record exact URLs, revisions, responses, and test evidence in STATUS.md.
+
+## 2026-09-30 current execution sequence
+
+Completed and do not repeat without contradictory evidence:
+1. Founder production source refresh to exact revision `273c62847c9d4b04134863d91e0e20402830862b`.
+2. Founder live `/api/health` and `/api/ready` verification on the Railway service domain.
+3. Four-Offer active-topology verification on Supabase Edge Functions.
+4. Exact deployed-source match for storefront, checkout, delivery, and analytics functions.
+5. Four-Offer live sandbox health/readiness including PayPal API and all three digital delivery assets.
+6. Production auth + Business A persistence already proven by the September 26 acceptance checkpoint.
+7. Backend foreign-identity RLS isolation already proven.
+
+First unfinished item:
+1. Approve PayPal sandbox order `00965671D6122732R` using a sandbox buyer.
+2. Return through the checkout callback and verify capture.
+3. Require `four_offer_payments.status='COMPLETED'`, capture ID present, and a delivery-token hash.
+4. Download the protected AI Project Handoff ZIP, require HTTP 200, compare response SHA-256 to `four_offer_downloads.sha256`, and verify the download count/event.
+5. In a genuine Founder browser session, create a second Business Record for the same account and run the Business A↔B acceptance switch without data bleed.
+6. Run `/acceptance/restore` through a real sign-out → same-account sign-in boundary and require PASS.
+7. Run desktop interaction acceptance and mobile interaction acceptance.
+8. Repair or deliberately retire the non-resolving `smartpickshop.dev` alias separately; it does not block the working Railway production URL.
+
+Do not claim 100% until the sandbox buyer and genuine authenticated browser/device gates above have executable evidence.
+
