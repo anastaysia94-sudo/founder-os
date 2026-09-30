@@ -1,0 +1,69 @@
+name: Founder OS Live Readiness 2026-09-30
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/founder-live-readiness-20260930.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      EXPECTED_REV: 273c62847c9d4b04134863d91e0e20402830862b
+    steps:
+      - name: Verify Railway service domain
+        shell: bash
+        run: |
+          set -euo pipefail
+          ORIGIN="https://founder-dynasty-os-web-production.up.railway.app"
+          curl --fail --silent --show-error --max-time 30 "$ORIGIN/api/health" -o health.json
+          curl --fail --silent --show-error --max-time 30 "$ORIGIN/api/ready" -o ready.json
+          node - <<'NODE'
+          const fs=require('fs');
+          const health=JSON.parse(fs.readFileSync('health.json','utf8'));
+          const ready=JSON.parse(fs.readFileSync('ready.json','utf8'));
+          const expected=process.env.EXPECTED_REV;
+          if (health.ok !== true) throw new Error('health.ok is not true');
+          if (ready.ready !== true) throw new Error('ready.ready is not true');
+          if (ready.service !== 'founder-dynasty-os-web') throw new Error('unexpected service');
+          if (ready.sourceRevision !== expected) throw new Error(`source revision mismatch: ${ready.sourceRevision} != ${expected}`);
+          if (!ready.checks || !Object.values(ready.checks).every(Boolean)) throw new Error('one or more readiness checks false');
+          console.log(JSON.stringify({health,ready},null,2));
+          NODE
+
+      - name: Verify custom domain
+        shell: bash
+        run: |
+          set -euo pipefail
+          ORIGIN="https://smartpickshop.dev"
+          curl --fail --silent --show-error --max-time 30 "$ORIGIN/api/health" -o custom-health.json
+          curl --fail --silent --show-error --max-time 30 "$ORIGIN/api/ready" -o custom-ready.json
+          node - <<'NODE'
+          const fs=require('fs');
+          const health=JSON.parse(fs.readFileSync('custom-health.json','utf8'));
+          const ready=JSON.parse(fs.readFileSync('custom-ready.json','utf8'));
+          const expected=process.env.EXPECTED_REV;
+          if (health.ok !== true) throw new Error('custom health.ok is not true');
+          if (ready.ready !== true) throw new Error('custom ready.ready is not true');
+          if (ready.sourceRevision !== expected) throw new Error(`custom source revision mismatch: ${ready.sourceRevision} != ${expected}`);
+          console.log(JSON.stringify({health,ready},null,2));
+          NODE
+
+      - name: Upload public readiness evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: founder-live-readiness-2026-09-30
+          path: |
+            health.json
+            ready.json
+            custom-health.json
+            custom-ready.json
+          if-no-files-found: warn
+          retention-days: 30
