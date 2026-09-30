@@ -1,0 +1,43 @@
+name: Four Offer Sandbox Buyer Gate 2026-09-30
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/four-offer-sandbox-order-20260930.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  create-sandbox-order:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Create one AI Project Handoff sandbox order
+        shell: bash
+        run: |
+          set -euo pipefail
+          ENDPOINT="https://nqcshihyfhthywpseilx.supabase.co/functions/v1/four-offer-checkout?action=create-order"
+          curl --fail --silent --show-error --max-time 30 \
+            -H "Origin: https://nqcshihyfhthywpseilx.supabase.co" \
+            -H "Content-Type: application/json" \
+            -X POST \
+            --data '{"offer_slug":"ai-project-handoff"}' \
+            "$ENDPOINT" -o sandbox-order.json
+          node - <<'NODE'
+          const fs=require('fs');
+          const data=JSON.parse(fs.readFileSync('sandbox-order.json','utf8'));
+          if (!/^[A-Z0-9-]{10,60}$/i.test(data.order_id||'')) throw new Error('missing valid order id');
+          if (!/^https:\/\//.test(data.approve_url||'')) throw new Error('missing HTTPS approval URL');
+          console.log('Sandbox order created and approval URL captured in artifact.');
+          console.log('Order ID:',data.order_id);
+          NODE
+
+      - name: Upload sandbox buyer handoff
+        uses: actions/upload-artifact@v4
+        with:
+          name: four-offer-sandbox-buyer-gate-2026-09-30
+          path: sandbox-order.json
+          retention-days: 1
