@@ -1,0 +1,60 @@
+name: Four Offer Supabase Live Readiness 2026-09-30
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/four-offer-supabase-readiness-20260930.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify storefront
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --max-time 30             "https://nqcshihyfhthywpseilx.supabase.co/functions/v1/four-offer-storefront"             -o storefront.html
+          grep -q "SmartPickShop Holdings | Four Offer Launch" storefront.html
+          grep -q "AI Project Handoff Pack" storefront.html
+
+      - name: Verify checkout health and readiness
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://nqcshihyfhthywpseilx.supabase.co/functions/v1/four-offer-checkout"
+          curl --fail --silent --show-error --max-time 30 "$BASE?action=health" -o checkout-health.json
+          curl --fail --silent --show-error --max-time 30 "$BASE?action=ready" -o checkout-ready.json
+          node - <<'NODE'
+          const fs=require('fs');
+          const health=JSON.parse(fs.readFileSync('checkout-health.json','utf8'));
+          const ready=JSON.parse(fs.readFileSync('checkout-ready.json','utf8'));
+          if (health.ok !== true || health.configured !== true || health.paypal_environment !== 'sandbox') {
+            throw new Error('checkout health contract failed');
+          }
+          if (ready.ready !== true || ready.paypal_environment !== 'sandbox') {
+            throw new Error('checkout readiness contract failed');
+          }
+          if (!ready.checks || ready.checks.checkout_config !== true || ready.checks.paypal_api !== true || ready.checks.delivery_assets !== true) {
+            throw new Error('one or more checkout readiness checks false');
+          }
+          if (ready.required_digital_offers !== 3) throw new Error('unexpected digital-offer count');
+          console.log(JSON.stringify({health,ready},null,2));
+          NODE
+
+      - name: Upload Four Offer live evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: four-offer-supabase-readiness-2026-09-30
+          path: |
+            storefront.html
+            checkout-health.json
+            checkout-ready.json
+          if-no-files-found: warn
+          retention-days: 30
