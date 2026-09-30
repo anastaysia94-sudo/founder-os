@@ -1,4 +1,4 @@
-name: DoubleTap RC4 Android CI
+name: DoubleTap RC5 Android CI
 
 on:
   push:
@@ -21,41 +21,47 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Provision Android API 37 from preinstalled SDK
+      - name: Set up current Android SDK command-line tools
+        uses: android-actions/setup-android@v4
+        with:
+          cmdline-tools-version: "15859902"
+          packages: ""
+          log-accepted-android-sdk-licenses: "false"
+
+      - name: Install Android API 37 SDK
         shell: bash
         run: |
           set -euo pipefail
-          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
-          if [ ! -x "$SDKMANAGER" ]; then
-            SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -perm -111 | sort -V | tail -n 1)"
-          fi
-          test -n "$SDKMANAGER"
-          test -x "$SDKMANAGER"
+          SDKMANAGER="$(command -v sdkmanager)"
           "$SDKMANAGER" --version
-          yes | "$SDKMANAGER" --licenses >/dev/null || true
-          "$SDKMANAGER" "platform-tools" "platforms;android-37" "build-tools;36.0.0"
+          PLATFORM_PACKAGE="$(
+            "$SDKMANAGER" --list | awk -F'|' '/platforms;android-37/ {gsub(/[[:space:]]/, "", $1); print $1}' | sort -V | tail -n 1
+          )"
+          test -n "$PLATFORM_PACKAGE"
+          echo "Installing $PLATFORM_PACKAGE"
+          "$SDKMANAGER" "platform-tools" "$PLATFORM_PACKAGE" "build-tools;36.0.0"
 
       - name: Set up Gradle 9.6.0
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "9.6.0"
 
-      - name: Decode DoubleTap RC4 source
+      - name: Decode DoubleTap RC5 source
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf /tmp/doubletap-rc4
-          mkdir -p /tmp/doubletap-rc4
-          base64 -d .ci-doubletap/DoubleTap-Rewards-1.0-RC4-source.zip.b64.txt > /tmp/doubletap-rc4/source.zip
-          echo "a1462e17c177eb933124223861173964af34613194e59a111da17df0df29e8e9  /tmp/doubletap-rc4/source.zip" | sha256sum -c -
-          unzip -q /tmp/doubletap-rc4/source.zip -d /tmp/doubletap-rc4
+          rm -rf /tmp/doubletap-rc5
+          mkdir -p /tmp/doubletap-rc5
+          base64 -d .ci-doubletap/DoubleTap-Rewards-1.0-RC5-source.zip.b64.txt > /tmp/doubletap-rc5/source.zip
+          echo "599e8abf23936588e39105a70df0c7a1b738fc43bec9d049b8a6f6fdfb7a51e4  /tmp/doubletap-rc5/source.zip" | sha256sum -c -
+          unzip -q /tmp/doubletap-rc5/source.zip -d /tmp/doubletap-rc5
 
       - name: Static release checks
-        working-directory: /tmp/doubletap-rc4/doubletap-rewards
+        working-directory: /tmp/doubletap-rc5/doubletap-rewards
         run: python3 scripts/static_release_checks.py
 
       - name: Lint, test, APK and AAB
-        working-directory: /tmp/doubletap-rc4/doubletap-rewards
+        working-directory: /tmp/doubletap-rc5/doubletap-rewards
         run: gradle --no-daemon --non-interactive --stacktrace :app:lint :app:testDebugUnitTest :app:assembleDebug :app:bundleRelease
 
       - name: Stage build outputs
@@ -63,13 +69,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .ci-doubletap/out
-          cp /tmp/doubletap-rc4/doubletap-rewards/app/build/outputs/apk/debug/app-debug.apk .ci-doubletap/out/DoubleTap-Rewards-1.0-RC4-debug.apk
-          cp /tmp/doubletap-rc4/doubletap-rewards/app/build/outputs/bundle/release/app-release.aab .ci-doubletap/out/DoubleTap-Rewards-1.0-RC4-release-unsigned.aab
+          cp /tmp/doubletap-rc5/doubletap-rewards/app/build/outputs/apk/debug/app-debug.apk .ci-doubletap/out/DoubleTap-Rewards-1.0-RC5-debug.apk
+          cp /tmp/doubletap-rc5/doubletap-rewards/app/build/outputs/bundle/release/app-release.aab .ci-doubletap/out/DoubleTap-Rewards-1.0-RC5-release-unsigned.aab
           sha256sum .ci-doubletap/out/* > .ci-doubletap/out/SHA256SUMS.txt
 
       - name: Upload APK and AAB
         uses: actions/upload-artifact@v4
         with:
-          name: doubletap-rewards-1.0-rc4-build
+          name: doubletap-rewards-1.0-rc5-build
           path: .ci-doubletap/out/
           if-no-files-found: error
