@@ -1,0 +1,141 @@
+name: Founder Browser Acceptance 2026-09-30
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/founder-browser-acceptance-20260930.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  production-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FDOS_E2E_BASE_URL: https://founder-dynasty-os-web-production.up.railway.app
+      FDOS_E2E_EMAIL: ${{ secrets.FDOS_E2E_EMAIL }}
+      FDOS_E2E_PASSWORD: ${{ secrets.FDOS_E2E_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Require secure E2E credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${FDOS_E2E_EMAIL:-}" || -z "${FDOS_E2E_PASSWORD:-}" ]]; then
+            echo "::error::FDOS_E2E_EMAIL and/or FDOS_E2E_PASSWORD repository secrets are absent."
+            exit 2
+          fi
+          echo "Secure E2E credentials are configured."
+
+      - name: Install web dependencies and Chromium
+        working-directory: web
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: Type-check production E2E suite
+        working-directory: web
+        run: npm run typecheck:e2e
+
+      - name: Run genuine Business A/B isolation
+        working-directory: web
+        run: npm run e2e:business-isolation
+
+      - name: Run genuine restore + mobile acceptance
+        working-directory: web
+        shell: bash
+        run: |
+          cat > /tmp/fdos-restore-mobile.mjs <<'NODE'
+          import { chromium, devices } from '@playwright/test';
+          import fs from 'node:fs';
+
+          const base = process.env.FDOS_E2E_BASE_URL;
+          const email = process.env.FDOS_E2E_EMAIL;
+          const password = process.env.FDOS_E2E_PASSWORD;
+
+          async function login(page) {
+            await page.goto(base + '/', { waitUntil: 'domcontentloaded' });
+            const signOut = page.getByRole('button', { name: 'Sign out' });
+            if (await signOut.isVisible().catch(() => false)) return;
+            await page.getByLabel('Email').fill(email);
+            await page.getByLabel('Password').fill(password);
+            await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+            await signOut.waitFor({ state: 'visible', timeout: 30000 });
+          }
+
+          const browser = await chromium.launch();
+
+          // Desktop restore proof.
+          const desktop = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+          const page = await desktop.newPage();
+          await login(page);
+          await page.goto(base + '/acceptance/restore', { waitUntil: 'domcontentloaded' });
+          await page.getByRole('button', { name: 'Arm active-Business checkpoint' }).click();
+          await page.getByRole('button', { name: 'Sign out for restore test' }).click();
+          await page.waitForLoadState('domcontentloaded');
+          await page.goto(base + '/acceptance/restore', { waitUntil: 'domcontentloaded' });
+          await page.getByText(/Signed-out browser state observed/i).waitFor({ timeout: 30000 });
+          await page.goto(base + '/', { waitUntil: 'domcontentloaded' });
+          await page.getByLabel('Email').fill(email);
+          await page.getByLabel('Password').fill(password);
+          await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+          await page.getByRole('button', { name: 'Sign out' }).waitFor({ state: 'visible', timeout: 30000 });
+          await page.goto(base + '/acceptance/restore', { waitUntil: 'domcontentloaded' });
+          await page.getByText(/PASS: this browser observed sign-out/i).waitFor({ timeout: 30000 });
+          await page.screenshot({ path: 'restore-pass-desktop.png', fullPage: true });
+          const restoreText = await page.locator('body').innerText();
+          fs.writeFileSync('restore-evidence.txt', restoreText);
+
+          // Fresh mobile-authenticated context.
+          const mobile = await browser.newContext({ ...devices['Pixel 7'] });
+          const m = await mobile.newPage();
+          await login(m);
+          const routes = ['/', '/portfolio', '/intelligence', '/workbench', '/strategy', '/acceptance'];
+          const mobileEvidence = [];
+          for (const route of routes) {
+            await m.goto(base + route, { waitUntil: 'domcontentloaded' });
+            await m.getByRole('button', { name: 'Sign out' }).waitFor({ state: 'visible', timeout: 30000 });
+            const dims = await m.evaluate(() => ({
+              route: location.pathname,
+              innerWidth: window.innerWidth,
+              scrollWidth: document.documentElement.scrollWidth,
+              bodyScrollWidth: document.body.scrollWidth,
+            }));
+            if (dims.scrollWidth > dims.innerWidth + 2 || dims.bodyScrollWidth > dims.innerWidth + 2) {
+              throw new Error(`horizontal overflow on ${route}: ${JSON.stringify(dims)}`);
+            }
+            mobileEvidence.push(dims);
+          }
+          await m.goto(base + '/', { waitUntil: 'domcontentloaded' });
+          await m.screenshot({ path: 'mobile-home-pass.png', fullPage: true });
+          fs.writeFileSync('mobile-evidence.json', JSON.stringify(mobileEvidence, null, 2));
+
+          await mobile.close();
+          await desktop.close();
+          await browser.close();
+          console.log('Founder restore + mobile acceptance PASS');
+          NODE
+          node /tmp/fdos-restore-mobile.mjs
+
+      - name: Upload Founder browser acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: founder-browser-acceptance-2026-09-30
+          path: |
+            web/test-results/
+            web/playwright-report/
+            web/restore-pass-desktop.png
+            web/restore-evidence.txt
+            web/mobile-home-pass.png
+            web/mobile-evidence.json
+          if-no-files-found: warn
+          retention-days: 30
