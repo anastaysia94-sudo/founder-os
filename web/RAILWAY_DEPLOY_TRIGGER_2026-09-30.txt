@@ -1,0 +1,2 @@
+Founder Dynasty OS production source refresh requested 2026-09-30.
+Purpose: trigger Railway /web watched-path deployment from current main so /api/ready and current branding can be verified against the served revision.
