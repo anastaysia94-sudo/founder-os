@@ -507,3 +507,18 @@ button{box-shadow:0 0 0 1px rgba(197,138,50,.12)}
 footer:before{content:"SMARTPICKSHOP HOLDINGS • IDEAS TODAY. EMPIRES TOMORROW.";display:block;color:var(--sps-brass);letter-spacing:.14em;margin-bottom:8px}
 
 /* deployment-sync: SmartPickShop branded Founder OS 2026-09-26 */
+
+
+:root{--brand-neon:#9abaff;--sps-brass:#c7ad74;--sps-copper:#b98951;--sps-cyan:#9abaff;--sps-ivory:#f2eddf;--sps-line:#5b516b;color-scheme:dark}
+body{background:radial-gradient(ellipse at 85% 0,#272346 0,transparent 45%),#0a0d1a;color:#f2eddf}
+.topbar{background:#0a0d1aed;border-color:#655675;padding:18px 0}.topbar strong{font-family:Georgia,serif;letter-spacing:.08em;font-size:18px}
+.hero{min-height:330px;padding:40px 28px;margin:22px 0;border:1px solid #746750;border-radius:4px 32px 4px 32px;background:linear-gradient(90deg,#101528 0%,#101528e6 45%,#10152835 100%),url('/brand/hero.webp') center right/cover;box-shadow:0 24px 60px #0004}
+.hero h1{font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:clamp(38px,5vw,65px);line-height:1.07;letter-spacing:-.035em}.hero .lede{max-width:640px}
+.panel,.focusCard,.stageBadge{border-radius:4px 20px 4px 20px}.eyebrow{font-size:12px;letter-spacing:.16em;color:#d8bd83}
+.panelHead h2,.areaTitle h2{font-family:Georgia,serif;font-weight:500}
+@media(max-width:650px){.hero{padding:28px 20px;background:linear-gradient(#101528dc,#101528f5),url('/brand/hero.webp') 65% center/cover}.hero h1{font-size:42px}}
+
+/* Original product identity • 2026-09-30 • Steampunk Neon */
+:focus-visible{outline:2px solid var(--brand-neon);outline-offset:4px}
+button,input,select,textarea{font:inherit}button,a,input,select,textarea{touch-action:manipulation}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important}}

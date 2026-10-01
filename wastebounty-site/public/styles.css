@@ -1,0 +1,10 @@
+
+:root{--brand-neon:#93f2c0;--bg:#081b18;--panel:#102c26;--text:#eff5ed;--muted:#bbcec2;--accent:#93f2c0;--line:#66774f}
+body{background:radial-gradient(ellipse at 70% 0,#204e38,transparent 45%),#081b18}.wrap{max-width:1240px;padding-top:28px}.brand-header{display:flex;justify-content:space-between;gap:18px;padding:18px 0;border-bottom:1px solid #50644c;font-size:14px;letter-spacing:.1em}.hero-frame{padding:52px 38px 44px;background:linear-gradient(95deg,#0c2824fa,#0c2824ef 50%,#0c282480),url('brand/hero.webp') right center/cover;border:1px solid #9b815e;border-radius:3px 36px 3px 36px;margin-top:24px}.hero-frame h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(45px,7vw,85px);line-height:1.04;letter-spacing:-.04em}.hero-frame .hero{max-width:670px;font-size:22px;line-height:1.5}.tag{font-size:12px;color:#d5bc8e}.cta{background:#93f2c0;color:#0c2824;border-radius:4px;box-shadow:0 0 25px #93f2c016}
+.card{background:linear-gradient(130deg,#173b2ff2,#102823f2);border-color:#647454;border-radius:4px 22px 4px 22px}.big{font-family:Georgia,serif;font-weight:500}.grid{gap:18px}h2{font-family:Georgia,serif;font-weight:500}h3{font-size:18px}p{line-height:1.6}.document-links{display:flex;flex-wrap:wrap;gap:12px}.document-links a{color:#93f2c0;padding:12px 16px;border:1px solid #66774f;border-radius:4px;text-decoration:none}.note{background:#143128;border-color:#cda97b}.brand-footer{margin-top:42px;padding:20px 0;border-top:1px solid #50644c;color:#bbcec2;font-size:14px}
+@media(max-width:650px){.hero-frame{padding:28px 20px;background:linear-gradient(#0c2824dc,#0c2824f5),url('brand/hero.webp') center/cover}.brand-header{flex-wrap:wrap}.hero-frame .hero{font-size:19px}.wrap{padding:24px 16px}}
+
+/* Original product identity • 2026-09-30 • Steampunk Neon */
+:focus-visible{outline:2px solid var(--brand-neon);outline-offset:4px}
+button,input,select,textarea{font:inherit}button,a,input,select,textarea{touch-action:manipulation}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important}}
