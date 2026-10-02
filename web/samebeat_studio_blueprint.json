@@ -1,0 +1,44 @@
+{
+  "engine_version": "2.0.26",
+  "bpm": 142,
+  "scale_root": "A_Minor",
+  "grid_subdivision": "16th_Notes",
+  "channels": {
+    "ch_1_sub_bass": {
+      "wave_generator": "Sine",
+      "frequency_range_hz": "30-65",
+      "behavior": "Sustained 808 drone pressure blocks on root notes"
+    },
+    "ch_2_synth_pads": {
+      "wave_generator": "Sawtooth_Filtered",
+      "chords": [
+        "Am7",
+        "F_Maj7",
+        "Dm7",
+        "E7"
+      ],
+      "modulation": "LFO cutoff filter sweep sweeping every 4 bars"
+    },
+    "ch_3_staccato_plucks": {
+      "wave_generator": "Square_Short",
+      "cadence": "Highly syncopated off-beat reggae skank counter-rhythm"
+    },
+    "ch_4_hybrid_percussion": {
+      "layout": "Tight trap hi-hat triplets layered over standard reggae drop rimshots"
+    }
+  },
+  "sequencer_timeline": [
+    {
+      "bars": "1-8",
+      "pattern": "Intro: Sub pressure baseline + synth pad ambient entry"
+    },
+    {
+      "bars": "9-24",
+      "pattern": "Verse: Staccato pluck skank rhythm locks track velocity"
+    },
+    {
+      "bars": "25-32",
+      "pattern": "Drop: Full percussion battery array activates high impact"
+    }
+  ]
+}
