@@ -8,7 +8,8 @@ const executablePath = process.env.FDOS_E2E_EXECUTABLE_PATH || undefined;
 
 await mkdir(dirname(statePath), { recursive: true });
 
-const browser = await chromium.launch({ headless: false, ...(executablePath ? { executablePath } : {}) });
+const isCI = !!process.env.GITHUB_ACTIONS;
+const browser = await chromium.launch({ headless: isCI, args: isCI ? ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu'] : [], ...(executablePath ? { executablePath } : {}) });
 const context = await browser.newContext();
 const page = await context.newPage();
 
