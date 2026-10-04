@@ -35,3 +35,9 @@ First unfinished item:
 
 Do not claim 100% until the sandbox buyer and genuine authenticated browser/device gates above have executable evidence.
 
+## 2026-10-04 PT — repo maintenance notes (The Albino · Pit Keeper)
+1. Review/merge PR #25 (manifest relative paths), then re-run `deploy-sales-engine-pages.yml` and confirm `https://anastaysia94-sudo.github.io/founder-os/manifest.webmanifest` serves `start_url: ./`.
+2. Review/merge licence PR #24.
+3. Anastaysia: add repo secrets `FDOS_E2E_EMAIL` / `FDOS_E2E_PASSWORD`, then re-run Founder Browser Acceptance.
+4. Anastaysia: decide on `smartpickshop.dev` — approve Humperdinck's skip-unless-configured fix, or register the domain — then re-run Founder OS Live Readiness.
+5. Earlier items (sandbox order `00965671D6122732R` approval, genuine browser acceptance) are unchanged.

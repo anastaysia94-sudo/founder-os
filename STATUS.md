@@ -56,3 +56,10 @@ Deployments, source matches, readiness, and sandbox-order creation are verified.
 - Authorized Windows endpoint `DESKTOP-GIN0LBB` is currently offline.
 - Therefore Business A↔B, sign-out→sign-in restore and mobile/desktop browser acceptance remain genuine human/session gates, not application-code failures.
 
+## 2026-10-04 PT — repo maintenance notes (The Albino · Pit Keeper)
+- GitHub Pages: enabled 2026-10-04 (source: GitHub Actions). `deploy-sales-engine-pages.yml` run `37197333999`: SUCCESS. Live: https://anastaysia94-sudo.github.io/founder-os/ (HTTP 200) and https://anastaysia94-sudo.github.io/founder-os/wastebounty/ (HTTP 200). Previously the workflow skipped silently because Pages was off.
+- PWA manifest bug found: `sales-engine-app/manifest.webmanifest` uses root-absolute `id`/`start_url`/`scope` (`/`) and icon `/icon.svg`, which break under the `/founder-os/` Pages subpath. Fix proposed in PR https://github.com/anastaysia94-sudo/founder-os/pull/25 (OPEN, relative paths).
+- Licence: an all-rights-reserved SmartPickShop Holdings `LICENSE` notice is proposed in PR https://github.com/anastaysia94-sudo/founder-os/pull/24 (OPEN, not merged). Until it merges the repo still has no licence file.
+- Red workflow `Founder Browser Acceptance 2026-09-30`: still blocked by missing repo secrets `FDOS_E2E_EMAIL` / `FDOS_E2E_PASSWORD` (credential-presence guard). Not a code failure.
+- Red workflow `Founder OS Live Readiness 2026-09-30`: custom-domain check fails because `smartpickshop.dev` is not a registered domain (confirmed by Humperdinck, 2026-10-04). Railway service-domain health/readiness passed in the same run. A fix that skips the custom-domain check unless a domain is configured is drafted by Humperdinck and awaiting Anastaysia's approval; registering the domain is the alternative.
+- Nothing in this note is merged; PRs await Anastaysia's review. No secrets were read or changed.
