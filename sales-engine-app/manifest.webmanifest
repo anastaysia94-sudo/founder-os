@@ -2,9 +2,9 @@
   "name": "Same-Day Customer Growth Pack Sales OS",
   "short_name": "Growth Pack",
   "description": "Authenticated mobile-first sales operating system for verified prospect research, pipeline history, scripts, and fulfillment tracking.",
-  "id": "/",
-  "start_url": "/",
-  "scope": "/",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#08111f",
@@ -12,7 +12,7 @@
   "categories": ["business", "productivity"],
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
