@@ -50,6 +50,10 @@ jobs:
         run: |
           npm install
           npx playwright install --with-deps chromium
+      - name: Install root dependencies and Playwright binaries
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
       - name: Install dependencies
         run: npm install
       - name: Syntax validation
