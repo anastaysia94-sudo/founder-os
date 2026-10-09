@@ -1,0 +1,16 @@
+{
+    "project_codename": "SameBeat_Velocity_V2",
+    "master_tempo_bpm": 142,
+    "harmonic_root_key": "A Minor",
+    "instrument_rack": {
+        "channel_01_bass": "808 Sub-Bass: Sustained Low-Frequency Pressure Layer",
+        "channel_02_harmony": "Synth Pads: Minor 7th & 9th Chord Inversions (Atmospheric Sweep)",
+        "channel_03_cadence": "Staccato Plucks: Syncopated Fast Cadence Melodic Array",
+        "channel_04_rhythm": "Drum Matrix: Trap / Reggae Hybrid Percussion Subdivisions"
+    },
+    "arrangement_timeline": {
+        "bars_01_08": "Intro: Low-end pressure introduction + gradual synth pad fade-in",
+        "bars_09_24": "Verse 1: Core syncopated pluck loop establishes track pulse",
+        "bars_25_32": "Chorus/Drop: Full battery drum array activates maximum impact"
+    }
+}
